@@ -91,6 +91,11 @@ describe('view', () => {
     expect(within(lane).getByText('Find three sources on X')).toBeTruthy()
     fireEvent.click(screen.getByRole('button', { name: 'Open researcher: Working' }))
     expect(open).toHaveBeenCalledWith(research)
+    expect(screen.getByText('1 need you')).toBeTruthy()
+    const order = screen.getAllByRole('button', { name: /^Open (researcher|writer|helper):/ }).map(b => b.getAttribute('aria-label'))
+    expect(order).toEqual(['Open writer: Needs you', 'Open researcher: Working', 'Open helper: Idle'])
+    fireEvent.click(screen.getByRole('button', { name: 'Show or hide handoffs to researcher' }))
+    expect(screen.queryByRole('region', { name: 'Handoffs from Chief to researcher' })).toBeNull()
   })
 
   it('explains an empty view', () => {
