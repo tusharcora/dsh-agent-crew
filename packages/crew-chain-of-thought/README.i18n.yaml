@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-chain-of-thought/README.md
+/:
+  en: d059ecc60974d11d
+  zh: 6a4ab06881107a07
+/deepseek-ai-dsh-crew-chain-of-thought:
+  en: a06d1665a421a3a7
+  zh: 3f8127c0c1e4931c
+/deepseek-ai-dsh-crew-chain-of-thought/summary:
+  en: 4fe2055aa76d489c
+  zh: b69ca15c26364d64
+/deepseek-ai-dsh-crew-chain-of-thought/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-chain-of-thought/use-this-package:
+  en: 189c1fa4c84427de
+  zh: 8cdcd2e3116d7277
+/deepseek-ai-dsh-crew-chain-of-thought/understand-the-implementation:
+  en: 36df8c524cec2898
+  zh: 4cd230d98fb9f9b2
+/deepseek-ai-dsh-crew-chain-of-thought/further-exploration:
+  en: 5bbd9272aaab5b33
+  zh: 40b605cb28b5807b
+/deepseek-ai-dsh-crew-chain-of-thought/model-experience:
+  en: da648f427c738300
+  zh: 37bd3fc11d73c5c0
+/deepseek-ai-dsh-crew-chain-of-thought/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-crew-chain-of-thought/known-limitations-and-deferred-work:
+  en: 3448a3f651e266ea
+  zh: d0b94b9affc869aa
+/deepseek-ai-dsh-crew-chain-of-thought/known-limitations-and-deferred-work/dev-note:
+  en: 0fbfb1b334228945
+  zh: 006d4bbb35d8cbfc

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew chain of thought",
+    "description": "Shows each answer's steps as they happen: what the agent thought, which tools it called with what, how long each took and which sources it read."
+  }
+}

@@ -16,6 +16,8 @@
       name: '@deepseek-ai/dsh-crew-faces'
     - id: crew-agents-ui
       name: '@deepseek-ai/dsh-crew-agents-ui'
+    - id: crew-chain-of-thought
+      name: '@deepseek-ai/dsh-crew-chain-of-thought'
     - id: preset-crew-chief
       name: '@deepseek-ai/dsh-agent-preset'
       config:

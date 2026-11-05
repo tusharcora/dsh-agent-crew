@@ -39,6 +39,7 @@
     "@deepseek-ai/dsh-agent-instructions": "workspace:*",
     "@deepseek-ai/dsh-agent-preset": "workspace:*",
     "@deepseek-ai/dsh-crew-agents-ui": "workspace:*",
+    "@deepseek-ai/dsh-crew-chain-of-thought": "workspace:*",
     "@deepseek-ai/dsh-crew-connections": "workspace:*",
     "@deepseek-ai/dsh-crew-faces": "workspace:*",
     "@deepseek-ai/dsh-crew-improve": "workspace:*",
