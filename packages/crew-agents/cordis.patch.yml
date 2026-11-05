@@ -24,6 +24,8 @@
       name: '@deepseek-ai/dsh-crew-kanban-ui'
     - id: crew-handoff-ui
       name: '@deepseek-ai/dsh-crew-handoff-ui'
+    - id: crew-tool-map-ui
+      name: '@deepseek-ai/dsh-crew-tool-map-ui'
     - id: preset-crew-chief
       name: '@deepseek-ai/dsh-agent-preset'
       config:

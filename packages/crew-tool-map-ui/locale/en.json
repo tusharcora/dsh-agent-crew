@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew tool map",
+    "description": "A Tools tab showing which tools each agent can use, how often it called them, and the input and output of every call."
+  }
+}

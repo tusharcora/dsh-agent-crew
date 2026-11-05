@@ -46,6 +46,7 @@
     "@deepseek-ai/dsh-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-crew-kanban": "workspace:*",
     "@deepseek-ai/dsh-crew-kanban-ui": "workspace:*",
+    "@deepseek-ai/dsh-crew-tool-map-ui": "workspace:*",
     "@deepseek-ai/dsh-mcp-client": "workspace:*",
     "@deepseek-ai/dsh-persona": "workspace:*",
     "@deepseek-ai/dsh-time-context": "workspace:*",

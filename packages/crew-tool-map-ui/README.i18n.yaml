@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-tool-map-ui/README.md
+/:
+  en: 6e2b0ada5f3e6797
+  zh: 1aab63f7c4ca8cfe
+/deepseek-ai-dsh-crew-tool-map-ui:
+  en: 232407df98ea422a
+  zh: f2e97a2a57e06c37
+/deepseek-ai-dsh-crew-tool-map-ui/summary:
+  en: d462729e339e28f3
+  zh: 7c7aa316ffcf1d3d
+/deepseek-ai-dsh-crew-tool-map-ui/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-tool-map-ui/use-this-package:
+  en: f11e287de7ee3d2c
+  zh: 9694ff727a0bcde6
+/deepseek-ai-dsh-crew-tool-map-ui/understand-the-implementation:
+  en: ce9943e69f82579c
+  zh: df526658794aecbe
+/deepseek-ai-dsh-crew-tool-map-ui/further-exploration:
+  en: eb57e21a49e26cda
+  zh: d423fc041e3ec7b1
+/deepseek-ai-dsh-crew-tool-map-ui/model-experience:
+  en: 42ee187cf83f453a
+  zh: c92aa8c2e5489b54
+/deepseek-ai-dsh-crew-tool-map-ui/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-crew-tool-map-ui/known-limitations-and-deferred-work:
+  en: a359ee4cf1f4fc61
+  zh: 7d1f5c9920519b6d
+/deepseek-ai-dsh-crew-tool-map-ui/known-limitations-and-deferred-work/dev-note:
+  en: 4e54cbb316b65320
+  zh: cd7d1797cdd0f207
