@@ -2,7 +2,7 @@
 import { useSyncExternalStore } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import type { CrewImproveState, CrewLesson, CrewProposal } from '@deepseek-ai/dsh-experimental-crew-improve/types'
+import type { CrewImproveState, CrewLesson, CrewProposal } from '@deepseek-ai/dsh-crew-improve/types'
 import { t } from './translate.client.ts'
 import { CrewLearning } from '../src/client/CrewLearning.tsx'
 import { LearningStore, type LearningHost } from '../src/client/learning.ts'

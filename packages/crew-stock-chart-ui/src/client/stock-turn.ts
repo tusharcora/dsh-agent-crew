@@ -5,7 +5,7 @@
  */
 import { isAppendSurfaceEvent } from '@deepseek-ai/dsh-session/surface'
 import type { ConversationNodeDefinition, TurnLocation } from '@deepseek-ai/dsh-client-ui-conversation/client'
-import type { StockSeries } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockSeries } from '@deepseek-ai/dsh-crew-stock-chart/types'
 import { asSeries } from './series.ts'
 
 /** Wire tool name. */

@@ -3,7 +3,7 @@ description: "Crew learning: a reflector reads crew conversations and the user's
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-improve
+# @deepseek-ai/dsh-crew-improve
 
 English | [中文](README.zh.md)
 

@@ -1,7 +1,7 @@
 /** Right-panel Crew tab: each member's face, name, live status and a new-Session button. */
 import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { ComponentType } from 'react'
-import type { CrewFaceProps } from '@deepseek-ai/dsh-experimental-crew-faces/client'
+import type { CrewFaceProps } from '@deepseek-ai/dsh-crew-faces/client'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { CrewMemberId, CrewMemberState } from '../roster.ts'
 import { MemberFace } from './MemberFace.tsx'

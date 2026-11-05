@@ -1,6 +1,6 @@
 /**
  * Stock chart tool and quote Remote over the Yahoo Finance chart endpoint.
- * @module @deepseek-ai/dsh-experimental-crew-stock-chart
+ * @module @deepseek-ai/dsh-crew-stock-chart
  */
 import { Service, type Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'

@@ -3,7 +3,7 @@
  * few more of the user's messages, a reflector reads the conversation and proposes lessons for that member. The user
  * approves or rejects each one in the Crew tab; approved lessons join the member's system prompt through the
  * `./lessons` row in its preset. Lessons are text only: they cannot change tools, accounts, credentials or the write guard.
- * @module @deepseek-ai/dsh-experimental-crew-improve
+ * @module @deepseek-ai/dsh-crew-improve
  */
 import { randomUUID } from 'node:crypto'
 import { readFile } from 'node:fs/promises'

@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-improve",
+  "name": "@deepseek-ai/dsh-crew-improve",
   "description": "Crew learning: reflects on crew conversations and the user's ratings, proposes lessons for approval, and adds approved lessons to each member's system prompt",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },

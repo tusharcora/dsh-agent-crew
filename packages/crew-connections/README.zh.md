@@ -3,7 +3,7 @@ description: "Crew 账户连接：通过授权接缝为 Gmail 和日历 MCP 服�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-connections
+# @deepseek-ai/dsh-crew-connections
 
 [English](README.md) | 中文
 

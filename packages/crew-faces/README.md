@@ -3,7 +3,7 @@ description: "SVG faces for crew agents: one of four bodies, a colour and two bl
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-faces
+# @deepseek-ai/dsh-crew-faces
 
 English | [中文](README.zh.md)
 

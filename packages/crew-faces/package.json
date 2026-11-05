@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-faces",
+  "name": "@deepseek-ai/dsh-crew-faces",
   "description": "SVG faces for crew agents, derived deterministically from the agent id",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },

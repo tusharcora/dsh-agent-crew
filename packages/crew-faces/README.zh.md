@@ -3,7 +3,7 @@ description: "Crew 智能体的 SVG 头像：四种身体之一、一种颜色�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-faces
+# @deepseek-ai/dsh-crew-faces
 
 [English](README.md) | 中文
 

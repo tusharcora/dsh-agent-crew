@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-stock-chart",
+  "name": "@deepseek-ai/dsh-crew-stock-chart",
   "description": "Stock chart tool and quote Remote over the Yahoo Finance chart endpoint, with an interactive transcript card",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },
@@ -53,7 +53,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@deepseek-ai/dsh-experimental-crew-stock-chart-ui": "workspace:*",
+    "@deepseek-ai/dsh-crew-stock-chart-ui": "workspace:*",
     "@deepseek-ai/schemastery": "workspace:~"
   },
   "peerDependencies": {

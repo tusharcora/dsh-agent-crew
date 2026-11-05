@@ -5,45 +5,45 @@
 /:
   en: 17330f2b8102e66d
   zh: 6fe6995428d471a0
-/deepseek-ai-dsh-experimental-crew-stock-chart:
-  en: b81cc9a529884426
-  zh: d5c96092a4bc6c6a
-/deepseek-ai-dsh-experimental-crew-stock-chart/summary:
+/deepseek-ai-dsh-crew-stock-chart:
+  en: 7c0075a9c409455b
+  zh: 9ad17c27d73a849e
+/deepseek-ai-dsh-crew-stock-chart/summary:
   en: 7ac410a73ceeb29d
   zh: ddf788262eef8ca1
-/deepseek-ai-dsh-experimental-crew-stock-chart/table-of-contents:
+/deepseek-ai-dsh-crew-stock-chart/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
-/deepseek-ai-dsh-experimental-crew-stock-chart/use-this-package:
+/deepseek-ai-dsh-crew-stock-chart/use-this-package:
   en: 259b1401ab4b2206
   zh: d4316de1574f25e5
-/deepseek-ai-dsh-experimental-crew-stock-chart/understand-the-implementation:
+/deepseek-ai-dsh-crew-stock-chart/understand-the-implementation:
   en: f727996c96f53ee5
   zh: 71c35ba7d980af55
-/deepseek-ai-dsh-experimental-crew-stock-chart/further-exploration:
+/deepseek-ai-dsh-crew-stock-chart/further-exploration:
   en: 3e3d4602a21685c4
   zh: 57fad708a1cb6413
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience:
+/deepseek-ai-dsh-crew-stock-chart/model-experience:
   en: 215e7ba838619b7b
   zh: a311da3843709f90
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience/stock-chart-tool:
+/deepseek-ai-dsh-crew-stock-chart/model-experience/stock-chart-tool:
   en: c2012d1fd33eef2e
   zh: 946f82592e87b336
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience/stock-chart-tool/what-the-model-sees:
-  en: 327801143b0cb176
-  zh: b097ad4e848525f3
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience/stock-chart-tool/what-the-model-sees/result-ending:
+/deepseek-ai-dsh-crew-stock-chart/model-experience/stock-chart-tool/what-the-model-sees:
+  en: 8b00abba78bed099
+  zh: 3168cc7f6dfe2b20
+/deepseek-ai-dsh-crew-stock-chart/model-experience/stock-chart-tool/what-the-model-sees/result-ending:
   en: d3a77a4d4ce901e9
   zh: 3af83e8aa8f8f0ac
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience/stock-chart-tool/token-effect:
+/deepseek-ai-dsh-crew-stock-chart/model-experience/stock-chart-tool/token-effect:
   en: fddc47dcebd3d699
   zh: 86aac3bdc5bf5052
-/deepseek-ai-dsh-experimental-crew-stock-chart/model-experience/stock-chart-tool/kv-cache-effect:
+/deepseek-ai-dsh-crew-stock-chart/model-experience/stock-chart-tool/kv-cache-effect:
   en: cbd0618777b8ad59
   zh: 72f3753b13d76af7
-/deepseek-ai-dsh-experimental-crew-stock-chart/known-limitations-and-deferred-work:
+/deepseek-ai-dsh-crew-stock-chart/known-limitations-and-deferred-work:
   en: 8f90199a62caf653
   zh: d53a37a195a4ffeb
-/deepseek-ai-dsh-experimental-crew-stock-chart/known-limitations-and-deferred-work/dev-note:
+/deepseek-ai-dsh-crew-stock-chart/known-limitations-and-deferred-work/dev-note:
   en: 8f4d3ddfed2af829
   zh: f732fc65a4dee5ef

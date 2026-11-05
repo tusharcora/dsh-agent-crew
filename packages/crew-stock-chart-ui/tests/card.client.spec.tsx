@@ -3,7 +3,7 @@ import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
-import type { StockQuoteResult, StockRange } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockQuoteResult, StockRange } from '@deepseek-ai/dsh-crew-stock-chart/types'
 import { StockCard } from '../src/client/StockCard.tsx'
 // The namespace declaration `TranslateNS<'stockChart'>` resolves against.
 import type {} from '../src/client/index.ts'

@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { t } from './translate.client.ts'
-import type { GoogleStatus } from '@deepseek-ai/dsh-experimental-crew-connections/types'
+import type { GoogleStatus } from '@deepseek-ai/dsh-crew-connections/types'
 import { CrewConnections } from '../src/client/CrewConnections.tsx'
 import { ConnectionsStore, type ConnectionsHost, type CrewSecretRef } from '../src/client/connections.ts'
 

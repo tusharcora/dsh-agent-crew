@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react'
 import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
-import type { CrewLearning as MemberLearning } from '@deepseek-ai/dsh-experimental-crew-improve/types'
+import type { CrewLearning as MemberLearning } from '@deepseek-ai/dsh-crew-improve/types'
 import { CREW_MEMBERS, type CrewMemberId } from '../roster.ts'
 import type { LearningDecision, LearningState } from './learning.ts'
 import type {} from './index.ts'

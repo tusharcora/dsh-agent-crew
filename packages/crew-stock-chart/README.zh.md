@@ -3,7 +3,7 @@ description: "基于 Yahoo Finance 图表接口的股票图表工具：给模型
 kind: "package-bundle"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-stock-chart
+# @deepseek-ai/dsh-crew-stock-chart
 
 [English](README.md) | 中文
 
@@ -74,7 +74,7 @@ kind: "package-bundle"
 
 #### 模型看到什么
 
-安装本 bundle 后，[`ui_stock_chart` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-experimental-crew-stock-chart) 出现在每个 Session 中。成功的调用返回一段文字，包含代码与名称、价格与货币、区间涨跌、最新价时间、来源页面和获取时间，并以下面这行结尾。失败的调用返回原因，例如 `"A A" is not a ticker symbol` 或 `No data found, symbol may be delisted`。
+安装本 bundle 后，[`ui_stock_chart` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-crew-stock-chart) 出现在每个 Session 中。成功的调用返回一段文字，包含代码与名称、价格与货币、区间涨跌、最新价时间、来源页面和获取时间，并以下面这行结尾。失败的调用返回原因，例如 `"A A" is not a ticker symbol` 或 `No data found, symbol may be delisted`。
 
 ##### 结果结尾
 

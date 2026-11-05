@@ -1,6 +1,6 @@
 /** Learning state for the Crew tab: proposed lessons waiting for the user and the lessons each member follows. */
 import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
-import type { CrewImproveResult, CrewImproveState } from '@deepseek-ai/dsh-experimental-crew-improve/types'
+import type { CrewImproveResult, CrewImproveState } from '@deepseek-ai/dsh-crew-improve/types'
 
 /** What the Learning list shows. */
 export interface LearningState {

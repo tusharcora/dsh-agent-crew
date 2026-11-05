@@ -1,5 +1,5 @@
 /** Chart geometry shared by drawing and hit-testing. */
-import type { StockPoint } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockPoint } from '@deepseek-ai/dsh-crew-stock-chart/types'
 
 /** viewBox width. */
 export const WIDTH = 600

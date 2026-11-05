@@ -5,51 +5,51 @@
 /:
   en: 1109095e20664115
   zh: 654af3b24fe0121e
-/deepseek-ai-dsh-experimental-crew-connections:
-  en: ded58a0cc0e6f7c9
-  zh: 2df4c2076f95d311
-/deepseek-ai-dsh-experimental-crew-connections/summary:
+/deepseek-ai-dsh-crew-connections:
+  en: 200856afe290e9ba
+  zh: 268ad2d9be935d4f
+/deepseek-ai-dsh-crew-connections/summary:
   en: ebc6779e55a4dfe3
   zh: 3edd8c788846d675
-/deepseek-ai-dsh-experimental-crew-connections/table-of-contents:
+/deepseek-ai-dsh-crew-connections/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
-/deepseek-ai-dsh-experimental-crew-connections/use-this-package:
+/deepseek-ai-dsh-crew-connections/use-this-package:
   en: c9c65a3679d014ea
   zh: ed6e6eb7ca16c7ad
-/deepseek-ai-dsh-experimental-crew-connections/use-this-package/google:
+/deepseek-ai-dsh-crew-connections/use-this-package/google:
   en: 14fac73a62b149dd
   zh: 6189e25cbbca563e
-/deepseek-ai-dsh-experimental-crew-connections/use-this-package/credentials:
+/deepseek-ai-dsh-crew-connections/use-this-package/credentials:
   en: 30b520e3c010cc21
   zh: 6162e4b90c46af99
-/deepseek-ai-dsh-experimental-crew-connections/understand-the-implementation:
+/deepseek-ai-dsh-crew-connections/understand-the-implementation:
   en: 14ec623511a6ffc0
   zh: 7e346abb992f726b
-/deepseek-ai-dsh-experimental-crew-connections/further-exploration:
+/deepseek-ai-dsh-crew-connections/further-exploration:
   en: 4fe28dbcbbdc1c6f
   zh: ad3274bda87e46db
-/deepseek-ai-dsh-experimental-crew-connections/model-experience:
+/deepseek-ai-dsh-crew-connections/model-experience:
   en: 215e7ba838619b7b
   zh: a311da3843709f90
-/deepseek-ai-dsh-experimental-crew-connections/model-experience/write-guard-refusal:
+/deepseek-ai-dsh-crew-connections/model-experience/write-guard-refusal:
   en: b98ff0b7588e2b2d
   zh: 0e8a71c3cffcadca
-/deepseek-ai-dsh-experimental-crew-connections/model-experience/write-guard-refusal/what-the-model-sees:
+/deepseek-ai-dsh-crew-connections/model-experience/write-guard-refusal/what-the-model-sees:
   en: f38c319dd745a733
   zh: 568418f9ce6ddf42
-/deepseek-ai-dsh-experimental-crew-connections/model-experience/write-guard-refusal/what-the-model-sees/refusal-guidance:
+/deepseek-ai-dsh-crew-connections/model-experience/write-guard-refusal/what-the-model-sees/refusal-guidance:
   en: 3a04ba7ccf9618d7
   zh: 201b86c5d7f5556d
-/deepseek-ai-dsh-experimental-crew-connections/model-experience/write-guard-refusal/token-effect:
+/deepseek-ai-dsh-crew-connections/model-experience/write-guard-refusal/token-effect:
   en: 86aaf841a49fcb70
   zh: 4bcc9b65274073ab
-/deepseek-ai-dsh-experimental-crew-connections/model-experience/write-guard-refusal/kv-cache-effect:
+/deepseek-ai-dsh-crew-connections/model-experience/write-guard-refusal/kv-cache-effect:
   en: 2b06b4772815126b
   zh: 9f00b829dc3cd377
-/deepseek-ai-dsh-experimental-crew-connections/known-limitations-and-deferred-work:
+/deepseek-ai-dsh-crew-connections/known-limitations-and-deferred-work:
   en: 55e69e5928cc32fd
   zh: a2a8c32fb9033a82
-/deepseek-ai-dsh-experimental-crew-connections/known-limitations-and-deferred-work/dev-note:
+/deepseek-ai-dsh-crew-connections/known-limitations-and-deferred-work/dev-note:
   en: dbb2c6f33ea09594
   zh: e0c18f7a474c0530

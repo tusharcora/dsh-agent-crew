@@ -3,7 +3,7 @@ description: "Stock chart tool over the Yahoo Finance chart endpoint: a model-fa
 kind: "package-bundle"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-stock-chart
+# @deepseek-ai/dsh-crew-stock-chart
 
 English | [中文](README.zh.md)
 
@@ -74,7 +74,7 @@ The tool returns the series; `render` gives the model the summary below, and `pr
 
 #### What the model sees
 
-The [`ui_stock_chart` declaration](../../../docs/tool-catalog.md#deepseek-aidsh-experimental-crew-stock-chart) appears in every Session while the bundle is installed. A successful call returns one paragraph with the symbol and name, price and currency, change over the range, the last-price time, the source page and the fetch time, ending with the line below. A failed call returns its reason, such as `"A A" is not a ticker symbol` or `No data found, symbol may be delisted`.
+The [`ui_stock_chart` declaration](../../../docs/tool-catalog.md#deepseek-aidsh-crew-stock-chart) appears in every Session while the bundle is installed. A successful call returns one paragraph with the symbol and name, price and currency, change over the range, the last-price time, the source page and the fetch time, ending with the line below. A failed call returns its reason, such as `"A A" is not a ticker symbol` or `No data found, symbol may be delisted`.
 
 ##### Result ending
 

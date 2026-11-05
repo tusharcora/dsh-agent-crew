@@ -3,7 +3,7 @@ description: "Crew agent presets: Mail, Chat, Code, Research and Life specialist
 kind: "package-bundle"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-agents
+# @deepseek-ai/dsh-crew-agents
 
 English | [中文](README.zh.md)
 

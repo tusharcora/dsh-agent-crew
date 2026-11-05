@@ -3,7 +3,7 @@ description: "Crew 学习：回顾器读取 crew 对话和用户评分，提出�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-improve
+# @deepseek-ai/dsh-crew-improve
 
 [English](README.md) | 中文
 

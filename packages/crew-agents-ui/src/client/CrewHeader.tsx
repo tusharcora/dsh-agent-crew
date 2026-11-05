@@ -1,6 +1,6 @@
 /** Chat-header badge: the face, name and live status of the crew member a Session runs. */
 import type { ComponentType } from 'react'
-import type { CrewFaceProps } from '@deepseek-ai/dsh-experimental-crew-faces/client'
+import type { CrewFaceProps } from '@deepseek-ai/dsh-crew-faces/client'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { CrewMemberState } from '../roster.ts'

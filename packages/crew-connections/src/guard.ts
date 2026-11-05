@@ -1,7 +1,7 @@
 /**
  * Crew write guard: mounted inside each crew preset, it denies MCP tools that change something outside dsh, in direct
  * calls and in calls a `run_code` program dispatches, because both pass the shared tool pipeline's guards.
- * @module @deepseek-ai/dsh-experimental-crew-connections/guard
+ * @module @deepseek-ai/dsh-crew-connections/guard
  */
 import type { Context } from '@deepseek-ai/cordis'
 import type { ToolExecution } from '@deepseek-ai/dsh-tools'

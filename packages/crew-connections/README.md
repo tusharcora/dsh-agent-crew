@@ -3,7 +3,7 @@ description: "Crew account connections: Google sign-in for the Gmail and Calenda
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-connections
+# @deepseek-ai/dsh-crew-connections
 
 English | [中文](README.zh.md)
 

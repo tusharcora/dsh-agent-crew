@@ -1,6 +1,6 @@
 /** SVG price chart: a close line or OHLC candles, a dashed reference close and a crosshair on the hovered bar. */
 import type { KeyboardEvent, PointerEvent } from 'react'
-import type { StockPoint } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockPoint } from '@deepseek-ai/dsh-crew-stock-chart/types'
 import { HEIGHT, indexAt, PAD, scaleFor, WIDTH } from './chart-scale.ts'
 import css from './StockCard.module.css'
 

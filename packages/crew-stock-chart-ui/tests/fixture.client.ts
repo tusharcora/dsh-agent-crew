@@ -1,5 +1,5 @@
 /** Test series; prices are made up for tests and never shown in the product. */
-import type { StockSeries } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockSeries } from '@deepseek-ai/dsh-crew-stock-chart/types'
 
 const start = Date.UTC(2026, 10, 4, 14, 30)
 

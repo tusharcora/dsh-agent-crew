@@ -1,6 +1,6 @@
 /**
  * The preset row that gives one crew member its approved lessons: a system-prompt section scoped to the preset's Agents.
- * @module @deepseek-ai/dsh-experimental-crew-improve/lessons
+ * @module @deepseek-ai/dsh-crew-improve/lessons
  */
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'

@@ -1,6 +1,6 @@
 /** Connection state for the Crew tab: Google sign-in status and which crew credentials are stored, never their values. */
 import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
-import type { GoogleSignInStart, GoogleStatus } from '@deepseek-ai/dsh-experimental-crew-connections/types'
+import type { GoogleSignInStart, GoogleStatus } from '@deepseek-ai/dsh-crew-connections/types'
 
 /** Credential references the crew MCP rows read; they mirror `CREW_REFS` of crew-connections. */
 export const CREW_SECRET_REFS = ['CREW_GOOGLE_CLIENT_ID', 'CREW_GOOGLE_CLIENT_SECRET', 'CREW_GITHUB_TOKEN'] as const

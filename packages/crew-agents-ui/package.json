@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-agents-ui",
+  "name": "@deepseek-ai/dsh-crew-agents-ui",
   "description": "Browser roster of the crew agents: names, live status and Session start for other crew plugins",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },
@@ -40,7 +40,7 @@
         "@deepseek-ai/dsh-client-ui-sidebar",
         "@deepseek-ai/dsh-client-ui-sidebar-right",
         "@deepseek-ai/dsh-client-ui-workspace",
-        "@deepseek-ai/dsh-experimental-crew-faces"
+        "@deepseek-ai/dsh-crew-faces"
       ]
     }
   },
@@ -64,9 +64,9 @@
     "@deepseek-ai/dsh-client-ui-sidebar-right": "workspace:*",
     "@deepseek-ai/dsh-client-ui-slots": "workspace:*",
     "@deepseek-ai/dsh-client-ui-workspace": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-connections": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-faces": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-improve": "workspace:*",
+    "@deepseek-ai/dsh-crew-connections": "workspace:*",
+    "@deepseek-ai/dsh-crew-faces": "workspace:*",
+    "@deepseek-ai/dsh-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-session": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

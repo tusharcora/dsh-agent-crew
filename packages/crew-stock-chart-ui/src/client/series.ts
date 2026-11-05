@@ -1,5 +1,5 @@
 /** Browser-side reading of persisted series metadata and number formatting. */
-import type { StockPoint, StockRange, StockSeries } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockPoint, StockRange, StockSeries } from '@deepseek-ai/dsh-crew-stock-chart/types'
 
 /** Ranges in button order; client bundles cannot import the Host's value, so a test pins this to `STOCK_RANGES`. */
 export const RANGES = ['1d', '5d', '1mo', '6mo', '1y'] as const satisfies readonly StockRange[]

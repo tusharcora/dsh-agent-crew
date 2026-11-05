@@ -7,7 +7,7 @@ import type { SessionId } from '@deepseek-ai/dsh-session/types'
 // Type-only: pulls the `agentPreset` Session projection value into this program.
 import type {} from '@deepseek-ai/dsh-agent-preset-registry/types'
 
-/** Preset ids of the crew, in roster order; they match the presets `dsh-experimental-crew-agents` declares. */
+/** Preset ids of the crew, in roster order; they match the presets `dsh-crew-agents` declares. */
 export const CREW_MEMBERS = ['crew-chief', 'crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life'] as const
 
 /** One crew member, identified by its preset id. */

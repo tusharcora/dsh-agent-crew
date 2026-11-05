@@ -8,12 +8,12 @@ import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-api-remotes/client'
 import type {} from '@deepseek-ai/dsh-api-workspace-controller/client'
-import type {} from '@deepseek-ai/dsh-experimental-crew-faces/client'
-import type {} from '@deepseek-ai/dsh-experimental-crew-connections/remote'
-import type {} from '@deepseek-ai/dsh-experimental-crew-improve/remote'
+import type {} from '@deepseek-ai/dsh-crew-faces/client'
+import type {} from '@deepseek-ai/dsh-crew-connections/remote'
+import type {} from '@deepseek-ai/dsh-crew-improve/remote'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import connectionsRemote from '@deepseek-ai/dsh-experimental-crew-connections/remote'
-import improveRemote from '@deepseek-ai/dsh-experimental-crew-improve/remote'
+import connectionsRemote from '@deepseek-ai/dsh-crew-connections/remote'
+import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
 import { CrewRoster } from './crew-roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
@@ -41,7 +41,7 @@ declare module '@deepseek-ai/cordis' {
 export const inject = ['locale', 'sessions', 'workspaces', 'uiSession', 'uiWorkspace', 'slots', 'sidebarRightTabs', 'crewFaces', 'remote']
 
 /** Crew tab implementation identity and keyed Slot dispatch key. */
-export const CREW_TAB_ID = '@deepseek-ai/dsh-experimental-crew-agents-ui'
+export const CREW_TAB_ID = '@deepseek-ai/dsh-crew-agents-ui'
 
 /**
  * Run one Remote call, mapping a lost reply or a refusal to undefined.

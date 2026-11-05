@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-agents",
+  "name": "@deepseek-ai/dsh-crew-agents",
   "description": "Crew agent presets: Mail, Chat, Code, Research and Life specialists and a Chief of staff that delegates to them",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },
@@ -38,10 +38,10 @@
   "dependencies": {
     "@deepseek-ai/dsh-agent-instructions": "workspace:*",
     "@deepseek-ai/dsh-agent-preset": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-agents-ui": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-connections": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-faces": "workspace:*",
-    "@deepseek-ai/dsh-experimental-crew-improve": "workspace:*",
+    "@deepseek-ai/dsh-crew-agents-ui": "workspace:*",
+    "@deepseek-ai/dsh-crew-connections": "workspace:*",
+    "@deepseek-ai/dsh-crew-faces": "workspace:*",
+    "@deepseek-ai/dsh-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-mcp-client": "workspace:*",
     "@deepseek-ai/dsh-persona": "workspace:*",
     "@deepseek-ai/dsh-time-context": "workspace:*",

@@ -1,7 +1,7 @@
 /**
  * Crew connections: Google sign-in for the Gmail and Calendar MCP servers through the authorization seam, the access
  * token kept fresh in the credential store, and the Remote the Crew tab uses to connect accounts.
- * @module @deepseek-ai/dsh-experimental-crew-connections
+ * @module @deepseek-ai/dsh-crew-connections
  */
 import { mkdir } from 'node:fs/promises'
 import { join } from 'node:path'

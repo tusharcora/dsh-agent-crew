@@ -5,17 +5,17 @@
 # secrets from the credential store; `disabled` rows wait for an account the user has not approved yet.
 - insert:
     - id: crew-connections
-      name: '@deepseek-ai/dsh-experimental-crew-connections'
+      name: '@deepseek-ai/dsh-crew-connections'
       config:
         homeDirectory: !!js dshHomePath('crew')
     - id: crew-improve
-      name: '@deepseek-ai/dsh-experimental-crew-improve'
+      name: '@deepseek-ai/dsh-crew-improve'
       config:
         homeDirectory: !!js dshHomePath('crew')
     - id: crew-faces
-      name: '@deepseek-ai/dsh-experimental-crew-faces'
+      name: '@deepseek-ai/dsh-crew-faces'
     - id: crew-agents-ui
-      name: '@deepseek-ai/dsh-experimental-crew-agents-ui'
+      name: '@deepseek-ai/dsh-crew-agents-ui'
     - id: preset-crew-chief
       name: '@deepseek-ai/dsh-agent-preset'
       config:
@@ -37,9 +37,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-chief
           - id: tool-ask-user
@@ -100,9 +100,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-mail
           - id: mcp-gmail
@@ -149,9 +149,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-chat
           - id: mcp-slack
@@ -193,9 +193,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-code
           - id: mcp-github
@@ -257,9 +257,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-research
           - id: mcp-firecrawl
@@ -318,9 +318,9 @@
           - id: tool-executor-ptc
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
-            name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+            name: '@deepseek-ai/dsh-crew-connections/guard'
           - id: crew-lessons
-            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            name: '@deepseek-ai/dsh-crew-improve/lessons'
             config:
               member: crew-life
           - id: mcp-gcal

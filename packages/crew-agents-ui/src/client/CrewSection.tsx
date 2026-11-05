@@ -1,7 +1,7 @@
 /** Sidebar Crew section: every member with its face and status; each opens its own chat or a new chat in a workspace. */
 import { useState, type ComponentType } from 'react'
 import { Menu, MenuItemButton } from '@deepseek-ai/dsh-client-ui-primitives'
-import type { CrewFaceProps } from '@deepseek-ai/dsh-experimental-crew-faces/client'
+import type { CrewFaceProps } from '@deepseek-ai/dsh-crew-faces/client'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SidebarSectionsOwnerProps } from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'

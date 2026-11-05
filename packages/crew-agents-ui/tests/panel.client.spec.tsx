@@ -3,7 +3,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
-import { CrewFace } from '@deepseek-ai/dsh-experimental-crew-faces/client'
+import { CrewFace } from '@deepseek-ai/dsh-crew-faces/client'
 import { CrewPanel } from '../src/client/CrewPanel.tsx'
 import { CREW_MEMBERS, type CrewMemberState } from '../src/roster.ts'
 

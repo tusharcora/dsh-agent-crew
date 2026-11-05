@@ -3,7 +3,7 @@ description: "股票图表的浏览器端：回答下方的交互式卡片和 ui
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-stock-chart-ui
+# @deepseek-ai/dsh-crew-stock-chart-ui
 
 [English](README.md) | 中文
 

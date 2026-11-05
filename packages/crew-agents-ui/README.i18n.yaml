@@ -5,48 +5,48 @@
 /:
   en: a9edfd00a059fd32
   zh: 14794c34e8bfe238
-/deepseek-ai-dsh-experimental-crew-agents-ui:
-  en: c1b40b81a46e2a5d
-  zh: cb4f3d2807844424
-/deepseek-ai-dsh-experimental-crew-agents-ui/summary:
+/deepseek-ai-dsh-crew-agents-ui:
+  en: c54dfe8c6a384a6c
+  zh: 1a86c86aecfee1ee
+/deepseek-ai-dsh-crew-agents-ui/summary:
   en: d6fe0cbc8f915e8e
   zh: 36187991459d3354
-/deepseek-ai-dsh-experimental-crew-agents-ui/table-of-contents:
+/deepseek-ai-dsh-crew-agents-ui/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package:
   en: f59e575879d9743c
   zh: 0e16b1c219b15ceb
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package/faces:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package/faces:
   en: 26ec72a320a076bf
   zh: 7d5077ca8dd949f0
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package/crew-section-and-chat-header:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package/crew-section-and-chat-header:
   en: 93aef94ba85cf37d
   zh: 09320adf4c510bbc
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package/connections:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package/connections:
   en: 8b15d590e29c95f3
   zh: 4e4b99c406cf987b
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package/crew-tab:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package/crew-tab:
   en: 0fb32155430a9507
   zh: 799aedde8b362ab7
-/deepseek-ai-dsh-experimental-crew-agents-ui/use-this-package/learning:
+/deepseek-ai-dsh-crew-agents-ui/use-this-package/learning:
   en: f3a1d3fd0fc577d2
   zh: c37ed03066b73fbe
-/deepseek-ai-dsh-experimental-crew-agents-ui/understand-the-implementation:
+/deepseek-ai-dsh-crew-agents-ui/understand-the-implementation:
   en: 3394224ddfbbe7ce
   zh: 6200c6111d348b29
-/deepseek-ai-dsh-experimental-crew-agents-ui/further-exploration:
+/deepseek-ai-dsh-crew-agents-ui/further-exploration:
   en: 823d4323d677cfb9
   zh: 311816dbac43172e
-/deepseek-ai-dsh-experimental-crew-agents-ui/model-experience:
+/deepseek-ai-dsh-crew-agents-ui/model-experience:
   en: e61e7f70df03f64a
   zh: 8c5e7126756baab7
-/deepseek-ai-dsh-experimental-crew-agents-ui/model-experience/kv-cache-effect:
+/deepseek-ai-dsh-crew-agents-ui/model-experience/kv-cache-effect:
   en: ca75c51c89c2c9b0
   zh: 477b768cc9dcda1a
-/deepseek-ai-dsh-experimental-crew-agents-ui/known-limitations-and-deferred-work:
+/deepseek-ai-dsh-crew-agents-ui/known-limitations-and-deferred-work:
   en: 6af79d1de75b2aa5
   zh: 0fc41ba31635d1c8
-/deepseek-ai-dsh-experimental-crew-agents-ui/known-limitations-and-deferred-work/dev-note:
+/deepseek-ai-dsh-crew-agents-ui/known-limitations-and-deferred-work/dev-note:
   en: e67f633dc6fe7773
   zh: bd8a8936229e035e

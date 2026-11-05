@@ -1,6 +1,6 @@
 # Stock chart: the ui_stock_chart tool with its quote Remote, and the browser card.
 - insert:
     - id: crew-stock-chart
-      name: '@deepseek-ai/dsh-experimental-crew-stock-chart'
+      name: '@deepseek-ai/dsh-crew-stock-chart'
     - id: crew-stock-chart-ui
-      name: '@deepseek-ai/dsh-experimental-crew-stock-chart-ui'
+      name: '@deepseek-ai/dsh-crew-stock-chart-ui'

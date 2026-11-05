@@ -3,7 +3,7 @@ description: "Crew 智能体预设：邮件、聊天、代码、研究和生活�
 kind: "package-bundle"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-agents
+# @deepseek-ai/dsh-crew-agents
 
 [English](README.md) | 中文
 

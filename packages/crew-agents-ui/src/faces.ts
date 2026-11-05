@@ -1,5 +1,5 @@
 /** Each crew member's own face: a body and colour chosen per member, distinct across the crew. */
-import type { FaceDesign } from '@deepseek-ai/dsh-experimental-crew-faces'
+import type { FaceDesign } from '@deepseek-ai/dsh-crew-faces'
 import type { CrewMemberId } from './roster.ts'
 
 /** Designed faces by member. */

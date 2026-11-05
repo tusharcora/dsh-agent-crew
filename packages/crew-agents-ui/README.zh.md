@@ -3,7 +3,7 @@ description: "Crew 智能体的浏览器端名册：每位成员的本地化名�
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-agents-ui
+# @deepseek-ai/dsh-crew-agents-ui
 
 [English](README.md) | 中文
 

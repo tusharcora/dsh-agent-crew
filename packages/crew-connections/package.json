@@ -1,7 +1,7 @@
 {
-  "name": "@deepseek-ai/dsh-experimental-crew-connections",
+  "name": "@deepseek-ai/dsh-crew-connections",
   "description": "Crew account connections: Google sign-in for the Gmail and Calendar MCP servers, token refresh, and the write guard for crew presets",
-  "version": "0.2.2-alpha.3",
+  "version": "0.2.2-rc.1",
   "publishConfig": {
     "access": "public"
   },

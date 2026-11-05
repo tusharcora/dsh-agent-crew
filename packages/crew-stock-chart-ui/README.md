@@ -3,7 +3,7 @@ description: "Browser half of the stock chart: the interactive card beneath answ
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-stock-chart-ui
+# @deepseek-ai/dsh-crew-stock-chart-ui
 
 English | [中文](README.zh.md)
 

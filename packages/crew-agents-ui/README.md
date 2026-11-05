@@ -3,7 +3,7 @@ description: "Browser roster of the crew agents: each member's localized name, l
 kind: "package-reference"
 ---
 
-# @deepseek-ai/dsh-experimental-crew-agents-ui
+# @deepseek-ai/dsh-crew-agents-ui
 
 English | [中文](README.zh.md)
 

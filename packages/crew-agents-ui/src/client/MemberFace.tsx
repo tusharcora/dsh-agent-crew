@@ -1,6 +1,6 @@
 /** One crew member's own face, in the designed body and colour, blinking and moving its eyes while working. */
 import type { ComponentType } from 'react'
-import type { CrewFaceProps } from '@deepseek-ai/dsh-experimental-crew-faces/client'
+import type { CrewFaceProps } from '@deepseek-ai/dsh-crew-faces/client'
 import { CREW_FACE_DESIGNS } from '../faces.ts'
 import type { CrewMemberState } from '../roster.ts'
 

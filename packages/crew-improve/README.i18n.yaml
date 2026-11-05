@@ -5,57 +5,57 @@
 /:
   en: 862bfaba721b2bbd
   zh: 05354d5a071b8a31
-/deepseek-ai-dsh-experimental-crew-improve:
-  en: a91deae22bbae6ab
-  zh: cd6ce024f3dc27f6
-/deepseek-ai-dsh-experimental-crew-improve/summary:
+/deepseek-ai-dsh-crew-improve:
+  en: 33c67877917a87a9
+  zh: 31a96b31f56c160d
+/deepseek-ai-dsh-crew-improve/summary:
   en: c4f6b157a5c0c590
   zh: 4c2bb8a6b4d95ce3
-/deepseek-ai-dsh-experimental-crew-improve/table-of-contents:
+/deepseek-ai-dsh-crew-improve/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
-/deepseek-ai-dsh-experimental-crew-improve/use-this-package:
+/deepseek-ai-dsh-crew-improve/use-this-package:
   en: 169959c525f7c63a
   zh: 637ebf2d03088c2c
-/deepseek-ai-dsh-experimental-crew-improve/understand-the-implementation:
+/deepseek-ai-dsh-crew-improve/understand-the-implementation:
   en: 54b8592dfd8a5b71
   zh: bd7644c01b6e944d
-/deepseek-ai-dsh-experimental-crew-improve/further-exploration:
+/deepseek-ai-dsh-crew-improve/further-exploration:
   en: c85ed5120fca4231
   zh: c56538dfb9ab5fc7
-/deepseek-ai-dsh-experimental-crew-improve/model-experience:
+/deepseek-ai-dsh-crew-improve/model-experience:
   en: 215e7ba838619b7b
   zh: a311da3843709f90
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/lessons-section:
+/deepseek-ai-dsh-crew-improve/model-experience/lessons-section:
   en: fa8d33a660f37915
   zh: 8da1d9616df7ffc7
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/lessons-section/what-the-model-sees:
+/deepseek-ai-dsh-crew-improve/model-experience/lessons-section/what-the-model-sees:
   en: 496f6a6dd3aeb662
   zh: 56606fab20fb3b20
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/lessons-section/what-the-model-sees/lessons-section-text:
+/deepseek-ai-dsh-crew-improve/model-experience/lessons-section/what-the-model-sees/lessons-section-text:
   en: a75bd643d5364f48
   zh: 2197f4b31ed68f76
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/lessons-section/token-effect:
+/deepseek-ai-dsh-crew-improve/model-experience/lessons-section/token-effect:
   en: ffc4266ca880d6a0
   zh: 54206f2ac6657d8b
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/lessons-section/kv-cache-effect:
+/deepseek-ai-dsh-crew-improve/model-experience/lessons-section/kv-cache-effect:
   en: 1fbce728cdcb8854
   zh: e89d7a234521efe2
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/reflector-request:
+/deepseek-ai-dsh-crew-improve/model-experience/reflector-request:
   en: 988597b6eae9a916
   zh: 22478b14db47f75f
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/reflector-request/what-the-model-sees:
+/deepseek-ai-dsh-crew-improve/model-experience/reflector-request/what-the-model-sees:
   en: 43fed230221dd056
   zh: 13b0c9513390884a
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/reflector-request/token-effect:
+/deepseek-ai-dsh-crew-improve/model-experience/reflector-request/token-effect:
   en: 7c08914e0ff3695e
   zh: d9ed1af6e120fb4d
-/deepseek-ai-dsh-experimental-crew-improve/model-experience/reflector-request/kv-cache-effect:
+/deepseek-ai-dsh-crew-improve/model-experience/reflector-request/kv-cache-effect:
   en: 93fbca41c1599c68
   zh: 4160fe914ea11496
-/deepseek-ai-dsh-experimental-crew-improve/known-limitations-and-deferred-work:
+/deepseek-ai-dsh-crew-improve/known-limitations-and-deferred-work:
   en: 02cb83f9c6b079b3
   zh: 3dd2816addbfa2a4
-/deepseek-ai-dsh-experimental-crew-improve/known-limitations-and-deferred-work/dev-note:
+/deepseek-ai-dsh-crew-improve/known-limitations-and-deferred-work/dev-note:
   en: 5975bcc84db32307
   zh: d76505741a98f6ff

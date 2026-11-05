@@ -2,7 +2,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
-import type { StockFailureCode, StockQuoteResult, StockRange, StockSeries } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
+import type { StockFailureCode, StockQuoteResult, StockRange, StockSeries } from '@deepseek-ai/dsh-crew-stock-chart/types'
 import { StockChart, type ChartMode } from './StockChart.tsx'
 import { changeOf, formatPrice, formatTime, RANGES } from './series.ts'
 import type {} from './locales.ts'
