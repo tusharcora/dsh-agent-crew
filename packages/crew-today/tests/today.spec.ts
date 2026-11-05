@@ -2,7 +2,8 @@ import { describe, expect, it, vi } from 'vitest'
 import { asEvent, asPullRequest, openPullRequests, weekBounds, weekEvents } from '../src/fetch.ts'
 
 const now = new Date(2026, 10, 5, 9, 30) // a Thursday
-const json = (body: unknown, status = 200) => vi.fn(async () => new Response(JSON.stringify(body), { status }))
+const json = (body: unknown, status = 200) =>
+  vi.fn(async (_url: string, _init?: RequestInit) => new Response(JSON.stringify(body), { status }))
 
 describe('weekBounds', () => {
   it('runs Monday 00:00 to the next Monday', () => {
@@ -28,7 +29,7 @@ describe('calendar', () => {
     const result = await weekEvents('tok', now, fetcher)
     expect(result).toMatchObject({ ok: true, source: { name: 'Google Calendar', fetchedAt: now.getTime() } })
     expect(result.ok && result.items.map(e => [e.id, e.title, e.allDay])).toEqual([['a', 'Standup', false], ['b', '(No title)', true]])
-    expect(String(fetcher.mock.calls[0]?.[0])).toContain('calendars/primary/events')
+    expect(fetcher.mock.calls[0]?.[0]).toContain('calendars/primary/events')
   })
 
   it('reports a failed request', async () => {

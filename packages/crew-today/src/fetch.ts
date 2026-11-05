@@ -1,7 +1,7 @@
 /** Read this week's Google Calendar events and the user's open GitHub pull requests. */
 import type { TodayEvent, TodayPullRequest, TodayResult } from './types.ts'
 
-type Fetch = typeof fetch
+type Fetch = (url: string, init?: RequestInit) => Promise<Response>
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
