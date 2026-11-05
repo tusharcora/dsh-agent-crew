@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew 成员名册",
+    "description": "存储在磁盘上并注册为智能体 preset 的 crew 成员；可在 Crew 标签页中添加、编辑和删除。"
+  }
+}

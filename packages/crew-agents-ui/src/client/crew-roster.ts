@@ -4,9 +4,10 @@ import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-worksp
 import type { HostObservable, TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SessionStatusSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
-import { CREW_FACE_DESIGNS } from '../faces.ts'
-import { crewRoster, sameRoster, type CrewMemberId, type CrewMemberState } from '../roster.ts'
-import type {} from './locales.ts'
+import type { FaceDesign } from '@deepseek-ai/dsh-crew-faces'
+import type { CrewMember, RosterResult, RosterState } from '@deepseek-ai/dsh-crew-roster/types'
+import { crewRoster, sameRoster, type CrewMemberId, type CrewMemberState, type RosterEntry } from '../roster.ts'
+import { en } from './locales.ts'
 
 /** What the roster asks the rest of the client to do. */
 export interface CrewActions {
@@ -29,12 +30,48 @@ export interface CrewActions {
   readonly createChat: (agentPreset: string) => Promise<SessionId | undefined>
 }
 
+/** Roster reads and changes on the Host; each resolves undefined when dsh could not be reached. */
+export interface RosterHost {
+  readonly state: () => Promise<RosterState | undefined>
+  readonly save: (member: CrewMember) => Promise<RosterResult<CrewMember> | undefined>
+  readonly remove: (id: string) => Promise<RosterResult | undefined>
+}
+
+/** The editable crew as the Crew tab reads it. */
+export interface RosterView {
+  readonly loaded: boolean
+  /** True when the last read could not reach dsh. */
+  readonly failed: boolean
+  readonly records: RosterState['members']
+  readonly connections: RosterState['connections']
+}
+
+const SHIPPED = ['crew-chief', 'crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life'] as const
+
+function isShipped(id: string): id is (typeof SHIPPED)[number] {
+  return (SHIPPED as readonly string[]).includes(id)
+}
+
 /** Live crew roster for other crew plugins. Draw a member with `ctx.crewFaces.Face`, passing the member id as `agentId`. */
 export class CrewRoster {
   private snapshot: readonly CrewMemberState[]
-  private seen: readonly [SessionListState, SessionStatusSnapshot, WorkspaceSnapshot]
+  private seen: readonly [SessionListState, SessionStatusSnapshot, WorkspaceSnapshot, RosterView]
+  private view: RosterView = { loaded: false, failed: false, records: [], connections: [] }
+  private readonly listeners = new Set<() => void>()
+  private editing: CrewMemberId | undefined
+  private readonly editListeners = new Set<() => void>()
+  /** A member the sidebar asked the Crew tab to edit; `''` asks for a new member. */
+  readonly editRequest: HostObservable<CrewMemberId | undefined> = {
+    getSnapshot: () => this.editing,
+    subscribe: (listener) => { this.editListeners.add(listener); return () => { this.editListeners.delete(listener) } },
+  }
   /** Members in roster order; the snapshot keeps its identity until a member's status or Sessions change. */
   readonly members: HostObservable<readonly CrewMemberState[]>
+  /** The stored crew and the services members can connect to, for the editor. */
+  readonly roster: HostObservable<RosterView> = {
+    getSnapshot: () => this.view,
+    subscribe: (listener) => { this.listeners.add(listener); return () => { this.listeners.delete(listener) } },
+  }
 
   /**
    * @param sessions - Session list source.
@@ -42,6 +79,7 @@ export class CrewRoster {
    * @param workspaces - workspace list, which says which Sessions belong to a workspace.
    * @param t - translator bound to the `crew` namespace.
    * @param actions - navigation and Session creation.
+   * @param host - roster reads and changes.
    */
   constructor(
     sessions: HostObservable<SessionListState>,
@@ -49,14 +87,15 @@ export class CrewRoster {
     workspaces: HostObservable<WorkspaceSnapshot>,
     private readonly t: TranslateNS<'crew'>,
     private readonly actions: CrewActions,
+    private readonly host: RosterHost,
   ) {
-    const fold = ([list, live, places]: readonly [SessionListState, SessionStatusSnapshot, WorkspaceSnapshot]) =>
-      crewRoster(list, live, new Set(places.items.flatMap(item => item.sessionIds)))
-    this.seen = [sessions.getSnapshot(), status.getSnapshot(), workspaces.getSnapshot()]
+    const fold = ([list, live, places, view]: readonly [SessionListState, SessionStatusSnapshot, WorkspaceSnapshot, RosterView]) =>
+      crewRoster(list, live, new Set(places.items.flatMap(item => item.sessionIds)), view.records.map(record => this.entry(record)))
+    this.seen = [sessions.getSnapshot(), status.getSnapshot(), workspaces.getSnapshot(), this.view]
     this.snapshot = fold(this.seen)
     this.members = {
       getSnapshot: () => {
-        const next = [sessions.getSnapshot(), status.getSnapshot(), workspaces.getSnapshot()] as const
+        const next = [sessions.getSnapshot(), status.getSnapshot(), workspaces.getSnapshot(), this.view] as const
         if (next.every((value, index) => value === this.seen[index])) return this.snapshot
         this.seen = next
         const roster = fold(next)
@@ -64,28 +103,81 @@ export class CrewRoster {
         return this.snapshot
       },
       subscribe: (listener) => {
-        const off = [sessions.subscribe(listener), status.subscribe(listener), workspaces.subscribe(listener)]
+        const off = [sessions, status, workspaces, this.roster].map(observable => observable.subscribe(listener))
         return () => { for (const dispose of off) dispose() }
       },
     }
   }
 
-  /**
-   * The member's designed body and colour, for pages that draw it with `ctx.crewFaces.Face`.
-   * @param id - member id.
-   * @returns the face design.
-   */
-  design(id: CrewMemberId): (typeof CREW_FACE_DESIGNS)[CrewMemberId] {
-    return CREW_FACE_DESIGNS[id]
+  private entry(record: CrewMember): RosterEntry {
+    // A shipped member keeps its translated name until the user renames it.
+    const name = record.builtIn === true && isShipped(record.id) && record.name === en[record.id] ? this.t(record.id) : record.name
+    return { id: record.id, name, face: record.face }
+  }
+
+  private publish(next: RosterView): void {
+    this.view = next
+    for (const listener of [...this.listeners]) listener()
   }
 
   /**
-   * Localized member name.
+   * Ask the Crew tab to open the editor.
+   * @param id - member to edit, or `''` for a new member; undefined clears the request.
+   */
+  requestEdit(id: CrewMemberId | undefined): void {
+    this.editing = id
+    for (const listener of [...this.editListeners]) listener()
+  }
+
+  /** Read the stored crew again. */
+  async refresh(): Promise<void> {
+    const state = await this.host.state()
+    this.publish(state === undefined
+      ? { ...this.view, loaded: true, failed: true }
+      : { loaded: true, failed: false, records: state.members, connections: state.connections })
+  }
+
+  /**
+   * Add a member (empty id) or save changes to one.
+   * @param member - the edited record.
+   * @returns the saved record, or the message to show.
+   */
+  async save(member: CrewMember): Promise<{ readonly saved: CrewMember } | { readonly message: string }> {
+    const result = await this.host.save(member)
+    await this.refresh()
+    if (result === undefined) return { message: this.t('edit.unreachable') }
+    return result.ok ? { saved: result.value } : { message: result.message }
+  }
+
+  /**
+   * Remove a member.
    * @param id - member id.
-   * @returns the name in the current locale.
+   * @returns undefined once removed, or the message to show.
+   */
+  async remove(id: CrewMemberId): Promise<string | undefined> {
+    const result = await this.host.remove(id)
+    await this.refresh()
+    if (result === undefined) return this.t('edit.unreachable')
+    return result.ok ? undefined : result.message
+  }
+
+  /**
+   * The member's designed body and colour, for pages that draw it with `ctx.crewFaces.Face`.
+   * @param id - member id.
+   * @returns the face design, or undefined for an id not on the roster.
+   */
+  design(id: CrewMemberId): FaceDesign | undefined {
+    return this.view.records.find(record => record.id === id)?.face
+  }
+
+  /**
+   * Member display name.
+   * @param id - member id.
+   * @returns the name, or the id for one not on the roster.
    */
   name(id: CrewMemberId): string {
-    return this.t(id)
+    const record = this.view.records.find(entry => entry.id === id)
+    return record === undefined ? id : this.entry(record).name
   }
 
   /**

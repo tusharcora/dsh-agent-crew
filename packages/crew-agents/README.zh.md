@@ -1,5 +1,5 @@
 ---
-description: "Crew 智能体预设：邮件、聊天、代码、研究和生活五位专家各有自己的人设和工具，另有一位把工作委派给他们的幕僚长。"
+description: "Crew bundle：一位幕僚长和五位可编辑、可移除、也可增添成员的专家，每位都以带有自己人设和工具的智能体预设运行，另含 crew 页面。"
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-bundle"
 
 ## 概述
 
-Crew 由六个智能体预设组成。五位专家各有自己的人设和工具：邮件、聊天、代码、研究和生活。幕僚长负责规划工作，并通过各自的 `ask_*` 委派工具把每项工作交给一位专家。本 bundle 还挂载智能体头像和浏览器端名册，名册的右侧面板 **Crew** 标签页显示每位成员的头像、名称和实时状态。
+Crew 初始有六位成员，每位都是带有自己人设和工具的智能体预设：幕僚长，以及邮件、聊天、代码、研究和生活五位专家。[crew-roster](../crew-roster/README.zh.md) 存储成员并注册其预设，因此你可以在 **Crew** 标签页中添加、编辑和移除成员。幕僚长负责规划工作，并通过各成员的 `ask_*` 委派工具把每项工作交给一位成员。本 bundle 还挂载头像、浏览器端名册和 crew 页面。
 
 ## 目录
 
@@ -25,7 +25,7 @@ Crew 由六个智能体预设组成。五位专家各有自己的人设和工具
 <a id="use-this-package"></a>
 ## 使用本包
 
-在插件页面或通过 `dsh plugin` 安装本 bundle。新建 Session 时在预设菜单中选择一个 crew 预设，或打开幕僚长并说明想要的结果，它会委派给各位专家。
+在插件页面或通过 `dsh plugin` 安装本 bundle。新建 Session 时在预设菜单中选择一个 crew 预设，或打开幕僚长并说明想要的结果，它会委派给各位专家。在 **Crew** 标签页或侧边栏成员的 ⋯ 菜单中添加、编辑或移除成员。下表列出随附的成员。
 
 | 预设 | 工具 | 可写内容 |
 |---|---|---|
@@ -38,7 +38,7 @@ Crew 由六个智能体预设组成。五位专家各有自己的人设和工具
 
 ### 每位专家的模型
 
-预设无法选择模型，因此每位专家的模型是幕僚长预设中对应 `ask_*` 行的 `agentOptions`。随附的行未设置该字段，专家使用其 Session 的模型。如需固定模型，在 profile patch 中为该行添加带 `provider` 和 `model` 的 `agentOptions`；`list_subagent_models` 列出部署提供的路由。
+预设无法选择模型，因此专家的模型应是幕僚长预设中对应 `ask_*` 行的 `agentOptions`。crew-roster 未设置该字段，专家使用其 Session 的模型。
 
 ### Agent Teams
 
@@ -74,12 +74,12 @@ Crew 由六个智能体预设组成。五位专家各有自己的人设和工具
 <details>
 <summary>实现细节——点击展开</summary>
 
-[`cordis.patch.yml`](cordis.patch.yml) 插入头像行、浏览器名册行和六个 `dsh-agent-preset` 行。幕僚长为每位专家挂载一个 `dsh-tool-subagent` 实例，使用 `provider: spawn`、独立的 `toolName` 和固定的 `agentPreset`，因此每项委派都有自己的工具和模型设置。专家不挂载委派工具，委派深度止于一层。
+[`cordis.patch.yml`](cordis.patch.yml) 插入各 crew 包的行，其中包括 crew-roster；crew-roster 在启动时和每次变更后为每位成员注册一个预设。幕僚长为其他每位成员挂载一个 `dsh-tool-subagent` 实例，使用 `provider: spawn`、独立的 `toolName` 和固定的 `agentPreset`，因此每项委派都有自己的工具。其他成员不挂载委派工具，委派深度止于一层。
 
 | 源文件 | 内容 |
 |---|---|
-| [`cordis.patch.yml`](cordis.patch.yml) | 预设行、人设、代码模式、写入守卫与 MCP 行 |
-| [`tests/bundle.spec.ts`](tests/bundle.spec.ts) | 层内容、依赖、每个子行配置是否符合其包的 schema、委派与写入权限 |
+| [`cordis.patch.yml`](cordis.patch.yml) | 各 crew 包的行 |
+| [`tests/bundle.spec.ts`](tests/bundle.spec.ts) | 层内容、依赖，以及随附成员的预设：每个子行是否符合其包的 schema、委派与写入权限 |
 
 </details>
 
@@ -137,22 +137,22 @@ Nothing is sent, posted, bought, deleted, merged or booked without the user's ex
 
 #### 模型看到什么
 
-幕僚长看到五个名为 `ask_mail`、`ask_chat`、`ask_code`、`ask_research` 和 `ask_life` 的 [`subagent` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-subagent)，每个都以固定预设启动子智能体，另有子智能体控制工具。没有行设置 `allowedAgentPresets`，因此声明中不含 `agent_preset` 字段。
+幕僚长为其他每位成员看到一个 [`subagent` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-subagent)，名称为 `ask_` 加成员 id 中的字母（随附 crew 为 `ask_mail`、`ask_chat`、`ask_code`、`ask_research` 和 `ask_life`），每个都以该成员的预设启动子智能体，另有子智能体控制工具。其说明末尾为每位成员列出一行：工具、名称和成员负责的工作。没有行设置 `allowedAgentPresets`，因此声明中不含 `agent_preset` 字段。
 
 #### Token 影响
 
-幕僚长的每个请求包含五个委派声明，专家不包含。
+幕僚长的每个请求为每位成员包含一个委派声明和一行名册，其他成员不包含。
 
 #### KV Cache 影响
 
-声明对幕僚长预设固定，在其各轮次之间保持请求前缀稳定。
+声明和名册行在添加、移除或编辑成员之前保持不变；变更会从幕僚长的下一个新对话起改变其请求前缀。
 
 ## 已知限制与后续工作
 
 <a id="known-limitations-and-deferred-work"></a>
 
 - 在添加账户连接器之前，邮件和聊天没有邮箱或聊天账户，只能基于用户提供的内容和网页工作。
-- 专家的模型按委派行而非按预设设置，因此直接在专家预设上打开的 Session 使用自身的 Session 模型。
+- 无法按成员选择专家的模型；专家使用其 Session 的模型。
 - Team 模式是每个 Session 的选择，幕僚长不会自行开启。
 
 <a id="dev-note"></a>

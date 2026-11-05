@@ -1,0 +1,49 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-roster/README.md
+/:
+  en: edc06f1ff5f428fd
+  zh: aa374182018aa077
+/deepseek-ai-dsh-crew-roster:
+  en: 4b04ddf6fd19267d
+  zh: 74886c73136e4d07
+/deepseek-ai-dsh-crew-roster/summary:
+  en: e45ad872a1b84871
+  zh: a89d2c343ff0b273
+/deepseek-ai-dsh-crew-roster/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-roster/use-this-package:
+  en: e35c363429be73cb
+  zh: 3775d0fa60738d62
+/deepseek-ai-dsh-crew-roster/understand-the-implementation:
+  en: 06e585e866bb2a3e
+  zh: 8747b6d7c3e7184a
+/deepseek-ai-dsh-crew-roster/further-exploration:
+  en: 83003183c0a15bb6
+  zh: cb9c64a3934abdc9
+/deepseek-ai-dsh-crew-roster/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets:
+  en: 10be634efb3f5781
+  zh: a982e51c03696b9e
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets/what-the-model-sees:
+  en: 0f94397b3a3769a1
+  zh: 24519d11d1b07e1a
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets/what-the-model-sees/lead-roster-lines:
+  en: f5f8ec51cd17d5a0
+  zh: 0f742266d443874f
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets/token-effect:
+  en: a944764a73bf865f
+  zh: baec0de08a331348
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets/kv-cache-effect:
+  en: 0b0189228cd784ef
+  zh: 2367838b02601a50
+/deepseek-ai-dsh-crew-roster/known-limitations-and-deferred-work:
+  en: 5bf2b8419ebbdbae
+  zh: faa02c645f670908
+/deepseek-ai-dsh-crew-roster/known-limitations-and-deferred-work/dev-note:
+  en: 191eb5d3656138be
+  zh: 8a879e4a68623e54

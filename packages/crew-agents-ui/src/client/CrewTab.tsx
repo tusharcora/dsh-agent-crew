@@ -17,8 +17,11 @@ export type CrewTabInjected = CrewPanelInjected & CrewLearningInjected & CrewCon
 export function CrewTab(props: InjectFace<CrewTabInjected> & PropsLocale<'crew'>) {
   return (
     <div className={css.panel}>
-      <CrewPanel useMembers={props.useMembers} Face={props.Face} openChat={props.openChat} t={props.t} />
-      <CrewLearning useLearning={props.useLearning} refreshLearning={props.refreshLearning} decide={props.decide} t={props.t} />
+      <CrewPanel useMembers={props.useMembers} useRoster={props.useRoster} useEditRequest={props.useEditRequest}
+        clearEditRequest={props.clearEditRequest} Face={props.Face} openChat={props.openChat}
+        saveMember={props.saveMember} removeMember={props.removeMember} t={props.t} />
+      <CrewLearning useLearning={props.useLearning} refreshLearning={props.refreshLearning} decide={props.decide}
+        nameOf={props.nameOf} t={props.t} />
       <CrewConnections useConnections={props.useConnections} refresh={props.refresh} save={props.save} remove={props.remove}
         connectGoogle={props.connectGoogle} disconnectGoogle={props.disconnectGoogle} openUrl={props.openUrl} t={props.t} />
     </div>

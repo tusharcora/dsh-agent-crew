@@ -11,9 +11,11 @@ import type {} from '@deepseek-ai/dsh-api-workspace-controller/client'
 import type {} from '@deepseek-ai/dsh-crew-faces/client'
 import type {} from '@deepseek-ai/dsh-crew-connections/remote'
 import type {} from '@deepseek-ai/dsh-crew-improve/remote'
+import type {} from '@deepseek-ai/dsh-crew-roster/remote'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import connectionsRemote from '@deepseek-ai/dsh-crew-connections/remote'
 import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
+import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
 import { CrewRoster } from './crew-roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
@@ -22,9 +24,8 @@ import { ConnectionsStore, type CrewSecretRef } from './connections.ts'
 import { LearningStore } from './learning.ts'
 import { en, zh, type CrewKey } from './locales.ts'
 
-export { CREW_MEMBERS, crewRoster, type CrewMemberId, type CrewMemberState, type CrewStatus } from '../roster.ts'
-export { CREW_FACE_DESIGNS } from '../faces.ts'
-export { CrewRoster, type CrewActions } from './crew-roster.ts'
+export { crewRoster, type CrewMemberId, type CrewMemberState, type CrewStatus, type RosterEntry } from '../roster.ts'
+export { CrewRoster, type CrewActions, type RosterHost, type RosterView } from './crew-roster.ts'
 
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap { crew: CrewKey }
@@ -72,8 +73,9 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
   }), 'crew-agents-ui: tab type')
   const unmountConnections = await ctx.remote.$mount(connectionsRemote)
   const unmountImprove = await ctx.remote.$mount(improveRemote)
-  const unmount = async (): Promise<void> => { await unmountImprove(); await unmountConnections() }
-  const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.credentials'], (inner) => {
+  const unmountRoster = await ctx.remote.$mount(rosterRemote)
+  const unmount = async (): Promise<void> => { await unmountRoster(); await unmountImprove(); await unmountConnections() }
+  const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.crewRoster', 'remote.credentials'], (inner) => {
     const remote = inner.remote
     const roster = new CrewRoster(inner.sessions.list, inner.uiSession.sessionStatus, inner.workspaces.list, t, {
       openSession: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
@@ -88,8 +90,16 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
           return undefined
         }
       },
+    }, {
+      state: () => settle(() => remote.crewRoster.state()),
+      save: member => settle(() => remote.crewRoster.saveMember(member)),
+      remove: id => settle(() => remote.crewRoster.deleteMember(id)),
     })
     inner.reflect.provide('crew', roster)
+    void roster.refresh()
+    // Another window or the phone may have changed the crew; read it again when this window comes back.
+    const onFocus = () => { void roster.refresh() }
+    inner.effect(() => { window.addEventListener('focus', onFocus); return () => { window.removeEventListener('focus', onFocus) } }, 'crew-agents-ui: roster focus')
     const store = new ConnectionsStore({
       googleStatus: () => settle(() => remote.crewConnections.googleStatus()),
       describe: refs => settle(() => remote.credentials.describe([...refs])),
@@ -117,7 +127,13 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
     inner.slots.inject('sidebar.right.pane.tab', () => inner.slots.register({
       name: 'sidebar.right.pane.tab', key: CREW_TAB_ID, locale: 'crew',
       inject: (): CrewTabInjected => ({
-        hooks: { members: roster.members, connections: store.source, learning: learning.source }, Face, openChat: id => roster.openChat(id),
+        hooks: {
+          members: roster.members, roster: roster.roster, editRequest: roster.editRequest,
+          connections: store.source, learning: learning.source,
+        },
+        Face, clearEditRequest: () => { roster.requestEdit(undefined) },
+        openChat: id => roster.openChat(id), saveMember: member => roster.save(member), removeMember: id => roster.remove(id),
+        nameOf: id => roster.name(id),
         refreshLearning: () => learning.refresh(), decide: (decision, id) => learning.decide(decision, id),
         refresh: () => store.refresh(), save: (ref, value) => store.save(ref, value), remove: ref => store.remove(ref),
         connectGoogle: () => store.connectGoogle(), disconnectGoogle: () => store.disconnectGoogle(),
@@ -129,6 +145,11 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
       inject: (): CrewSectionInjected => ({
         hooks: { members: roster.members, workspaces: inner.workspaces.list }, Face,
         openChat: id => roster.openChat(id), startInWorkspace: (id, workspaceId) => { roster.startInWorkspace(id, workspaceId) },
+        edit: (id) => {
+          roster.requestEdit(id)
+          // Optional: without the right panel the request waits until the Crew tab opens.
+          inner.get('sidebarRight')?.openTab('crew')
+        },
       }),
     }, CrewSection))
     inner.slots.inject('conversation.session.header.actions', () => inner.slots.register({

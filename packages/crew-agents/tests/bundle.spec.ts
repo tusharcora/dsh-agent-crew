@@ -1,8 +1,9 @@
-/** The bundle declares the six crew presets; every child row must load with its package's own config schema. */
+/** The bundle mounts the crew packages; the six shipped members' presets must load with each package's own config schema. */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import * as yaml from 'js-yaml'
 import { entryListSchema } from '@deepseek-ai/cordis-plugin-include'
+import { DEFAULT_MEMBERS, presetFor } from '@deepseek-ai/dsh-crew-roster'
 
 interface Row {
   readonly id: string
@@ -20,13 +21,11 @@ const patch = yaml.load(readFileSync(new URL(`../${manifest.dsh.bundle.patch}`, 
   schema: entryListSchema,
 }) as { insert: Row[] }[]
 const rows = patch[0]?.insert ?? []
-/** Narrow a preset row's config, failing the suite on a malformed one. */
-function presetConfig(config: Record<string, unknown> | undefined): PresetConfig {
-  const id = config?.['id'], name = config?.['name'], plugins = config?.['plugins']
-  if (typeof id !== 'string' || typeof name !== 'string' || !Array.isArray(plugins)) throw new Error('malformed preset row')
-  return { id, name, plugins: plugins as Row[] }
-}
-const presets = rows.filter(row => row.name === '@deepseek-ai/dsh-agent-preset').map(row => presetConfig(row.config))
+// The presets crew-roster registers on first run, composed as on macOS.
+const presets: readonly PresetConfig[] = DEFAULT_MEMBERS.map((member) => {
+  const preset = presetFor(member, DEFAULT_MEMBERS, 'darwin')
+  return { id: preset.id, name: preset.name ?? '', plugins: preset.plugins as readonly Row[] }
+})
 const preset = (id: string): PresetConfig => {
   const found = presets.find(entry => entry.id === id)
   if (found === undefined) throw new Error(`missing preset ${id}`)
@@ -34,12 +33,13 @@ const preset = (id: string): PresetConfig => {
 }
 const SPECIALISTS = ['crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life']
 
-it('inserts the connections, learning, faces, browser roster and exactly the six crew presets in one layer', () => {
+it('inserts the connections, learning, roster, faces, browser roster and crew pages in one layer, and no static presets', () => {
   expect(patch).toHaveLength(1)
   expect(rows[0]?.config?.['homeDirectory']).toBeDefined()
-  expect(rows.slice(0, 11).map(({ id, name }) => ({ id, name }))).toEqual([
+  expect(rows.map(({ id, name }) => ({ id, name }))).toEqual([
     { id: 'crew-connections', name: '@deepseek-ai/dsh-crew-connections' },
     { id: 'crew-improve', name: '@deepseek-ai/dsh-crew-improve' },
+    { id: 'crew-roster', name: '@deepseek-ai/dsh-crew-roster' },
     { id: 'crew-faces', name: '@deepseek-ai/dsh-crew-faces' },
     { id: 'crew-agents-ui', name: '@deepseek-ai/dsh-crew-agents-ui' },
     { id: 'crew-chain-of-thought', name: '@deepseek-ai/dsh-crew-chain-of-thought' },
@@ -55,7 +55,7 @@ it('inserts the connections, learning, faces, browser roster and exactly the six
 })
 
 it('declares every package its rows mount as a dependency', () => {
-  const names = new Set(rows.flatMap(row => [row.name, ...(row.config?.['plugins'] as Row[] | undefined ?? []).map(child => child.name)]))
+  const names = new Set([...rows.map(row => row.name), ...presets.flatMap(entry => entry.plugins.map(child => child.name))])
   const packages = [...names].map(name => name.split('/').slice(0, 2).join('/'))
   expect(packages.filter(name => manifest.dependencies[name] === undefined)).toEqual([])
 })

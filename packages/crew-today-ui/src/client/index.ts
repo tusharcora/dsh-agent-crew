@@ -50,8 +50,8 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
     const injected = (): TodayPageInjected => ({
       hooks: { members: crew.members },
       Face: inner.crewFaces.Face,
-      memberName: member => crew.name(member.id),
-      design: member => crew.design(member.id),
+      memberName: member => member.name,
+      design: member => member.face,
       statusLabel: member => crew.statusLabel(member),
       openChat: (member) => { void crew.openChat(member.id) },
       stock: inner.stockChartCards,

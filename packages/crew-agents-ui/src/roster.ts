@@ -6,12 +6,17 @@ import type {} from '@deepseek-ai/dsh-client-ui-session/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 // Type-only: pulls the `agentPreset` Session projection value into this program.
 import type {} from '@deepseek-ai/dsh-agent-preset-registry/types'
+import type { FaceDesign } from '@deepseek-ai/dsh-crew-faces'
 
-/** Preset ids of the crew, in roster order; they match the presets `dsh-crew-agents` declares. */
-export const CREW_MEMBERS = ['crew-chief', 'crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life'] as const
+/** One crew member, identified by its preset id (`crew-` and lowercase letters). */
+export type CrewMemberId = string
 
-/** One crew member, identified by its preset id. */
-export type CrewMemberId = (typeof CREW_MEMBERS)[number]
+/** What the roster needs of a member record: its id, display name and face. */
+export interface RosterEntry {
+  readonly id: CrewMemberId
+  readonly name: string
+  readonly face: FaceDesign
+}
 
 /** `needs-you` while any of the member's Sessions awaits the user, else `working` while one runs, else `idle`. */
 export type CrewStatus = 'working' | 'needs-you' | 'idle'
@@ -19,6 +24,9 @@ export type CrewStatus = 'working' | 'needs-you' | 'idle'
 /** One member's live state. */
 export interface CrewMemberState {
   readonly id: CrewMemberId
+  /** Display name, in the current locale for a shipped member the user has not renamed. */
+  readonly name: string
+  readonly face: FaceDesign
   readonly status: CrewStatus
   /** Listed Sessions running this member's preset, in list order. */
   readonly sessions: readonly SessionId[]
@@ -35,10 +43,11 @@ export interface CrewMemberState {
  * @param list - Session list, whose rows carry their recorded preset.
  * @param status - running and pending-interaction facts by Session.
  * @param inWorkspace - Sessions that belong to a workspace; the rest are members' own chats.
+ * @param entries - the crew, in roster order.
  * @returns every member in roster order.
  */
 export function crewRoster(
-  list: SessionListState, status: SessionStatusSnapshot, inWorkspace: ReadonlySet<SessionId> = new Set(),
+  list: SessionListState, status: SessionStatusSnapshot, inWorkspace: ReadonlySet<SessionId>, entries: readonly RosterEntry[],
 ): readonly CrewMemberState[] {
   interface Fold {
     sessions: SessionId[]
@@ -49,7 +58,7 @@ export function crewRoster(
     latest: { readonly id: SessionId; readonly updatedAt: number } | undefined
   }
   const members = new Map<string, Fold>(
-    CREW_MEMBERS.map(id => [id, {
+    entries.map(({ id }) => [id, {
       sessions: [], working: undefined, needsYou: undefined, open: false, home: undefined, latest: undefined,
     }]),
   )
@@ -66,11 +75,11 @@ export function crewRoster(
     if (member.latest === undefined || summary.updatedAt > member.latest.updatedAt) member.latest = stamp
     if (!inWorkspace.has(summary.id) && (member.home === undefined || summary.updatedAt > member.home.updatedAt)) member.home = stamp
   }
-  return CREW_MEMBERS.map((id) => {
+  return entries.map(({ id, name, face }) => {
     const member = members.get(id)
     const state: CrewStatus = member?.needsYou !== undefined ? 'needs-you' : member?.working !== undefined ? 'working' : 'idle'
     return {
-      id, status: state, sessions: member?.sessions ?? [], open: member?.open ?? false, home: member?.home?.id,
+      id, name, face, status: state, sessions: member?.sessions ?? [], open: member?.open ?? false, home: member?.home?.id,
       focus: member?.needsYou ?? member?.working ?? member?.home?.id ?? member?.latest?.id,
     }
   })
@@ -85,7 +94,8 @@ export function crewRoster(
 export function sameRoster(left: readonly CrewMemberState[], right: readonly CrewMemberState[]): boolean {
   return left.length === right.length && left.every((member, index) => {
     const other = right[index]
-    return other !== undefined && member.id === other.id && member.status === other.status
+    return other !== undefined && member.id === other.id && member.status === other.status && member.name === other.name
+      && member.face.body === other.face.body && member.face.color === other.face.color
       && member.open === other.open && member.focus === other.focus && member.home === other.home
       && member.sessions.length === other.sessions.length && member.sessions.every((id, at) => id === other.sessions[at])
   })

@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { CrewLearning as MemberLearning } from '@deepseek-ai/dsh-crew-improve/types'
-import { CREW_MEMBERS, type CrewMemberId } from '../roster.ts'
 import type { LearningDecision, LearningState } from './learning.ts'
 import type {} from './index.ts'
 import css from './CrewPanel.module.css'
@@ -13,16 +12,14 @@ export interface CrewLearningInjected {
   hooks: { learning: HostObservable<LearningState> }
   readonly refreshLearning: () => Promise<void>
   readonly decide: (decision: LearningDecision, id: string) => Promise<string | undefined>
+  /** A member's display name, or the id for one no longer on the roster. */
+  readonly nameOf: (member: string) => string
 }
 
 type Props = InjectFace<CrewLearningInjected> & PropsLocale<'crew'>
 
 /** Proposals arrive in the background after a rating, so the open list re-reads at this interval. */
 const LEARNING_POLL_MS = 30000
-
-function isMember(member: string): member is CrewMemberId {
-  return (CREW_MEMBERS as readonly string[]).includes(member)
-}
 
 function when(iso: string): string {
   const date = new Date(iso)
@@ -34,7 +31,7 @@ function when(iso: string): string {
  * @param props - learning state, decisions and copy.
  * @returns the list.
  */
-export function CrewLearning({ useLearning, refreshLearning, decide, t }: Props) {
+export function CrewLearning({ useLearning, refreshLearning, decide, nameOf, t }: Props) {
   const state = useLearning(value => value)
   const [busy, setBusy] = useState<string | undefined>()
   const [notice, setNotice] = useState<string | undefined>()
@@ -43,7 +40,7 @@ export function CrewLearning({ useLearning, refreshLearning, decide, t }: Props)
     const timer = setInterval(() => { void refreshLearning() }, LEARNING_POLL_MS)
     return () => { clearInterval(timer) }
   }, [refreshLearning])
-  const name = (member: string): string => isMember(member) ? t(member) : member
+  const name = nameOf
   const act = (decision: LearningDecision, id: string): void => {
     setBusy(id)
     setNotice(undefined)

@@ -18,8 +18,8 @@ const t: TranslateNS<'crewToday'> = (key, params) => translate(key, params)
 const source = { name: 'GitHub', url: 'https://github.com/pulls', fetchedAt: Date.UTC(2026, 10, 5, 12) }
 
 const members: CrewMemberState[] = [
-  { id: 'crew-mail', status: 'needs-you', sessions: [], open: false, home: undefined, focus: undefined },
-  { id: 'crew-code', status: 'idle', sessions: [], open: false, home: undefined, focus: undefined },
+  { id: 'crew-mail', name: 'Mail', face: { body: 'block', color: '#E8B4A0' }, status: 'needs-you', sessions: [], open: false, home: undefined, focus: undefined },
+  { id: 'crew-code', name: 'Code', face: { body: 'drop', color: '#4D6BFE' }, status: 'idle', sessions: [], open: false, home: undefined, focus: undefined },
 ]
 
 function stock(quote: StockChartCards['quote']): StockChartCards {

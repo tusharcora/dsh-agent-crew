@@ -30,18 +30,24 @@ export interface CrewSectionInjected {
    * @param workspaceId - workspace to work in.
    */
   startInWorkspace: (id: CrewMemberId, workspaceId: WorkspaceId) => void
+  /**
+   * Open the member editor in the Crew tab.
+   * @param id - member to edit, or `''` to add one.
+   */
+  edit: (id: CrewMemberId) => void
 }
 
 type Props = SidebarSectionsOwnerProps & InjectFace<CrewSectionInjected> & PropsLocale<'crew'>
 
 interface WorkspaceChoice { readonly id: WorkspaceId; readonly title: string }
 
-function MemberMenu({ member, name, workspaces, openChat, startInWorkspace, t }: {
+function MemberMenu({ member, name, workspaces, openChat, startInWorkspace, edit, t }: {
   readonly member: CrewMemberState
   readonly name: string
   readonly workspaces: readonly WorkspaceChoice[]
   readonly openChat: () => void
   readonly startInWorkspace: (workspaceId: WorkspaceId) => void
+  readonly edit: () => void
   readonly t: Props['t']
 }) {
   const [open, setOpen] = useState(false)
@@ -58,6 +64,7 @@ function MemberMenu({ member, name, workspaces, openChat, startInWorkspace, t }:
             {t('section.newIn', { workspace: workspace.title })}
           </MenuItemButton>
         ))}
+      <MenuItemButton separatorBefore onSelect={() => { setOpen(false); edit() }}>{t('section.edit')}</MenuItemButton>
       {member.sessions.length > 0 && <MenuItemButton disabled separatorBefore onSelect={() => {}}>
         {t('panel.sessions', { count: String(member.sessions.length) })}
       </MenuItemButton>}
@@ -74,7 +81,7 @@ const FACE_SIZE = 24
  * @param props - column state, roster and workspace hooks, face component, chat actions and copy.
  * @returns the section.
  */
-export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, startInWorkspace, t }: Props) {
+export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, startInWorkspace, edit, t }: Props) {
   const members = useMembers(value => value)
   const items = useWorkspaces(snapshot => snapshot.items)
   const workspaces = items.map(item => ({ id: item.workspaceId, title: workspaceDisplayTitle(item.title, t('section.defaultWorkspace')) }))
@@ -85,10 +92,15 @@ export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, s
   }
   return (
     <section className={wide ? css.section : css.rail} aria-label={t('section.title')}>
-      {wide && <h2 className={`${css.heading} ${css.wideIn}`}>{t('section.title')}</h2>}
+      {wide && (
+        <div className={`${css.headingRow} ${css.wideIn}`}>
+          <h2 className={css.heading}>{t('section.title')}</h2>
+          <button type="button" className={css.more} aria-label={t('edit.addTitle')} title={t('edit.addTitle')} onClick={() => { edit('') }}>+</button>
+        </div>
+      )}
       <ul className={css.list}>
         {members.map((member) => {
-          const name = t(member.id)
+          const name = member.name
           const status = t(`status.${member.status}`)
           return (
             <li key={member.id} className={css.item}>
@@ -102,12 +114,13 @@ export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, s
                 </>}
               </button>
               {wide && <MemberMenu member={member} name={name} workspaces={workspaces} t={t}
-                openChat={() => { open(member.id) }} startInWorkspace={(workspaceId) => { startInWorkspace(member.id, workspaceId) }} />}
+                openChat={() => { open(member.id) }} startInWorkspace={(workspaceId) => { startInWorkspace(member.id, workspaceId) }}
+                edit={() => { edit(member.id) }} />}
             </li>
           )
         })}
       </ul>
-      {failed !== undefined && <p className={css.error} role="alert">{t('section.openFailed', { name: t(failed) })}</p>}
+      {failed !== undefined && <p className={css.error} role="alert">{t('section.openFailed', { name: members.find(member => member.id === failed)?.name ?? failed })}</p>}
     </section>
   )
 }

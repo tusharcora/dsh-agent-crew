@@ -109,7 +109,7 @@ export class CrewWorkflows extends TypertRemoteService {
       name: DRAFT_TOOL,
       description: 'Propose a crew workflow the user can review, edit, save and run from the Workflows page. Nothing runs until the user '
         + 'clicks Run. Use it when the user asks you to set up a repeatable workflow. An agentic workflow hands work between crew '
-        + 'members (presets crew-chief, crew-mail, crew-chat, crew-code, crew-research, crew-life); a fixed workflow runs tool calls only.',
+        + 'members, each named by its preset id such as crew-research; a fixed workflow runs tool calls only.',
       parameters: {
         name: { type: 'string', required: true, description: 'Short workflow name.' },
         description: { type: 'string', required: true, description: 'One sentence on what the workflow does.' },

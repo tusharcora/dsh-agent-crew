@@ -3,23 +3,23 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/crew-agents/README.md
 /:
-  en: 2c1c43d916f0218a
-  zh: 2a4067d9d6a39116
+  en: 20586604b5da4364
+  zh: 3bbc3839c0450002
 /deepseek-ai-dsh-crew-agents:
   en: f70944890fcbbe17
   zh: fac48db2b88ed221
 /deepseek-ai-dsh-crew-agents/summary:
-  en: 9494a8e439414bf1
-  zh: c9d6bc019f9abe73
+  en: b953122d7f4af7a8
+  zh: cae2d2a1af4035a1
 /deepseek-ai-dsh-crew-agents/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
 /deepseek-ai-dsh-crew-agents/use-this-package:
-  en: 0ba71b205211de60
-  zh: 598966e3230aad99
+  en: 837e08239bfd7abf
+  zh: af52a4e0a76f0010
 /deepseek-ai-dsh-crew-agents/use-this-package/model-per-specialist:
-  en: 58a6c08b5ddeb4bc
-  zh: cfaa24194cf382cb
+  en: 9fa8675306371c3a
+  zh: e9032c69cd174b6f
 /deepseek-ai-dsh-crew-agents/use-this-package/agent-teams:
   en: 710368a93214e580
   zh: 59e88554ee3967a8
@@ -33,8 +33,8 @@
   en: b3fcc63298475a38
   zh: 98de191cda8d9c57
 /deepseek-ai-dsh-crew-agents/understand-the-implementation:
-  en: 42310ad40d913fdd
-  zh: a955a7aa6d03d9a2
+  en: 739ae2714826bc6a
+  zh: 785f4bc72c69d0ce
 /deepseek-ai-dsh-crew-agents/further-exploration:
   en: 26565a0e88c00146
   zh: e39d2aae7bc6542a
@@ -72,17 +72,17 @@
   en: e4ebfdeb15abadea
   zh: aae9f25f3cd4d00b
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/what-the-model-sees:
-  en: 77f946aad0fce455
-  zh: 0396675e847caa16
+  en: e0c21a653ff78dd8
+  zh: 9c8defcf3c61ae0d
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/token-effect:
-  en: 66ef224eadc6815a
-  zh: 28b5211d25f8c33d
+  en: a67729b45732317a
+  zh: 73edf9d74def8d0f
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/kv-cache-effect:
-  en: 9d9584c9b231049d
-  zh: a78a62c221ed91df
+  en: bee9909ec774df7e
+  zh: 0442e41f135a33c6
 /deepseek-ai-dsh-crew-agents/known-limitations-and-deferred-work:
-  en: 5445c21768972cf9
-  zh: 92c83db7ca1b4508
+  en: 7213d38a2d23b811
+  zh: ae92c8a63cdc9e07
 /deepseek-ai-dsh-crew-agents/known-limitations-and-deferred-work/dev-note:
   en: cc8b9bfd9c865739
   zh: 1251ffd359bb8d79

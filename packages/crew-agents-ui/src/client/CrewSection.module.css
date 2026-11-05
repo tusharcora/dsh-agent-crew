@@ -12,6 +12,14 @@
   padding: 6px 0;
 }
 
+/* The heading and its Add button share a row; the button sits where member rows put their menu. */
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-right: 4px;
+}
+
 .heading {
   margin: 0;
   padding: 4px var(--dsh-sidebar-row-padding, 12px);

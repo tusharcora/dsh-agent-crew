@@ -37,7 +37,8 @@ async function mount(fake: LearningHost) {
     render(<CrewLearning
       useLearning={selector => selector(useSyncExternalStore(
         listener => store.source.subscribe(listener), () => store.source.getSnapshot()))}
-      refreshLearning={() => store.refresh()} decide={(decision, id) => store.decide(decision, id)} t={t} />)
+      refreshLearning={() => store.refresh()} decide={(decision, id) => store.decide(decision, id)}
+      nameOf={id => ({ 'crew-research': 'Research', 'crew-mail': 'Mail', 'crew-code': 'Code' } as Record<string, string>)[id] ?? id} t={t} />)
   })
   return store
 }

@@ -1,20 +1,19 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import { t } from './translate.client.ts'
+import { ENTRIES, t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import { CrewFace } from '@deepseek-ai/dsh-crew-faces/client'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
 import { CrewHeader } from '../src/client/CrewHeader.tsx'
 import { CrewSection } from '../src/client/CrewSection.tsx'
-import { CREW_FACE_DESIGNS } from '../src/faces.ts'
-import { CREW_MEMBERS, type CrewMemberState } from '../src/roster.ts'
+import type { CrewMemberState } from '../src/roster.ts'
 
 afterEach(cleanup)
 
 
 function members(overrides: Partial<Record<string, Partial<CrewMemberState>>>): readonly CrewMemberState[] {
-  return CREW_MEMBERS.map(id => ({ id, status: 'idle' as const, sessions: [], open: false, home: undefined, focus: undefined, ...overrides[id] }))
+  return ENTRIES.map(({ id, name, face }) => ({ id, name, face, status: 'idle' as const, sessions: [], open: false, home: undefined, focus: undefined, ...overrides[id] }))
 }
 
 const active = members({
@@ -31,10 +30,13 @@ const workspaces: WorkspaceSnapshot = {
   archivedSessionIds: [], pinnedSessionIds: [], state: 'idle', phase: 'ready', error: null,
 }
 
-function section(roster: readonly CrewMemberState[], wide = true, openChat = vi.fn(async () => true), startInWorkspace = vi.fn()) {
+function section(
+  roster: readonly CrewMemberState[], wide = true, openChat = vi.fn(async () => true), startInWorkspace = vi.fn(), edit = vi.fn(),
+) {
   render(<CrewSection wide={wide} expandSidebar={vi.fn()} useMembers={selector => selector(roster)}
-    useWorkspaces={selector => selector(workspaces)} Face={CrewFace} openChat={openChat} startInWorkspace={startInWorkspace} t={t} />)
-  return { openChat, startInWorkspace }
+    useWorkspaces={selector => selector(workspaces)} Face={CrewFace} openChat={openChat} startInWorkspace={startInWorkspace}
+    edit={edit} t={t} />)
+  return { openChat, startInWorkspace, edit }
 }
 
 it('lists every member, idle ones too, each with its own face and its status when not idle', () => {
@@ -46,7 +48,7 @@ it('lists every member, idle ones too, each with its own face and its status whe
   ])
   expect(screen.getByRole('button', { name: 'Open Life’s chat: Idle' }).getAttribute('aria-current')).toBe('true')
   const code = screen.getByRole('button', { name: 'Open Code’s chat: Working' }).querySelector('svg')
-  expect(code?.getAttribute('data-body')).toBe(CREW_FACE_DESIGNS['crew-code'].body)
+  expect(code?.getAttribute('data-body')).toBe('drop')
   expect(code?.getAttribute('data-mood')).toBe('working')
 })
 
@@ -86,5 +88,14 @@ it('badges the chat header with the member running the Session, and stays empty 
 })
 
 it('gives every member a distinct colour', () => {
-  expect(new Set(Object.values(CREW_FACE_DESIGNS).map(design => design.color)).size).toBe(CREW_MEMBERS.length)
+  expect(new Set(ENTRIES.map(entry => entry.face.color)).size).toBe(ENTRIES.length)
+})
+
+it('opens the editor for a member from its menu, and for a new member from the heading', async () => {
+  const { edit } = section(active)
+  fireEvent.click(screen.getByRole('button', { name: 'Add crew member' }))
+  expect(edit).toHaveBeenCalledWith('')
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'More for Code' })) })
+  await act(async () => { fireEvent.click(screen.getByRole('menuitem', { name: 'Edit member' })) })
+  expect(edit).toHaveBeenCalledWith('crew-code')
 })

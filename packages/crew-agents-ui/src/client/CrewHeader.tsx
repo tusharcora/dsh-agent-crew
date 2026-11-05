@@ -24,7 +24,7 @@ export interface CrewHeaderInjected {
 export function CrewHeader({ useMembers, Face, sessionId, t }: InjectFace<CrewHeaderInjected> & PropsLocale<'crew'>) {
   const member = useMembers(members => members.find(entry => entry.sessions.includes(sessionId)))
   if (member === undefined) return null
-  const name = t(member.id)
+  const name = member.name
   const status = t(`status.${member.status}`)
   return (
     <span className={css.badge} role="status" aria-label={t('header.label', { name, status })} data-status={member.status}>

@@ -67,6 +67,7 @@
     "@deepseek-ai/dsh-crew-connections": "workspace:*",
     "@deepseek-ai/dsh-crew-faces": "workspace:*",
     "@deepseek-ai/dsh-crew-improve": "workspace:*",
+    "@deepseek-ai/dsh-crew-roster": "workspace:*",
     "@deepseek-ai/dsh-session": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

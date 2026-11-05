@@ -1,5 +1,5 @@
 ---
-description: "Crew 智能体的浏览器端名册：每位成员的本地化名称、实时状态和 Session 启动，供其他 crew 插件共用。"
+description: "Crew 的浏览器端名册：每位成员的名称、头像和实时状态、Session 启动，以及添加、编辑和移除成员，供其他 crew 插件共用。"
 kind: "package-reference"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-reference"
 
 ## 概述
 
-本客户端插件提供 `ctx.crew`：六位 crew 成员及其设计头像、本地化名称和实时状态（工作中、需要你或空闲），由 Session 列表和浏览器已跟踪的 Session 状态汇总而来，并提供与成员新建 Session 的方法。它在 Workspace 上方绘制 **Crew** 区块，列出所有成员，每位成员都有自己的对话；在 crew Session 的聊天标题中显示徽标；并在右侧面板提供 **Crew** 标签页。它不添加 Host 服务。
+本客户端插件提供 `ctx.crew`：由 [crew-roster](../crew-roster/README.zh.md) 存储的 crew 成员，及其头像、名称和由 Session 列表与 Session 状态汇总的实时状态（工作中、需要你或空闲），并提供与成员新建 Session 的方法。它在 Workspace 上方绘制 **Crew** 区块，在 crew Session 的聊天标题中显示徽标，并在右侧面板提供 **Crew** 标签页，可在其中添加、编辑和移除成员。
 
 ## 目录
 
@@ -29,13 +29,17 @@ kind: "package-reference"
 
 | 成员 | 含义 |
 |---|---|
-| `members` | 可观察的名册：每位成员的 `{ id, status, sessions, open, home, focus }`，按名册顺序 |
-| `name(id)` | 本地化的成员名称 |
+| `members` | 可观察的名册：每位成员的 `{ id, name, face, status, sessions, open, home, focus }`，按名册顺序 |
+| `name(id)` | 成员名称；随附成员在改名前显示翻译后的名称 |
+| `design(id)` | 成员头像；不在名册中的 ID 返回 undefined |
 | `statusLabel(state)` | 本地化的“工作中”“需要你”或“空闲” |
 | `openChat(id)` | 打开该成员的焦点 Session，若没有则创建其不属于任何 Workspace 的对话 |
 | `startInWorkspace(id, workspaceId)` | 在某个 Workspace 中与该成员新建对话 |
+| `roster`、`refresh()` | 来自 [crew-roster](../crew-roster/README.zh.md) 的成员记录与可选连接，以及重新读取 |
+| `save(member)`、`remove(id)` | 添加（空 ID）、更新或移除成员；各自返回结果或要显示的消息 |
+| `requestEdit(id)` | 请求 Crew 标签页打开某位成员的编辑器，传入 `''` 则新建成员 |
 
-使用 [crew-faces](../crew-faces/README.zh.md) 的 `ctx.crewFaces.Face` 绘制成员，把成员 ID 作为 `agentId`、导出的 `CREW_FACE_DESIGNS` 中对应条目作为 `design` 传入，状态为 `working` 时传入 `mood="working"`。
+使用 [crew-faces](../crew-faces/README.zh.md) 的 `ctx.crewFaces.Face` 绘制成员，把成员 ID 作为 `agentId`、其 `face` 作为 `design` 传入，状态为 `working` 时传入 `mood="working"`。
 
 ### 头像
 
@@ -48,11 +52,11 @@ kind: "package-reference"
 | 研究 | orb | `#A8C7A1` |
 | 生活 | bean | `#F2D16B` |
 
-成员工作时眼睛向右上方移动。
+每位成员的头像是其记录的一部分，可在编辑器中修改；下表列出随附的头像。成员工作时眼睛向右上方移动。
 
 ### Crew 区块与聊天标题
 
-区块使用 `sidebar.sections` 插槽，列出所有成员（包括空闲成员），成员工作中或需要你时显示状态标签。每位成员都有自己的对话：一个不属于任何 Workspace 的 Session，运行在 [crew-connections](../crew-connections/README.zh.md) 提供的成员文件夹中，首次打开时创建。点击一行会打开等待你的 Session，其次是正在运行的，否则是该成员自己的对话。**⋯** 菜单可打开其自己的对话，或在任意 Workspace 中与该成员新建对话。折叠的轨道只显示头像，但仍为辅助技术和提示提供名称。
+区块使用 `sidebar.sections` 插槽，列出所有成员（包括空闲成员），成员工作中或需要你时显示状态标签。每位成员都有自己的对话：一个不属于任何 Workspace 的 Session，运行在 [crew-connections](../crew-connections/README.zh.md) 提供的成员文件夹中，首次打开时创建。点击一行会打开等待你的 Session，其次是正在运行的，否则是该成员自己的对话。**⋯** 菜单可打开其自己的对话、在任意 Workspace 中与该成员新建对话，或打开 **编辑成员**；标题旁的 **+** 用于添加成员。两者都会在 Crew 标签页中打开编辑器。折叠的轨道只显示头像，但仍为辅助技术和提示提供名称。
 
 徽标使用 `conversation.session.header.actions`，只出现在运行 crew 预设的 Session 中。
 
@@ -62,7 +66,9 @@ kind: "package-reference"
 
 ### Crew 标签页
 
-在任意 Session 中从右侧面板的引导页打开 **Crew**。每行显示成员的头像、名称、文字状态（工作中、需要你或空闲）、Session 数量和一个 **新建会话** 按钮，用该成员的预设新建 Session。该标签页只读取状态，不会自行做任何更改。
+在任意 Session 中从右侧面板的引导页打开 **Crew**。每行显示成员的头像、名称、文字状态（工作中、需要你或空闲）、Session 数量和一个 **新建会话** 按钮，用该成员的预设新建 Session。
+
+行上的 **编辑** 和列表下方的 **添加 crew 成员** 会打开编辑器：名称、负责的工作（幕僚长据此决定把工作交给谁）、说明、头像形状和颜色、文件访问、运行命令、获取网页、定时任务和连接。尚未批准账号的连接显示为关闭。幕僚长可以改名和修改说明，但不能移除，其工具也固定不变。**移除** 会再确认一次，过往对话会保留。保存后对新对话生效；正在运行的对话保持其启动时的设置。
 
 ### 学习
 
@@ -80,14 +86,13 @@ kind: "package-reference"
 
 | 源文件 | 内容 |
 |---|---|
-| [`src/roster.ts`](src/roster.ts) | 成员 ID 与状态汇总 |
+| [`src/roster.ts`](src/roster.ts) | 状态汇总 |
 | [`src/client/index.ts`](src/client/index.ts) | 注册 |
 | [`src/client/crew-roster.ts`](src/client/crew-roster.ts) | `ctx.crew` 服务与打开对话 |
-| [`src/client/CrewPanel.tsx`](src/client/CrewPanel.tsx) | Crew 标签页 |
+| [`src/client/CrewPanel.tsx`](src/client/CrewPanel.tsx)、[`src/client/MemberEditor.tsx`](src/client/MemberEditor.tsx) | Crew 标签页与成员编辑器 |
 | [`src/client/CrewSection.tsx`](src/client/CrewSection.tsx) | 侧边栏区块 |
 | [`src/client/CrewLearning.tsx`](src/client/CrewLearning.tsx)、[`src/client/learning.ts`](src/client/learning.ts) | 学习列表及其存储 |
 | [`src/client/CrewHeader.tsx`](src/client/CrewHeader.tsx) | 聊天标题徽标 |
-| [`src/faces.ts`](src/faces.ts) | 设计头像 |
 | [`src/client/locales.ts`](src/client/locales.ts) | 名称、状态标签与标签页文案 |
 | [`tests/`](tests/) | 汇总与服务测试 |
 
@@ -98,7 +103,8 @@ kind: "package-reference"
 <a id="further-exploration"></a>
 ## 延伸阅读
 
-- [crew-agents](../crew-agents/README.zh.md) — 名册跟踪的预设。
+- [crew-roster](../crew-roster/README.zh.md) — 存储的成员及其预设。
+- [crew-agents](../crew-agents/README.zh.md) — bundle。
 - [crew-faces](../crew-faces/README.zh.md) — 成员头像。
 - [ui-session](../../client/ui-session/README.zh.md) — Session 状态来源。
 
@@ -116,7 +122,7 @@ kind: "package-reference"
 <a id="known-limitations-and-deferred-work"></a>
 
 - 只计入浏览器 Session 列表中的 Session；列表未保留的委派子智能体不会改变其成员的状态。
-- 成员 ID 固定为 crew-agents 声明的预设；预设 ID 改名后不会被跟踪。
+- 窗口重新获得焦点时会重新读取名册，因此在其他窗口或设备上的修改会在切回后显示。
 
 <a id="dev-note"></a>
 ### 开发备注
