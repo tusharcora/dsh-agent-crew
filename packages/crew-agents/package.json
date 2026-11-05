@@ -42,6 +42,7 @@
     "@deepseek-ai/dsh-crew-chain-of-thought": "workspace:*",
     "@deepseek-ai/dsh-crew-connections": "workspace:*",
     "@deepseek-ai/dsh-crew-faces": "workspace:*",
+    "@deepseek-ai/dsh-crew-handoff-ui": "workspace:*",
     "@deepseek-ai/dsh-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-crew-kanban": "workspace:*",
     "@deepseek-ai/dsh-crew-kanban-ui": "workspace:*",

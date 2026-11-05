@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-handoff-ui/README.md
+/:
+  en: 71ebec9903cd789c
+  zh: 23b9c2f296b21aa3
+/deepseek-ai-dsh-crew-handoff-ui:
+  en: 17d7e994d0d66e07
+  zh: 5c701b160b2f2f01
+/deepseek-ai-dsh-crew-handoff-ui/summary:
+  en: 860a27dcdde71b12
+  zh: c172bf5ee864f658
+/deepseek-ai-dsh-crew-handoff-ui/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-handoff-ui/use-this-package:
+  en: a3b690da06f69ddb
+  zh: 653b52eb0002219c
+/deepseek-ai-dsh-crew-handoff-ui/understand-the-implementation:
+  en: 09a93104ea754441
+  zh: bdea19ac1f46ee97
+/deepseek-ai-dsh-crew-handoff-ui/further-exploration:
+  en: 768ecd5a100dfffb
+  zh: 838d273c2220b278
+/deepseek-ai-dsh-crew-handoff-ui/model-experience:
+  en: 42ee187cf83f453a
+  zh: c92aa8c2e5489b54
+/deepseek-ai-dsh-crew-handoff-ui/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-crew-handoff-ui/known-limitations-and-deferred-work:
+  en: f259831648ca9f9c
+  zh: 1a521734c3f706c1
+/deepseek-ai-dsh-crew-handoff-ui/known-limitations-and-deferred-work/dev-note:
+  en: e54c807bb0679a66
+  zh: e3bdb70977c87bf4

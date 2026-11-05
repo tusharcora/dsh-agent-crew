@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew handoffs",
+    "description": "A Handoffs tab showing which agents a session handed work to, what each was asked and whether it is working, waiting on you or idle."
+  }
+}
