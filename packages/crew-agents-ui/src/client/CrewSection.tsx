@@ -47,7 +47,7 @@ function MemberMenu({ member, name, workspaces, openChat, startInWorkspace, t }:
   const [open, setOpen] = useState(false)
   return (
     <Menu open={open} onClose={() => { setOpen(false) }} align="end" portal autoFocus
-      anchor={<button type="button" className={css.more} aria-label={t('section.menu', { name })} aria-haspopup="menu" aria-expanded={open}
+      anchor={<button type="button" className={`${css.more} ${css.wideIn}`} aria-label={t('section.menu', { name })} aria-haspopup="menu" aria-expanded={open}
         onClick={() => { setOpen(value => !value) }}>⋯</button>}>
       <MenuItemButton onSelect={() => { setOpen(false); openChat() }}>{t('section.openChat')}</MenuItemButton>
       {workspaces.length === 0
@@ -65,8 +65,12 @@ function MemberMenu({ member, name, workspaces, openChat, startInWorkspace, t }:
   )
 }
 
+/** One face size for the column and the rail, so faces keep their place while the sidebar collapses or expands. */
+const FACE_SIZE = 24
+
 /**
- * Render every member. The rail shows faces only, each a labelled button.
+ * Render every member. The rail shows faces only, each a labelled button; text that exists only in the wide column
+ * fades in on expand, matching the sidebar's own wide-only content.
  * @param props - column state, roster and workspace hooks, face component, chat actions and copy.
  * @returns the section.
  */
@@ -81,7 +85,7 @@ export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, s
   }
   return (
     <section className={wide ? css.section : css.rail} aria-label={t('section.title')}>
-      {wide && <h2 className={css.heading}>{t('section.title')}</h2>}
+      {wide && <h2 className={`${css.heading} ${css.wideIn}`}>{t('section.title')}</h2>}
       <ul className={css.list}>
         {members.map((member) => {
           const name = t(member.id)
@@ -91,10 +95,10 @@ export function CrewSection({ wide, useMembers, useWorkspaces, Face, openChat, s
               <button type="button" className={css.row} data-status={member.status} aria-current={member.open ? 'true' : undefined}
                 aria-label={t('section.open', { name, status })} title={wide ? undefined : `${name}: ${status}`}
                 onClick={() => { open(member.id) }}>
-                <MemberFace Face={Face} member={member} size={wide ? 22 : 28} />
+                <MemberFace Face={Face} member={member} size={FACE_SIZE} />
                 {wide && <>
-                  <span className={css.name}>{name}</span>
-                  {member.status !== 'idle' && <span className={css.status} data-status={member.status}>{status}</span>}
+                  <span className={`${css.name} ${css.wideIn}`}>{name}</span>
+                  {member.status !== 'idle' && <span className={`${css.status} ${css.wideIn}`} data-status={member.status}>{status}</span>}
                 </>}
               </button>
               {wide && <MemberMenu member={member} name={name} workspaces={workspaces} t={t}

@@ -47,9 +47,25 @@
 
 .rail .row {
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
+  min-height: 0;
   padding: 0;
+}
+
+/* Wide-only text fades in on expand, as the sidebar's own wide content does; the collapse fade-out is the sidebar's. */
+.wideIn {
+  animation: crew-wide-in 200ms var(--ds-ease-in-out);
+}
+
+@keyframes crew-wide-in {
+  from { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wideIn {
+    animation: none;
+  }
 }
 
 .row:hover {
