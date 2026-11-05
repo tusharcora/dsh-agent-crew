@@ -1,8 +1,9 @@
 /** Connections list in the Crew tab: each MCP server the crew uses, who uses it, its state, and how to connect it. */
-import { useEffect, useId, useState, type FormEvent } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@deepseek-ai/dsh-client-ui-primitives'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { ConnectionsState, CrewSecretRef } from './connections.ts'
+import { SecretField } from './SecretField.tsx'
 import type {} from './index.ts'
 import css from './CrewPanel.module.css'
 
@@ -25,34 +26,6 @@ type Props = InjectFace<CrewConnectionsInjected> & PropsLocale<'crew'>
 
 /** Seconds between status reads while a Google sign-in waits for the browser. */
 const SIGN_IN_POLL_MS = 3000
-
-function SecretField({ label, stored, onSave, onRemove, t }: {
-  readonly label: string
-  readonly stored: boolean
-  readonly onSave: (value: string) => Promise<boolean>
-  readonly onRemove: () => Promise<boolean>
-  readonly t: Props['t']
-}) {
-  const id = useId()
-  const [value, setValue] = useState('')
-  const [busy, setBusy] = useState(false)
-  const submit = (event: FormEvent): void => {
-    event.preventDefault()
-    if (value.trim() === '') return
-    setBusy(true)
-    void onSave(value.trim()).then((ok) => { if (ok) setValue('') }).finally(() => { setBusy(false) })
-  }
-  return (
-    <form className={css.secret} onSubmit={submit}>
-      <label htmlFor={id}>{label}</label>
-      <input id={id} type="password" autoComplete="off" value={value} placeholder={stored ? t('conn.stored') : ''}
-        onChange={(event) => { setValue(event.target.value) }} />
-      <Button type="submit" variant="outline" size="sm" disabled={busy || value.trim() === ''}>{t('conn.save')}</Button>
-      {stored && <Button variant="ghost" size="sm" disabled={busy}
-        onClick={() => { setBusy(true); void onRemove().finally(() => { setBusy(false) }) }}>{t('conn.remove')}</Button>}
-    </form>
-  )
-}
 
 /**
  * Render the connections. Secrets are write-only: a stored one shows as stored and can be replaced or removed.

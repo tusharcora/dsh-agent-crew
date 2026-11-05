@@ -3,11 +3,12 @@ import type { InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import { CrewConnections, type CrewConnectionsInjected } from './CrewConnections.tsx'
 import { CrewLearning, type CrewLearningInjected } from './CrewLearning.tsx'
 import { CrewPanel, type CrewPanelInjected } from './CrewPanel.tsx'
+import { CrewSlack, type CrewSlackInjected } from './CrewSlack.tsx'
 import type {} from './index.ts'
 import css from './CrewPanel.module.css'
 
 /** Everything the tab body receives. */
-export type CrewTabInjected = CrewPanelInjected & CrewLearningInjected & CrewConnectionsInjected
+export type CrewTabInjected = CrewPanelInjected & CrewLearningInjected & CrewConnectionsInjected & CrewSlackInjected
 
 /**
  * Stack the roster, the learning list and the connections in one scroll area.
@@ -24,6 +25,8 @@ export function CrewTab(props: InjectFace<CrewTabInjected> & PropsLocale<'crew'>
         nameOf={props.nameOf} t={props.t} />
       <CrewConnections useConnections={props.useConnections} refresh={props.refresh} save={props.save} remove={props.remove}
         connectGoogle={props.connectGoogle} disconnectGoogle={props.disconnectGoogle} openUrl={props.openUrl} t={props.t} />
+      <CrewSlack useConnections={props.useConnections} slackStatus={props.slackStatus} slackReconnect={props.slackReconnect}
+        slackDecide={props.slackDecide} save={props.save} remove={props.remove} nameOf={props.nameOf} t={props.t} />
     </div>
   )
 }

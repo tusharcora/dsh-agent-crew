@@ -46,6 +46,7 @@
     "@deepseek-ai/dsh-crew-kanban": "workspace:*",
     "@deepseek-ai/dsh-crew-kanban-ui": "workspace:*",
     "@deepseek-ai/dsh-crew-roster": "workspace:*",
+    "@deepseek-ai/dsh-crew-slack": "workspace:*",
     "@deepseek-ai/dsh-crew-tool-map-ui": "workspace:*",
     "@deepseek-ai/dsh-crew-workflows": "workspace:*",
     "@deepseek-ai/dsh-crew-workflows-ui": "workspace:*",

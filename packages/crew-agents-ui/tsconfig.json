@@ -64,6 +64,9 @@
     },
     {
       "path": "../crew-roster"
+    },
+    {
+      "path": "../crew-slack"
     }
   ]
 }

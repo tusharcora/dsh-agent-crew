@@ -3,7 +3,9 @@ import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
 import type { GoogleSignInStart, GoogleStatus } from '@deepseek-ai/dsh-crew-connections/types'
 
 /** Credential references the crew MCP rows read; they mirror `CREW_REFS` of crew-connections. */
-export const CREW_SECRET_REFS = ['CREW_GOOGLE_CLIENT_ID', 'CREW_GOOGLE_CLIENT_SECRET', 'CREW_GITHUB_TOKEN'] as const
+export const CREW_SECRET_REFS = [
+  'CREW_GOOGLE_CLIENT_ID', 'CREW_GOOGLE_CLIENT_SECRET', 'CREW_GITHUB_TOKEN', 'CREW_SLACK_APP_TOKEN', 'CREW_SLACK_BOT_TOKEN', 'CREW_SLACK_OWNER_ID',
+] as const
 
 /** One stored-or-not credential reference. */
 export type CrewSecretRef = (typeof CREW_SECRET_REFS)[number]

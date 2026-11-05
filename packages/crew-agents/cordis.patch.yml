@@ -15,6 +15,10 @@
       name: '@deepseek-ai/dsh-crew-roster'
       config:
         homeDirectory: !!js dshHomePath('crew')
+    - id: crew-slack
+      name: '@deepseek-ai/dsh-crew-slack'
+      config:
+        homeDirectory: !!js dshHomePath('crew')
     - id: crew-faces
       name: '@deepseek-ai/dsh-crew-faces'
     - id: crew-agents-ui

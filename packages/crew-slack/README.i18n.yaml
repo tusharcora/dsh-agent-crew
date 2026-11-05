@@ -1,0 +1,49 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-slack/README.md
+/:
+  en: edb24b4ee270a6de
+  zh: 695fb2e9fe2197cf
+/deepseek-ai-dsh-crew-slack:
+  en: c32c99ff1a8f660a
+  zh: 99c72e0b7761b79c
+/deepseek-ai-dsh-crew-slack/summary:
+  en: ae78374b272a50bc
+  zh: e82a0d9ddb363fb7
+/deepseek-ai-dsh-crew-slack/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-slack/use-this-package:
+  en: f31b1c1e6bdbf090
+  zh: 089a4aa1da6a28a8
+/deepseek-ai-dsh-crew-slack/understand-the-implementation:
+  en: 9ee348a668ef823c
+  zh: 5350c40652426748
+/deepseek-ai-dsh-crew-slack/further-exploration:
+  en: bd2d27b8005fcfb3
+  zh: dfa7fc5b5cf556c3
+/deepseek-ai-dsh-crew-slack/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-crew-slack/model-experience/slack-prompt:
+  en: 4201fbfa8967cd09
+  zh: 065af7d564c85cca
+/deepseek-ai-dsh-crew-slack/model-experience/slack-prompt/what-the-model-sees:
+  en: 6dccd756b7518478
+  zh: 3d7289d6b841d919
+/deepseek-ai-dsh-crew-slack/model-experience/slack-prompt/what-the-model-sees/slack-message:
+  en: 2e8a25ca470445d1
+  zh: 2a57e4af6d24eba9
+/deepseek-ai-dsh-crew-slack/model-experience/slack-prompt/token-effect:
+  en: 28871a1d93faaf43
+  zh: 92cc7e56f6efb19b
+/deepseek-ai-dsh-crew-slack/model-experience/slack-prompt/kv-cache-effect:
+  en: 3b9636cf7b16474f
+  zh: 48b14a41ff57d7fe
+/deepseek-ai-dsh-crew-slack/known-limitations-and-deferred-work:
+  en: 06c3b478b668686f
+  zh: c66062de18d48631
+/deepseek-ai-dsh-crew-slack/known-limitations-and-deferred-work/dev-note:
+  en: 2561dea7839581ce
+  zh: 50718bf01eaaff53

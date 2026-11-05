@@ -40,6 +40,7 @@ it('inserts the connections, learning, roster, faces, browser roster and crew pa
     { id: 'crew-connections', name: '@deepseek-ai/dsh-crew-connections' },
     { id: 'crew-improve', name: '@deepseek-ai/dsh-crew-improve' },
     { id: 'crew-roster', name: '@deepseek-ai/dsh-crew-roster' },
+    { id: 'crew-slack', name: '@deepseek-ai/dsh-crew-slack' },
     { id: 'crew-faces', name: '@deepseek-ai/dsh-crew-faces' },
     { id: 'crew-agents-ui', name: '@deepseek-ai/dsh-crew-agents-ui' },
     { id: 'crew-chain-of-thought', name: '@deepseek-ai/dsh-crew-chain-of-thought' },

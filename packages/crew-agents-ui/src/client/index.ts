@@ -12,10 +12,12 @@ import type {} from '@deepseek-ai/dsh-crew-faces/client'
 import type {} from '@deepseek-ai/dsh-crew-connections/remote'
 import type {} from '@deepseek-ai/dsh-crew-improve/remote'
 import type {} from '@deepseek-ai/dsh-crew-roster/remote'
+import type {} from '@deepseek-ai/dsh-crew-slack/remote'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import connectionsRemote from '@deepseek-ai/dsh-crew-connections/remote'
 import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
 import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
+import slackRemote from '@deepseek-ai/dsh-crew-slack/remote'
 import { CrewRoster } from './crew-roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
@@ -74,8 +76,11 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
   const unmountConnections = await ctx.remote.$mount(connectionsRemote)
   const unmountImprove = await ctx.remote.$mount(improveRemote)
   const unmountRoster = await ctx.remote.$mount(rosterRemote)
-  const unmount = async (): Promise<void> => { await unmountRoster(); await unmountImprove(); await unmountConnections() }
-  const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.crewRoster', 'remote.credentials'], (inner) => {
+  const unmountSlack = await ctx.remote.$mount(slackRemote)
+  const unmount = async (): Promise<void> => {
+    for (const step of [unmountSlack, unmountRoster, unmountImprove, unmountConnections]) await step()
+  }
+  const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.crewRoster', 'remote.crewSlack', 'remote.credentials'], (inner) => {
     const remote = inner.remote
     const roster = new CrewRoster(inner.sessions.list, inner.uiSession.sessionStatus, inner.workspaces.list, t, {
       openSession: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
@@ -134,6 +139,12 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         Face, clearEditRequest: () => { roster.requestEdit(undefined) },
         openChat: id => roster.openChat(id), saveMember: member => roster.save(member), removeMember: id => roster.remove(id),
         nameOf: id => roster.name(id),
+        slackStatus: () => settle(() => remote.crewSlack.status()),
+        slackReconnect: async () => { await settle(() => remote.crewSlack.reconnect()) },
+        slackDecide: async (id, action, text) => {
+          const result = await settle(() => remote.crewSlack.decide(id, action, text))
+          return result === undefined ? t('edit.unreachable') : result.ok ? undefined : result.message
+        },
         refreshLearning: () => learning.refresh(), decide: (decision, id) => learning.decide(decision, id),
         refresh: () => store.refresh(), save: (ref, value) => store.save(ref, value), remove: ref => store.remove(ref),
         connectGoogle: () => store.connectGoogle(), disconnectGoogle: () => store.disconnectGoogle(),

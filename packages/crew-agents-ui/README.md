@@ -70,6 +70,10 @@ Open **Crew** from the right panel's guide in any Session. Each row shows the me
 
 **Edit** on a row and **Add crew member** below the list open the editor: name, what the member does (the Chief of staff reads it when choosing whom to ask), instructions, tool calls per message (0 for no limit), face shape and colour, file access, commands, web pages, scheduled tasks and connections. Connections whose account you have not approved are shown switched off. The Chief of staff can be renamed and re-instructed but not removed, and its tools are fixed. **Remove** asks once more; past chats stay. Saving takes effect for new chats; running chats keep the setup they started with.
 
+### Slack
+
+Below the connections, the **Slack** card stores the Slack app's tokens and your member id for [crew-slack](../crew-slack/README.md), shows whether it is connected, and lists replies waiting for you. Each reply can be edited, then posted with **Post reply** or dropped with **Discard**; the list re-reads every 5 seconds while open.
+
 ### Learning
 
 Between the roster and the connections, the **Learning** list shows lessons crew members propose through [crew-improve](../crew-improve/README.md). Each proposal names its member, the lesson, the quoted evidence, whether it came from a rating or a chat and when, and the lesson it would replace; **Approve** and **Reject** decide it. Approved lessons are listed with their approval time and a **Remove** button. The list re-reads every 30 seconds while open; nothing changes without a click.

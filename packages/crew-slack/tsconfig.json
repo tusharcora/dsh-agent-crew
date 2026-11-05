@@ -1,0 +1,42 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "lib/types"
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../../../vendor/cordis"
+    },
+    {
+      "path": "../../../vendor/schemastery"
+    },
+    {
+      "path": "../../typert/protocol"
+    },
+    {
+      "path": "../../core/session"
+    },
+    {
+      "path": "../../api/session-controller/tsconfig.host.json"
+    },
+    {
+      "path": "../../session/session-title"
+    },
+    {
+      "path": "../../util/atomic-write"
+    },
+    {
+      "path": "../../credentials/credentials"
+    },
+    {
+      "path": "../crew-roster"
+    },
+    {
+      "path": "../crew-connections"
+    }
+  ]
+}
