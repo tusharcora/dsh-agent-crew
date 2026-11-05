@@ -1,0 +1,49 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-workflows/README.md
+/:
+  en: a3cbe23fc0c2ed1a
+  zh: 36e0a0f141bc3087
+/deepseek-ai-dsh-crew-workflows:
+  en: 2ca45ef8dfad6b4e
+  zh: e3573b7954611710
+/deepseek-ai-dsh-crew-workflows/summary:
+  en: daa5518c1414de0f
+  zh: 2f70d8ace3e31764
+/deepseek-ai-dsh-crew-workflows/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-workflows/use-this-package:
+  en: 91c4e99cfe8e0e00
+  zh: 00dfaad36edd4333
+/deepseek-ai-dsh-crew-workflows/understand-the-implementation:
+  en: 2894bfbdef170690
+  zh: 62e5b2357f891d80
+/deepseek-ai-dsh-crew-workflows/further-exploration:
+  en: dc8e86e4bc1d3be5
+  zh: 1d879fb4c4c29dd5
+/deepseek-ai-dsh-crew-workflows/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-crew-workflows/model-experience/workflow-draft-tool:
+  en: a87290cab45b9501
+  zh: 862c808517669ab8
+/deepseek-ai-dsh-crew-workflows/model-experience/workflow-draft-tool/what-the-model-sees:
+  en: 82bad1a2d1428d29
+  zh: f68bceb4dbd486ec
+/deepseek-ai-dsh-crew-workflows/model-experience/workflow-draft-tool/what-the-model-sees/result:
+  en: 9a433f6f25d808c1
+  zh: 288899307fe32e5b
+/deepseek-ai-dsh-crew-workflows/model-experience/workflow-draft-tool/token-effect:
+  en: 879fc50eb075705d
+  zh: 66997052c7c7c745
+/deepseek-ai-dsh-crew-workflows/model-experience/workflow-draft-tool/kv-cache-effect:
+  en: 7b6d217c59a675ef
+  zh: a9af6c90ec6b15f4
+/deepseek-ai-dsh-crew-workflows/known-limitations-and-deferred-work:
+  en: bac5271468d12bf4
+  zh: 74ed81a4ad7e1c83
+/deepseek-ai-dsh-crew-workflows/known-limitations-and-deferred-work/dev-note:
+  en: 7877cf31fec1eb3a
+  zh: ec9c2921e1cd63a8

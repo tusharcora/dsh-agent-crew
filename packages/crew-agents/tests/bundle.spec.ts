@@ -37,7 +37,7 @@ const SPECIALISTS = ['crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'cr
 it('inserts the connections, learning, faces, browser roster and exactly the six crew presets in one layer', () => {
   expect(patch).toHaveLength(1)
   expect(rows[0]?.config?.['homeDirectory']).toBeDefined()
-  expect(rows.slice(0, 9).map(({ id, name }) => ({ id, name }))).toEqual([
+  expect(rows.slice(0, 11).map(({ id, name }) => ({ id, name }))).toEqual([
     { id: 'crew-connections', name: '@deepseek-ai/dsh-crew-connections' },
     { id: 'crew-improve', name: '@deepseek-ai/dsh-crew-improve' },
     { id: 'crew-faces', name: '@deepseek-ai/dsh-crew-faces' },
@@ -47,6 +47,8 @@ it('inserts the connections, learning, faces, browser roster and exactly the six
     { id: 'crew-kanban-ui', name: '@deepseek-ai/dsh-crew-kanban-ui' },
     { id: 'crew-handoff-ui', name: '@deepseek-ai/dsh-crew-handoff-ui' },
     { id: 'crew-tool-map-ui', name: '@deepseek-ai/dsh-crew-tool-map-ui' },
+    { id: 'crew-workflows', name: '@deepseek-ai/dsh-crew-workflows' },
+    { id: 'crew-workflows-ui', name: '@deepseek-ai/dsh-crew-workflows-ui' },
   ])
   expect(presets.map(entry => entry.id)).toEqual(['crew-chief', ...SPECIALISTS])
   expect(new Set(rows.map(row => row.id)).size).toBe(rows.length)

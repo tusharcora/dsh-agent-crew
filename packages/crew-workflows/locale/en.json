@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew workflows",
+    "description": "Save and run workflows: crew members handing work to each other, or fixed lists of tool calls, with every run shown step by step."
+  }
+}
