@@ -93,7 +93,7 @@ it('adds a member from a blank form and shows the Host refusal', async () => {
   fireEvent.change(screen.getByLabelText('Instructions'), { target: { value: 'You are Helper.' } })
   fireEvent.click(screen.getByRole('radio', { name: 'Bean' }))
   await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Add member' })) })
-  expect(panel.saveMember).toHaveBeenCalledWith(expect.objectContaining({ id: '', name: 'Helper', face: { body: 'bean', color: '#4D6BFE' } }))
+  expect(panel.saveMember).toHaveBeenCalledWith(expect.objectContaining({ id: '', name: 'Helper', face: { body: 'bean', color: '#F28C6B' } }))
   expect(screen.getByRole('status').textContent).toBe('Another crew member already uses the id crew-helper; choose a different name.')
   expect(screen.queryByRole('button', { name: 'Remove' })).toBeNull()
 })

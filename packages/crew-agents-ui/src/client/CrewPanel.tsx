@@ -6,7 +6,7 @@ import type { CrewMember } from '@deepseek-ai/dsh-crew-roster/types'
 import type { HostObservable, InjectFace, PropsLocale } from '@deepseek-ai/dsh-client-ui-slots'
 import type { CrewMemberId, CrewMemberState } from '../roster.ts'
 import type { RosterView } from './crew-roster.ts'
-import { MemberEditor, NEW_MEMBER } from './MemberEditor.tsx'
+import { MemberEditor, newMember } from './MemberEditor.tsx'
 import { MemberFace } from './MemberFace.tsx'
 import type {} from './index.ts'
 import css from './CrewPanel.module.css'
@@ -48,7 +48,7 @@ export function CrewPanel(props: InjectFace<CrewPanelInjected> & PropsLocale<'cr
   const [editing, setEditing] = useState<CrewMember | undefined>()
   useEffect(() => {
     if (request === undefined || !roster.loaded) return
-    setEditing(request === '' ? NEW_MEMBER : roster.records.find(record => record.id === request))
+    setEditing(request === '' ? newMember(roster.records) : roster.records.find(record => record.id === request))
     clearEditRequest()
   }, [request, roster, clearEditRequest])
   if (editing !== undefined) {
@@ -83,7 +83,7 @@ export function CrewPanel(props: InjectFace<CrewPanelInjected> & PropsLocale<'cr
           )
         })}
       </ul>
-      {roster.loaded && <Button variant="outline" size="sm" onClick={() => { setEditing(NEW_MEMBER) }}>{t('edit.addTitle')}</Button>}
+      {roster.loaded && <Button variant="outline" size="sm" onClick={() => { setEditing(newMember(roster.records)) }}>{t('edit.addTitle')}</Button>}
     </section>
   )
 }

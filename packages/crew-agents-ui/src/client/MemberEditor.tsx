@@ -16,6 +16,20 @@ export const NEW_MEMBER: CrewMember = {
   face: { body: 'orb', color: '#4D6BFE' }, abilities: { files: 'none', shell: false, web: true, schedule: false },
 }
 
+/** Face colours offered to new members, the shipped crew's first. */
+const PALETTE = ['#4D6BFE', '#E8B4A0', '#A8C7A1', '#C9B6E4', '#F2D16B', '#0B0B0C', '#F28C6B', '#6BC5D2', '#B58BE0', '#8FBF5A']
+
+/**
+ * A new member's starting record, in the first palette colour no member wears yet.
+ * @param crew - the current members.
+ * @returns the blank record.
+ */
+export function newMember(crew: readonly Pick<CrewMember, 'face'>[]): CrewMember {
+  const used = new Set(crew.map(member => member.face.color.toLowerCase()))
+  const color = PALETTE.find(entry => !used.has(entry.toLowerCase())) ?? NEW_MEMBER.face.color
+  return { ...NEW_MEMBER, face: { ...NEW_MEMBER.face, color } }
+}
+
 /** Props of {@link MemberEditor}. */
 export interface MemberEditorProps extends PropsLocale<'crew'> {
   readonly initial: CrewMember
