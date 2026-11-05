@@ -1,7 +1,7 @@
 /** Check member records and turn each into the agent preset it runs as. */
 import type { PresetDefinition } from '@deepseek-ai/dsh-agent-preset-registry'
 import { CONNECTIONS, type PluginRow } from './defaults.ts'
-import type { CrewMember, MemberBody } from './types.ts'
+import type { CrewMember, FileAccess, MemberAbilities, MemberBody } from './types.ts'
 
 /** Member ids: `crew-` and lowercase letters, the form crew-improve, crew-connections and crew-workflows accept. */
 export const MEMBER_ID = /^crew-[a-z]+$/
@@ -44,30 +44,57 @@ export function memberProblems(member: CrewMember): readonly string[] {
   return problems
 }
 
+/** The one delegation tool every member uses to hand work to a teammate. */
+export const ASK_TOOL = 'ask_crew'
+
+/** Delegation depth from the chat the user started: a member asks a teammate, who may ask one more. */
+export const MAX_DEPTH = 2
+
+const FILE_RANK: readonly FileAccess[] = ['none', 'read', 'write']
+
 /**
- * The delegation tool name the lead calls a member by.
- * @param member - a non-lead member.
- * @returns `ask_` and the id's letters.
+ * Limit abilities and connections an agent asks for to the ones some member already has, so an agent cannot give a new
+ * member a power the crew lacks. Connections whose account is not approved yet are never granted.
+ * @param requested - what the agent asked for.
+ * @param crew - the current members.
+ * @returns what is granted, and the names of what was not.
  */
-export function askTool(member: Pick<CrewMember, 'id'>): string {
-  return `ask_${member.id.slice('crew-'.length)}`
+export function capAbilities(
+  requested: Pick<CrewMember, 'abilities' | 'connections'>, crew: readonly CrewMember[],
+): { readonly abilities: MemberAbilities; readonly connections: readonly string[]; readonly dropped: readonly string[] } {
+  const rank = Math.max(0, ...crew.map(member => FILE_RANK.indexOf(member.abilities.files)))
+  const has = (key: 'shell' | 'web' | 'schedule') => crew.some(member => member.abilities[key])
+  const files = FILE_RANK[Math.min(FILE_RANK.indexOf(requested.abilities.files), rank)] ?? 'none'
+  const abilities: MemberAbilities = {
+    files, shell: requested.abilities.shell && has('shell'), web: requested.abilities.web && has('web'),
+    schedule: requested.abilities.schedule && has('schedule'),
+  }
+  const held = new Set(crew.flatMap(member => member.connections))
+  const connections = requested.connections.filter(id => held.has(id) && CONNECTIONS.some(entry => entry.id === id && entry.available))
+  const dropped = [
+    ...files === requested.abilities.files ? [] : [`files: ${requested.abilities.files}`],
+    ...(['shell', 'web', 'schedule'] as const).filter(key => requested.abilities[key] && !abilities[key]),
+    ...requested.connections.filter(id => !connections.includes(id)),
+  ]
+  return { abilities, connections, dropped }
 }
 
 const row = (id: string, name: string, config?: Record<string, unknown>, disabled?: boolean): PluginRow =>
   ({ id, name, ...config === undefined ? {} : { config }, ...disabled === undefined ? {} : { disabled } })
 
 /**
- * The preset a member runs as. Every member gets the time, run_code, write guard, lessons, ask-user and todo rows; the
- * lead also gets one delegation tool per other member and a list of them in its instructions.
+ * The preset a member runs as. Every member gets the time, run_code, write guard, lessons, skill, ask-user and todo rows,
+ * the subagent control tools, one `ask_crew` tool that can start any teammate, and a list of its teammates in its instructions.
  * @param member - the member.
- * @param crew - the whole roster, read for the lead's delegation tools.
+ * @param crew - the whole roster, read for the teammates.
  * @param platform - Host platform, which picks bash or PowerShell.
  * @returns the preset definition.
  */
 export function presetFor(member: CrewMember, crew: readonly CrewMember[], platform: NodeJS.Platform = process.platform): PresetDefinition {
-  const others = crew.filter(entry => entry.id !== member.id && entry.lead !== true)
-  const roster = member.lead === true && others.length > 0
-    ? `\nYour crew, and the tool that asks each one:\n${others.map(entry => `- ${askTool(entry)}: ${entry.name}. ${entry.description}`).join('\n')}`
+  const others = crew.filter(entry => entry.id !== member.id)
+  const roster = others.length > 0
+    ? `\nYour teammates. Hand one a self-contained task with ${ASK_TOOL}, passing its id as agent_preset:\n`
+      + others.map(entry => `- ${entry.id} (${entry.name}): ${entry.description}`).join('\n')
     : ''
   const { files, shell, web, schedule } = member.abilities
   const plugins: PluginRow[] = [
@@ -93,13 +120,15 @@ export function presetFor(member: CrewMember, crew: readonly CrewMember[], platf
     ],
     ...web ? [row('tool-web', '@deepseek-ai/dsh-tool-web', { fetch: true })] : [],
     ...schedule ? [row('tool-schedule', '@deepseek-ai/dsh-tool-schedule')] : [],
+    // Presets own the skill tool in the web app; without it a member sees no skills, the host's included.
+    row('tool-skill', '@deepseek-ai/dsh-tool-skill'),
     row('tool-ask-user', '@deepseek-ai/dsh-tool-ask-user'),
     row('tool-todo', '@deepseek-ai/dsh-tool-todo', { allowParallelInProgress: true }),
-    ...member.lead === true ? [
+    ...others.length > 0 ? [
       row('tool-subagent-control', '@deepseek-ai/dsh-tool-subagent-control'),
-      ...others.map(entry => row(`ask-${entry.id.slice('crew-'.length)}`, '@deepseek-ai/dsh-tool-subagent', {
-        provider: 'spawn', toolName: askTool(entry), agentPreset: entry.id,
-      })),
+      row('ask-crew', '@deepseek-ai/dsh-tool-subagent', {
+        provider: 'spawn', toolName: ASK_TOOL, allowedAgentPresets: others.map(entry => entry.id), maxDepth: MAX_DEPTH,
+      }),
     ] : [],
   ]
   return { id: member.id, name: member.name, description: member.description, order: member.order, plugins }

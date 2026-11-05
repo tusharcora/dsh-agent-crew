@@ -3,23 +3,23 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/crew-agents/README.md
 /:
-  en: 20586604b5da4364
-  zh: 3bbc3839c0450002
+  en: 9df75021b6deb984
+  zh: 694ff3fc16114eec
 /deepseek-ai-dsh-crew-agents:
   en: f70944890fcbbe17
   zh: fac48db2b88ed221
 /deepseek-ai-dsh-crew-agents/summary:
-  en: b953122d7f4af7a8
-  zh: cae2d2a1af4035a1
+  en: 0cc4be9de95e2018
+  zh: 000bdefd6b6f8225
 /deepseek-ai-dsh-crew-agents/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
 /deepseek-ai-dsh-crew-agents/use-this-package:
-  en: 837e08239bfd7abf
-  zh: af52a4e0a76f0010
+  en: ddec917bf3ad4171
+  zh: 3f7b6e7737dcf019
 /deepseek-ai-dsh-crew-agents/use-this-package/model-per-specialist:
-  en: 9fa8675306371c3a
-  zh: e9032c69cd174b6f
+  en: f2a8a6ebaf756d73
+  zh: 82bf0d604cad0785
 /deepseek-ai-dsh-crew-agents/use-this-package/agent-teams:
   en: 710368a93214e580
   zh: 59e88554ee3967a8
@@ -33,8 +33,8 @@
   en: b3fcc63298475a38
   zh: 98de191cda8d9c57
 /deepseek-ai-dsh-crew-agents/understand-the-implementation:
-  en: 739ae2714826bc6a
-  zh: 785f4bc72c69d0ce
+  en: bda9b16789bb24d5
+  zh: d933ee3392fffd77
 /deepseek-ai-dsh-crew-agents/further-exploration:
   en: 26565a0e88c00146
   zh: e39d2aae7bc6542a
@@ -45,8 +45,8 @@
   en: 10ec0a52f1f81d91
   zh: 233adfd9e0b48077
 /deepseek-ai-dsh-crew-agents/model-experience/crew-personas/what-the-model-sees:
-  en: 9b968426b8131d6e
-  zh: 4be40b1e2ed1144c
+  en: 0f648b482b5e2299
+  zh: 882169bb72d3015d
 /deepseek-ai-dsh-crew-agents/model-experience/crew-personas/what-the-model-sees/chief-of-staff-persona:
   en: a9d7326b0dce90d5
   zh: 6a6679e3baa172b3
@@ -72,14 +72,14 @@
   en: e4ebfdeb15abadea
   zh: aae9f25f3cd4d00b
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/what-the-model-sees:
-  en: e0c21a653ff78dd8
-  zh: 9c8defcf3c61ae0d
+  en: c1788c6120fdb465
+  zh: b23e21deb0c6d38e
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/token-effect:
-  en: a67729b45732317a
-  zh: 73edf9d74def8d0f
+  en: 1610243fe845235e
+  zh: 877ccae07dab06e1
 /deepseek-ai-dsh-crew-agents/model-experience/delegation-tools/kv-cache-effect:
-  en: bee9909ec774df7e
-  zh: 0442e41f135a33c6
+  en: 3788ba6d8fc775e2
+  zh: 59a0f1ed8e91d35a
 /deepseek-ai-dsh-crew-agents/known-limitations-and-deferred-work:
   en: 7213d38a2d23b811
   zh: ae92c8a63cdc9e07

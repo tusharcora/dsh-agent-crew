@@ -9,17 +9,17 @@
   en: 4b04ddf6fd19267d
   zh: 74886c73136e4d07
 /deepseek-ai-dsh-crew-roster/summary:
-  en: e45ad872a1b84871
-  zh: a89d2c343ff0b273
+  en: 7a0f32411ccc5486
+  zh: 65141f33d61246fc
 /deepseek-ai-dsh-crew-roster/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
 /deepseek-ai-dsh-crew-roster/use-this-package:
-  en: e35c363429be73cb
-  zh: 3775d0fa60738d62
+  en: 27e2cbb1f98edb79
+  zh: 0ba2ca966482f6c0
 /deepseek-ai-dsh-crew-roster/understand-the-implementation:
-  en: 06e585e866bb2a3e
-  zh: 8747b6d7c3e7184a
+  en: f616e68b8bb420aa
+  zh: 6a7a7920b78479db
 /deepseek-ai-dsh-crew-roster/further-exploration:
   en: 83003183c0a15bb6
   zh: cb9c64a3934abdc9
@@ -30,17 +30,32 @@
   en: 10be634efb3f5781
   zh: a982e51c03696b9e
 /deepseek-ai-dsh-crew-roster/model-experience/member-presets/what-the-model-sees:
-  en: 0f94397b3a3769a1
-  zh: 24519d11d1b07e1a
-/deepseek-ai-dsh-crew-roster/model-experience/member-presets/what-the-model-sees/lead-roster-lines:
-  en: f5f8ec51cd17d5a0
-  zh: 0f742266d443874f
+  en: 297938b6f62cf995
+  zh: 95937408cd5347d1
+/deepseek-ai-dsh-crew-roster/model-experience/member-presets/what-the-model-sees/teammate-lines:
+  en: 819351e16a465d00
+  zh: 7eb2bd5b9d397bca
 /deepseek-ai-dsh-crew-roster/model-experience/member-presets/token-effect:
-  en: a944764a73bf865f
-  zh: baec0de08a331348
+  en: 4d4737d857470c84
+  zh: b1d883c2653c811f
 /deepseek-ai-dsh-crew-roster/model-experience/member-presets/kv-cache-effect:
-  en: 0b0189228cd784ef
-  zh: 2367838b02601a50
+  en: 86ea9bfad02b9f30
+  zh: e18833295bb206fc
+/deepseek-ai-dsh-crew-roster/model-experience/create-tool:
+  en: 576d6ac77c41c250
+  zh: b56d35fc675fc430
+/deepseek-ai-dsh-crew-roster/model-experience/create-tool/what-the-model-sees:
+  en: 07b536f27c3875e7
+  zh: a4ddb4b8e0ecfbd9
+/deepseek-ai-dsh-crew-roster/model-experience/create-tool/what-the-model-sees/result:
+  en: 9a433f6f25d808c1
+  zh: 288899307fe32e5b
+/deepseek-ai-dsh-crew-roster/model-experience/create-tool/token-effect:
+  en: 0a0a56dbe7382afd
+  zh: f0cddeadab1b9e3d
+/deepseek-ai-dsh-crew-roster/model-experience/create-tool/kv-cache-effect:
+  en: 1ed83d8926b0eaba
+  zh: bf401dc7a8279a19
 /deepseek-ai-dsh-crew-roster/known-limitations-and-deferred-work:
   en: 5bf2b8419ebbdbae
   zh: faa02c645f670908

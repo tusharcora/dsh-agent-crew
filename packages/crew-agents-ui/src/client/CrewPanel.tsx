@@ -72,6 +72,9 @@ export function CrewPanel(props: InjectFace<CrewPanelInjected> & PropsLocale<'cr
                 <span className={css.meta}>
                   <span className={css.chip} data-status={member.status}>{t(`status.${member.status}`)}</span>
                   {member.sessions.length > 0 && <span>{t('panel.sessions', { count: String(member.sessions.length) })}</span>}
+                  {record?.createdBy !== undefined && <span>{t('panel.addedBy', {
+                    name: members.find(entry => entry.id === record.createdBy)?.name ?? t('panel.anAgent'),
+                  })}</span>}
                 </span>
               </div>
               {record !== undefined && <Button variant="ghost" size="sm" aria-label={t('edit.editLabel', { name: member.name })}

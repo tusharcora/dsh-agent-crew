@@ -1,5 +1,5 @@
 ---
-description: "Crew bundle：一位幕僚长和五位可编辑、可移除、也可增添成员的专家，每位都以带有自己人设和工具的智能体预设运行，另含 crew 页面。"
+description: "Crew bundle：一位幕僚长和六位可编辑、可移除、也可增添成员的专家，每位都以带有自己人设和工具的智能体预设运行，另含 crew 页面。"
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-bundle"
 
 ## 概述
 
-Crew 初始有六位成员，每位都是带有自己人设和工具的智能体预设：幕僚长，以及邮件、聊天、代码、研究和生活五位专家。[crew-roster](../crew-roster/README.zh.md) 存储成员并注册其预设，因此你可以在 **Crew** 标签页中添加、编辑和移除成员。幕僚长负责规划工作，并通过各成员的 `ask_*` 委派工具把每项工作交给一位成员。本 bundle 还挂载头像、浏览器端名册和 crew 页面。
+Crew 初始有七位成员，每位都是带有自己人设和工具的智能体预设：幕僚长，以及邮件、聊天、代码、研究、生活和设计六位专家。设计成员使用 `dsh-web-artifact-designer` 中的 `web-artifact-designer` 技能制作 HTML/SVG 设计稿，该包须已安装在 profile 中。[crew-roster](../crew-roster/README.zh.md) 存储成员并注册其预设，因此你可以在 **Crew** 标签页中添加、编辑和移除成员。幕僚长负责规划工作，并通过各成员的 `ask_*` 委派工具把每项工作交给一位成员。本 bundle 还挂载头像、浏览器端名册和 crew 页面。
 
 ## 目录
 
@@ -29,16 +29,19 @@ Crew 初始有六位成员，每位都是带有自己人设和工具的智能体
 
 | 预设 | 工具 | 可写内容 |
 |---|---|---|
-| `crew-chief` 幕僚长 | `ask_mail`、`ask_chat`、`ask_code`、`ask_research`、`ask_life`、子智能体控制、提问、待办 | 不直接写入 |
+| `crew-chief` 幕僚长 | `ask_crew`、子智能体控制、`crew_member_create`、提问、待办 | 不直接写入；新增 crew 成员 |
 | `crew-mail` 邮件 | 网页搜索与获取、只读文件、提问、待办 | 无 |
 | `crew-chat` 聊天 | 网页搜索与获取、提问 | 无 |
 | `crew-code` 代码 | Shell、文件、文件搜索、后台任务、网页、提问、待办 | 工作区文件与命令 |
 | `crew-research` 研究 | 网页搜索与获取、只读文件、文件搜索、待办 | 无 |
 | `crew-life` 生活 | 计划任务、网页搜索与获取、提问、待办 | 用户同意后的提醒 |
+| `crew-design` 设计 | 文件、文件搜索、网页获取、技能、提问、待办 | 工作区中的设计文件 |
+
+每位成员还拥有 `ask_crew` 和子智能体控制工具，可把工作交给任何队友；另有技能工具，以及用于添加队友的 [`crew_member_create`](../crew-roster/README.zh.md)。
 
 ### 每位专家的模型
 
-预设无法选择模型，因此专家的模型应是幕僚长预设中对应 `ask_*` 行的 `agentOptions`。crew-roster 未设置该字段，专家使用其 Session 的模型。
+预设无法选择模型，因此专家的模型应是委派成员的 `ask_crew` 行的 `agentOptions`。crew-roster 未设置该字段，专家使用其 Session 的模型。
 
 ### Agent Teams
 
@@ -74,7 +77,7 @@ Crew 初始有六位成员，每位都是带有自己人设和工具的智能体
 <details>
 <summary>实现细节——点击展开</summary>
 
-[`cordis.patch.yml`](cordis.patch.yml) 插入各 crew 包的行，其中包括 crew-roster；crew-roster 在启动时和每次变更后为每位成员注册一个预设。幕僚长为其他每位成员挂载一个 `dsh-tool-subagent` 实例，使用 `provider: spawn`、独立的 `toolName` 和固定的 `agentPreset`，因此每项委派都有自己的工具。其他成员不挂载委派工具，委派深度止于一层。
+[`cordis.patch.yml`](cordis.patch.yml) 插入各 crew 包的行，其中包括 crew-roster；crew-roster 在启动时和每次变更后为每位成员注册一个预设。每位成员挂载一个名为 `ask_crew` 的 `dsh-tool-subagent` 实例，使用 `provider: spawn`、列出其队友的 `allowedAgentPresets` 和 `maxDepth: 2`，因此被队友委派的成员还能再委派一层，但不能更深。
 
 | 源文件 | 内容 |
 |---|---|
@@ -100,15 +103,15 @@ Crew 初始有六位成员，每位都是带有自己人设和工具的智能体
 
 #### 模型看到什么
 
-每个预设的 `dsh-persona` 行用该成员的文本替换部署人设前缀，并使用空后缀；`{{model}}` 解析为 Session 的模型。[`cordis.patch.yml`](cordis.patch.yml) 中的专家人设说明成员的职责、可修改的内容，以及它从不自行发送、发布、购买、删除、合并或预订。幕僚长的人设如下：
+每个预设的 `dsh-persona` 行用该成员的文本替换部署人设前缀，并使用空后缀；`{{model}}` 解析为 Session 的模型。[crew-roster 的默认值](../crew-roster/src/defaults.ts) 中的随附人设说明成员的职责、可修改的内容，以及它从不自行发送、发布、购买、删除、合并或预订。每段人设末尾逐行列出该成员的队友。幕僚长的人设如下：
 
 ##### 幕僚长人设
 
 ```markdown
-You are the user's chief of staff, powered by the {{model}} model. You lead a crew of five specialists and own the plan, not the details.
-Delegate each piece of work to the specialist that fits with its ask_* tool: ask_mail for email, ask_chat for messages, ask_code for repositories and pull requests, ask_research for questions that need sources, ask_life for calendar, errands and reminders. Give each one a self-contained task with the outcome you need.
-When Agent Teams is on, put multi-step work on the task board and assign each task to the specialist doing it.
-Nothing is sent, posted, bought, deleted, merged or booked without the user's explicit approval. Report what each specialist found, with its sources, and say clearly what still needs the user.
+You are the user's chief of staff, powered by the {{model}} model. You lead the crew and own the plan, not the details.
+Delegate each piece of work to the teammate that fits and give each one a self-contained task with the outcome you need. When recurring work fits no teammate, add one with crew_member_create.
+When Agent Teams is on, put multi-step work on the task board and assign each task to the member doing it.
+Nothing is sent, posted, bought, deleted, merged or booked without the user's explicit approval. Report what each member found, with its sources, and say clearly what still needs the user.
 ```
 
 #### Token 影响
@@ -137,15 +140,15 @@ Nothing is sent, posted, bought, deleted, merged or booked without the user's ex
 
 #### 模型看到什么
 
-幕僚长为其他每位成员看到一个 [`subagent` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-subagent)，名称为 `ask_` 加成员 id 中的字母（随附 crew 为 `ask_mail`、`ask_chat`、`ask_code`、`ask_research` 和 `ask_life`），每个都以该成员的预设启动子智能体，另有子智能体控制工具。其说明末尾为每位成员列出一行：工具、名称和成员负责的工作。没有行设置 `allowedAgentPresets`，因此声明中不含 `agent_preset` 字段。
+每位成员看到一个名为 `ask_crew` 的 [`subagent` 声明](../../../docs/tool-catalog.zh.md#deepseek-aidsh-tool-subagent)，其 `agent_preset` 字段列出队友的 id，另有子智能体控制工具。其说明末尾为每位队友列出一行：id、名称和队友负责的工作。
 
 #### Token 影响
 
-幕僚长的每个请求为每位成员包含一个委派声明和一行名册，其他成员不包含。
+每位成员的请求包含一个委派声明，并为每位队友包含一行名册，每行约 20 个 token。
 
 #### KV Cache 影响
 
-声明和名册行在添加、移除或编辑成员之前保持不变；变更会从幕僚长的下一个新对话起改变其请求前缀。
+声明和名册行在添加、移除或编辑成员之前保持不变；变更会从每位成员的下一个新对话起改变其请求前缀。
 
 ## 已知限制与后续工作
 

@@ -111,6 +111,19 @@ it('removes a member only after a confirmation, and never offers to remove the l
   expect(panel.removeMember).toHaveBeenCalledWith('crew-life')
 })
 
+it('says which member added a member an agent created', () => {
+  const extra = { ...RECORDS[1]!, id: 'crew-helper', name: 'Helper', createdBy: 'crew-chief' }
+  const view = { ...VIEW, records: [...RECORDS, extra] }
+  const helper = {
+    id: 'crew-helper', name: 'Helper', face: extra.face, status: 'idle' as const, sessions: [], open: false, home: undefined, focus: undefined,
+  }
+  const roster = [...members({}), helper]
+  render(<CrewPanel useMembers={selector => selector(roster)} useRoster={selector => selector(view)}
+    useEditRequest={selector => selector(undefined)}
+    clearEditRequest={vi.fn()} Face={CrewFace} openChat={vi.fn(async () => true)} saveMember={vi.fn()} removeMember={vi.fn()} t={t} />)
+  expect(screen.getByText('Added by Chief of staff')).toBeTruthy()
+})
+
 it('opens the editor another surface asked for', () => {
   renderPanel(members({}), vi.fn(async () => true), undefined, 'crew-research')
   expect(screen.getByRole('form', { name: 'Edit Research' })).toBeTruthy()

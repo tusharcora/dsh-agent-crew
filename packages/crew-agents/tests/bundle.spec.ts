@@ -1,4 +1,4 @@
-/** The bundle mounts the crew packages; the six shipped members' presets must load with each package's own config schema. */
+/** The bundle mounts the crew packages; the seven shipped members' presets must load with each package's own config schema. */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import * as yaml from 'js-yaml'
@@ -31,7 +31,7 @@ const preset = (id: string): PresetConfig => {
   if (found === undefined) throw new Error(`missing preset ${id}`)
   return found
 }
-const SPECIALISTS = ['crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life']
+const SPECIALISTS = ['crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life', 'crew-design']
 
 it('inserts the connections, learning, roster, faces, browser roster and crew pages in one layer, and no static presets', () => {
   expect(patch).toHaveLength(1)
@@ -78,27 +78,30 @@ describe.each(presets.map(entry => [entry.id, entry] as const))('%s', (_id, entr
   }, 60_000)
 })
 
-it('lets the Chief delegate to each specialist through its own tool and preset', () => {
-  const delegation = preset('crew-chief').plugins.filter(row => row.name === '@deepseek-ai/dsh-tool-subagent')
-  expect(delegation.map(row => row.config?.['agentPreset'])).toEqual(SPECIALISTS)
-  expect(delegation.map(row => row.config?.['toolName'])).toEqual(['ask_mail', 'ask_chat', 'ask_code', 'ask_research', 'ask_life'])
-  for (const row of delegation) expect(row.config?.['provider']).toBe('spawn')
-  expect(preset('crew-chief').plugins.some(row => row.name === '@deepseek-ai/dsh-tool-subagent-control')).toBe(true)
-})
-
-it('gives no specialist a delegation tool', () => {
-  for (const id of SPECIALISTS) {
-    expect(preset(id).plugins.map(row => row.name)).not.toContain('@deepseek-ai/dsh-tool-subagent')
+it('lets every member delegate to any teammate through one ask_crew tool, two levels deep at most', () => {
+  for (const entry of presets) {
+    const delegation = entry.plugins.filter(row => row.name === '@deepseek-ai/dsh-tool-subagent')
+    expect(delegation.map(row => row.config), entry.id).toEqual([{
+      provider: 'spawn', toolName: 'ask_crew', maxDepth: 2,
+      allowedAgentPresets: presets.map(other => other.id).filter(id => id !== entry.id),
+    }])
+    expect(entry.plugins.some(row => row.name === '@deepseek-ai/dsh-tool-subagent-control'), entry.id).toBe(true)
   }
+  expect(preset('crew-chief').plugins.map(row => row.id)).not.toContain('ask-mail')
 })
 
-it('lets only Code write files or run commands', () => {
+it('gives every preset the skill tool, and Design the web-artifact-designer skill in its instructions', () => {
+  for (const entry of presets) expect(entry.plugins.map(row => row.name), entry.id).toContain('@deepseek-ai/dsh-tool-skill')
+  expect(preset('crew-design').plugins[0]?.config?.['prefix']).toContain('web-artifact-designer')
+})
+
+it('lets only Code run commands, and only Code and Design write files', () => {
   for (const id of SPECIALISTS.filter(entry => entry !== 'crew-code')) {
     const names = preset(id).plugins.map(row => row.name)
-    expect(names).not.toContain('@deepseek-ai/dsh-tool-bash')
-    expect(names).not.toContain('@deepseek-ai/dsh-tool-pwsh')
+    expect(names, id).not.toContain('@deepseek-ai/dsh-tool-bash')
+    expect(names, id).not.toContain('@deepseek-ai/dsh-tool-pwsh')
     const fs = preset(id).plugins.find(row => row.name === '@deepseek-ai/dsh-tool-fs')
-    if (fs !== undefined) expect(fs.config).toMatchObject({ write: false, edit: false })
+    if (fs !== undefined && id !== 'crew-design') expect(fs.config, id).toMatchObject({ write: false, edit: false })
   }
 })
 
@@ -127,6 +130,7 @@ describe('connections', () => {
     expect(byPreset('crew-code')).toEqual(['github', 'cloudflare-docs'])
     expect(byPreset('crew-research')).toEqual(['firecrawl', 'cloudflare-docs', 'exa'])
     expect(byPreset('crew-life')).toEqual(['gcal', 'obsidian'])
+    expect(byPreset('crew-design')).toEqual([])
   })
 
   it('keeps every secret in the credential store and resolves it at runtime', () => {

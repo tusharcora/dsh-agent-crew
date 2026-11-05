@@ -22,6 +22,18 @@
     },
     {
       "path": "../../util/atomic-write"
+    },
+    {
+      "path": "../../core/tools"
+    },
+    {
+      "path": "../../core/agent"
+    },
+    {
+      "path": "../../subagent/subagent"
+    },
+    {
+      "path": "../../llm/llm"
     }
   ]
 }

@@ -41,6 +41,8 @@ export interface CrewMember {
   readonly lead?: boolean
   /** Shipped with the crew; its name is shown translated until the user renames it. */
   readonly builtIn?: boolean
+  /** Id of the member whose agent created this one with `crew_member_create`; `agent` when the caller ran no crew preset. */
+  readonly createdBy?: string
   readonly order: number
 }
 

@@ -1,5 +1,5 @@
 ---
-description: "Crew bundle: a Chief of staff and five specialists you can edit, remove or add to, each running as an agent preset with its own persona and tools, plus the crew pages."
+description: "Crew bundle: a Chief of staff and six specialists you can edit, remove or add to, each running as an agent preset with its own persona and tools, plus the crew pages."
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-The crew starts as six members, each an agent preset with its own persona and tools: Chief of staff and the Mail, Chat, Code, Research and Life specialists. [crew-roster](../crew-roster/README.md) stores the members and registers their presets, so you can add, edit and remove members in the **Crew** tab. Chief of staff plans the work and hands each piece to a member through that member's `ask_*` delegation tool. The bundle also mounts the faces, the browser roster and the crew pages.
+The crew starts as seven members, each an agent preset with its own persona and tools: Chief of staff and the Mail, Chat, Code, Research, Life and Design specialists. Design builds HTML/SVG artifacts with the `web-artifact-designer` skill from `dsh-web-artifact-designer`, which must be installed in the profile. [crew-roster](../crew-roster/README.md) stores the members and registers their presets, so you can add, edit and remove members in the **Crew** tab. Chief of staff plans the work and hands each piece to a member through that member's `ask_*` delegation tool. The bundle also mounts the faces, the browser roster and the crew pages.
 
 ## Table of Contents
 
@@ -29,16 +29,19 @@ Install the bundle from the Plugins page or with `dsh plugin`. Start a Session a
 
 | Preset | Tools | Writes |
 |---|---|---|
-| `crew-chief` Chief of staff | `ask_mail`, `ask_chat`, `ask_code`, `ask_research`, `ask_life`, subagent controls, questions, todo | Nothing directly |
+| `crew-chief` Chief of staff | `ask_crew`, subagent controls, `crew_member_create`, questions, todo | Nothing directly; new crew members |
 | `crew-mail` Mail | Web search and fetch, read-only files, questions, todo | Nothing |
 | `crew-chat` Chat | Web search and fetch, questions | Nothing |
 | `crew-code` Code | Shell, files, file search, jobs, web, questions, todo | Workspace files and commands |
 | `crew-research` Research | Web search and fetch, read-only files, file search, todo | Nothing |
 | `crew-life` Life | Schedule, web search and fetch, questions, todo | Reminders, after the user agrees |
+| `crew-design` Design | Files, file search, web fetch, skills, questions, todo | Design files in the workspace |
+
+Every member also has `ask_crew` and the subagent control tools to hand work to any teammate, the skill tool, and [`crew_member_create`](../crew-roster/README.md) to add a teammate.
 
 ### Model per specialist
 
-A preset cannot select a model, so a specialist's model would be the `agentOptions` of its `ask_*` row in the Chief preset. crew-roster leaves it unset, so a specialist uses its Session's model.
+A preset cannot select a model, so a specialist's model would be the `agentOptions` of the delegating member's `ask_crew` row. crew-roster leaves it unset, so a specialist uses its Session's model.
 
 ### Agent Teams
 
@@ -74,7 +77,7 @@ Every preset also reads its own approved lessons. After you rate a crew member's
 <details>
 <summary>Implementation internals — click to expand</summary>
 
-[`cordis.patch.yml`](cordis.patch.yml) inserts the crew package rows, crew-roster among them; crew-roster registers one preset per member at startup and after every change. The Chief mounts one `dsh-tool-subagent` instance per other member with `provider: spawn`, a distinct `toolName` and a fixed `agentPreset`, so each delegation has its own tool. Other members mount no delegation tool, so delegation stops at depth one.
+[`cordis.patch.yml`](cordis.patch.yml) inserts the crew package rows, crew-roster among them; crew-roster registers one preset per member at startup and after every change. Every member mounts one `dsh-tool-subagent` instance named `ask_crew` with `provider: spawn`, `allowedAgentPresets` listing its teammates and `maxDepth: 2`, so a member a teammate asked can ask one more, and no further.
 
 | Source | Contents |
 |---|---|
@@ -100,15 +103,15 @@ Every preset also reads its own approved lessons. After you rate a crew member's
 
 #### What the model sees
 
-Each preset's `dsh-persona` row replaces the deployment persona prefix with that member's text and an empty suffix; `{{model}}` resolves to the Session's model. The specialist personas in [`cordis.patch.yml`](cordis.patch.yml) state the member's role, what it may change, and that it never sends, posts, buys, deletes, merges or books by itself. The Chief's persona reads:
+Each preset's `dsh-persona` row replaces the deployment persona prefix with that member's text and an empty suffix; `{{model}}` resolves to the Session's model. The shipped personas in [crew-roster's defaults](../crew-roster/src/defaults.ts) state the member's role, what it may change, and that it never sends, posts, buys, deletes, merges or books by itself. Every persona ends with the member's teammates, one line each. The Chief's persona reads:
 
 ##### Chief of staff persona
 
 ```markdown
-You are the user's chief of staff, powered by the {{model}} model. You lead a crew of five specialists and own the plan, not the details.
-Delegate each piece of work to the specialist that fits with its ask_* tool: ask_mail for email, ask_chat for messages, ask_code for repositories and pull requests, ask_research for questions that need sources, ask_life for calendar, errands and reminders. Give each one a self-contained task with the outcome you need.
-When Agent Teams is on, put multi-step work on the task board and assign each task to the specialist doing it.
-Nothing is sent, posted, bought, deleted, merged or booked without the user's explicit approval. Report what each specialist found, with its sources, and say clearly what still needs the user.
+You are the user's chief of staff, powered by the {{model}} model. You lead the crew and own the plan, not the details.
+Delegate each piece of work to the teammate that fits and give each one a self-contained task with the outcome you need. When recurring work fits no teammate, add one with crew_member_create.
+When Agent Teams is on, put multi-step work on the task board and assign each task to the member doing it.
+Nothing is sent, posted, bought, deleted, merged or booked without the user's explicit approval. Report what each member found, with its sources, and say clearly what still needs the user.
 ```
 
 #### Token effect
@@ -137,15 +140,15 @@ The SDK listing changes when a server connects, disconnects or changes its tools
 
 #### What the model sees
 
-The Chief sees one [`subagent` declaration](../../../docs/tool-catalog.md#deepseek-aidsh-tool-subagent) per other member, named `ask_` and the letters of the member's id (`ask_mail`, `ask_chat`, `ask_code`, `ask_research` and `ask_life` for the shipped crew), each starting a child with that member's preset, plus the subagent control tools. Its instructions end with one line per member: the tool, the name and what the member does. No row sets `allowedAgentPresets`, so no declaration carries an `agent_preset` field.
+Every member sees one [`subagent` declaration](../../../docs/tool-catalog.md#deepseek-aidsh-tool-subagent) named `ask_crew` whose `agent_preset` field lists its teammates' ids, plus the subagent control tools. Its instructions end with one line per teammate: the id, the name and what the teammate does.
 
 #### Token effect
 
-One delegation declaration and one roster line per member on every Chief request. Other members carry none.
+One delegation declaration on every member's requests, and one roster line per teammate, about 20 tokens each.
 
 #### KV Cache effect
 
-The declarations and the roster lines are fixed until a member is added, removed or edited, which changes the Chief's request prefix from its next new chat.
+The declaration and the roster lines are fixed until a member is added, removed or edited, which changes every member's request prefix from its next new chat.
 
 ## Known Limitations and Deferred Work
 

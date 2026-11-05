@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { Context } from '@deepseek-ai/cordis'
 import type { PresetDefinition } from '@deepseek-ai/dsh-agent-preset-registry'
 import { afterEach, describe, expect, it } from 'vitest'
-import CrewRoster, { askTool, DEFAULT_MEMBERS, idFor, memberProblems, presetFor, type CrewMember } from '../src/index.ts'
+import CrewRoster, { capAbilities, DEFAULT_MEMBERS, idFor, memberProblems, migrate, presetFor, SUPERSEDED_PERSONAS, type CrewMember } from '../src/index.ts'
 
 const helper: CrewMember = {
   id: 'crew-helper', name: 'Helper', description: 'Answers quick questions.', persona: 'You are Helper.', order: 30,
@@ -42,14 +42,51 @@ describe('presetFor', () => {
     const chat = DEFAULT_MEMBERS.find(member => member.id === 'crew-chat')!
     expect(presetFor(chat, DEFAULT_MEMBERS).plugins.find(row => row.id === 'mcp-slack')?.disabled).toBe(true)
   })
-  it('gives the lead one ask tool and one roster line per other member', () => {
-    const chief = DEFAULT_MEMBERS[0]!
-    const preset = presetFor(chief, [...DEFAULT_MEMBERS, helper])
-    const asks = preset.plugins.filter(row => row.name === '@deepseek-ai/dsh-tool-subagent').map(row => row.config as Record<string, unknown> | undefined)
-    expect(asks.map(config => config?.['toolName'])).toEqual(['ask_mail', 'ask_chat', 'ask_code', 'ask_research', 'ask_life', 'ask_helper'])
-    expect(asks.every(config => config?.['provider'] === 'spawn' && typeof config['agentPreset'] === 'string')).toBe(true)
-    expect(String((preset.plugins[0]?.config as Record<string, unknown> | undefined)?.['prefix'])).toContain(`- ${askTool(helper)}: Helper. Answers quick questions.`)
+  it('gives every member one ask_crew tool over all its teammates and lists them in its instructions', () => {
+    const crew = [...DEFAULT_MEMBERS, helper]
+    for (const member of crew) {
+      const preset = presetFor(member, crew)
+      const asks = preset.plugins.filter(row => row.name === '@deepseek-ai/dsh-tool-subagent').map(row => row.config as Record<string, unknown>)
+      expect(asks, member.id).toEqual([{
+        provider: 'spawn', toolName: 'ask_crew', allowedAgentPresets: crew.filter(entry => entry.id !== member.id).map(entry => entry.id), maxDepth: 2,
+      }])
+      expect(preset.plugins.some(row => row.name === '@deepseek-ai/dsh-tool-subagent-control'), member.id).toBe(true)
+    }
+    const prefix = String((presetFor(DEFAULT_MEMBERS[1]!, crew).plugins[0]?.config as Record<string, unknown>)['prefix'])
+    expect(prefix).toContain('- crew-helper (Helper): Answers quick questions.')
+    expect(prefix).toContain('- crew-chief (Chief of staff):')
+    expect(prefix).not.toContain('- crew-mail (')
   })
+
+  it('gives a lone member no delegation tool', () => {
+    expect(presetFor(helper, [helper]).plugins.map(row => row.name)).not.toContain('@deepseek-ai/dsh-tool-subagent')
+  })
+})
+
+describe('capAbilities and migrate', () => {
+  it('grants only abilities and approved connections some member already has', () => {
+    const reader = { ...helper, abilities: { files: 'read', shell: false, web: true, schedule: false }, connections: ['github', 'slack'] } as const
+    const granted = capAbilities({ abilities: { files: 'write', shell: true, web: true, schedule: false }, connections: ['github', 'slack', 'gmail'] }, [reader])
+    expect(granted).toEqual({ abilities: { files: 'read', shell: false, web: true, schedule: false }, connections: ['github'], dropped: ['files: write', 'shell', 'slack', 'gmail'] })
+    expect(capAbilities({ abilities: { files: 'write', shell: true, web: false, schedule: true }, connections: [] }, DEFAULT_MEMBERS).dropped).toEqual([])
+  })
+
+  it('replaces superseded shipped instructions and keeps edited ones', () => {
+    const chief = DEFAULT_MEMBERS[0]!
+    const old = { ...chief, persona: SUPERSEDED_PERSONAS['crew-chief']![0]! }
+    expect(migrate([old])[0]?.persona).toBe(chief.persona)
+    const edited = [{ ...chief, persona: 'Mine.' }]
+    const all = DEFAULT_MEMBERS.map(member => member.id)
+    expect(migrate(edited, all)).toBe(edited)
+  })
+
+  it('adds a shipped member the file was never offered, and never one the user removed', () => {
+    const firstSix = DEFAULT_MEMBERS.filter(member => member.id !== 'crew-design')
+    expect(migrate(firstSix).map(member => member.id)).toEqual(DEFAULT_MEMBERS.map(member => member.id))
+    const withoutMail = DEFAULT_MEMBERS.filter(member => member.id !== 'crew-mail')
+    expect(migrate(withoutMail, DEFAULT_MEMBERS.map(member => member.id))).toBe(withoutMail)
+  })
+
 })
 
 describe('CrewRosterService', () => {
@@ -60,8 +97,16 @@ describe('CrewRosterService', () => {
     home = await mkdtemp(join(tmpdir(), 'crew-roster-'))
     if (file !== undefined) await writeFile(join(home, 'members.json'), file)
     const live = new Map<string, PresetDefinition>()
+    const tools = new Map<string, { execute: (args: unknown, exec: unknown) => Promise<unknown> }>()
     const ctx = new Context()
+    ctx.provide('tools', {
+      register: (tool: { name: string; execute: (args: unknown, exec: unknown) => Promise<unknown> }) => {
+        tools.set(tool.name, tool)
+        return () => { tools.delete(tool.name) }
+      },
+    } as never)
     ctx.provide('agentPresets', {
+      presetForSession: (session: { preset: string }) => session.preset,
       register: (definition: PresetDefinition) => {
         if (live.has(definition.id)) return Promise.reject(new Error(`Duplicate agent preset: ${definition.id}`))
         live.set(definition.id, definition)
@@ -70,31 +115,62 @@ describe('CrewRosterService', () => {
     } as never)
     await ctx.plugin(CrewRoster, { homeDirectory: home })
     const roster = await new Promise<CrewRoster>((resolve) => { ctx.inject(['crewRoster'], (inner) => { resolve(inner.crewRoster) }) })
-    return { roster, live, home }
+    return { roster, live, home, tools, ctx }
   }
+
+  it('records the offered shipped members in the file', async () => {
+    const { home: dir } = await boot(JSON.stringify({ version: 1, members: DEFAULT_MEMBERS.slice(0, 6) }))
+    const saved = JSON.parse(await readFile(join(dir, 'members.json'), 'utf8')) as { members: CrewMember[]; shipped: string[] }
+    expect(saved.members.map(member => member.id)).toContain('crew-design')
+    expect(saved.shipped).toEqual(DEFAULT_MEMBERS.map(member => member.id))
+  })
 
   it('seeds and registers the shipped crew on first run', async () => {
     const { roster, live, home: dir } = await boot()
     expect([...live.keys()]).toEqual(DEFAULT_MEMBERS.map(member => member.id))
-    expect((await roster.state()).members).toHaveLength(6)
+    expect((await roster.state()).members).toHaveLength(7)
     expect(JSON.parse(await readFile(join(dir, 'members.json'), 'utf8'))).toMatchObject({ version: 1, members: DEFAULT_MEMBERS })
   })
 
   it('adds, edits and removes a member and keeps the lead in step', async () => {
     const { roster, live } = await boot()
     const added = await roster.saveMember({ ...helper, id: '', lead: true, builtIn: true })
-    expect(added).toMatchObject({ ok: true, value: { id: 'crew-helper', order: 26 } })
+    expect(added).toMatchObject({ ok: true, value: { id: 'crew-helper', order: 27 } })
     if (!added.ok) return
     expect(added.value.lead).toBeUndefined()
     expect(live.get('crew-helper')?.name).toBe('Helper')
-    expect(JSON.stringify(live.get('crew-chief'))).toContain('ask_helper')
+    expect(JSON.stringify(live.get('crew-chief'))).toContain('crew-helper')
     expect(await roster.saveMember({ ...helper, id: '' })).toMatchObject({ ok: false })
     expect(await roster.saveMember({ ...added.value, name: 'Helpful' })).toMatchObject({ ok: true, value: { id: 'crew-helper', name: 'Helpful' } })
     expect(live.get('crew-helper')?.name).toBe('Helpful')
     expect(await roster.saveMember({ ...added.value, persona: '' })).toMatchObject({ ok: false, message: 'Write the member\'s instructions.' })
     expect(await roster.deleteMember('crew-helper')).toEqual({ ok: true, value: true })
     expect(live.has('crew-helper')).toBe(false)
-    expect(JSON.stringify(live.get('crew-chief'))).not.toContain('ask_helper')
+    expect(JSON.stringify(live.get('crew-chief'))).not.toContain('crew-helper')
+  })
+
+  it('lets an agent add a member, capped to the crew\'s abilities, and start it on a first task', async () => {
+    const { roster, live, tools, ctx } = await boot()
+    const started: unknown[] = []
+    ctx.provide('subagents', {
+      startActivation: (spec: unknown) => {
+        started.push(spec)
+        return Promise.resolve({ childId: 'child', result: Promise.resolve({ output: [{ type: 'text', text: 'Three sketches.' }], stopReason: 'completed' }) })
+      },
+    } as never)
+    const create = tools.get('crew_member_create')!
+    const caller = { session: { preset: 'crew-chief' } }
+    const value = await create.execute({
+      name: 'Designer', description: 'Sketches screens.', instructions: 'You are Designer.', files: 'write', shell: true, connections: ['slack', 'github'],
+      first_task: 'Sketch the login screen.',
+    }, { agent: caller, signal: new AbortController().signal }) as { summary: string }
+    expect(value.summary).toContain('Added Designer as crew-designer. Not granted, because no member has it: slack.')
+    expect(value.summary).toContain('Three sketches.')
+    expect(started).toEqual([expect.objectContaining({ agentPreset: 'crew-designer', parent: caller, delivery: 'caller', provider: 'spawn' })])
+    const added = (await roster.state()).members.find(member => member.id === 'crew-designer')
+    expect(added).toMatchObject({ createdBy: 'crew-chief', abilities: { files: 'write', shell: true, web: true, schedule: false }, connections: ['github'] })
+    expect(JSON.stringify(live.get('crew-mail'))).toContain('crew-designer')
+    expect(await roster.saveMember({ ...added!, createdBy: 'someone' })).toMatchObject({ ok: true, value: { createdBy: 'crew-chief' } })
   })
 
   it('refuses to remove the lead or a missing member', async () => {
@@ -106,7 +182,7 @@ describe('CrewRosterService', () => {
 
   it('keeps an unreadable file and runs the shipped crew', async () => {
     const { live, home: dir } = await boot('{ not json')
-    expect(live.size).toBe(6)
+    expect(live.size).toBe(DEFAULT_MEMBERS.length)
     expect(await readFile(join(dir, 'members.json'), 'utf8')).toBe('{ not json')
   })
 })
