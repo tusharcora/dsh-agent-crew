@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-kanban/README.md
+/:
+  en: f020bc52f4178174
+  zh: 83fe40ce2432dd02
+/deepseek-ai-dsh-crew-kanban:
+  en: fc75011d57763d15
+  zh: b07c905e7bec7637
+/deepseek-ai-dsh-crew-kanban/summary:
+  en: d079ea396cb0e15b
+  zh: 09eb9ea99d1c80e0
+/deepseek-ai-dsh-crew-kanban/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-kanban/use-this-package:
+  en: 24806114c345e9ea
+  zh: de92b38c7d1f8e53
+/deepseek-ai-dsh-crew-kanban/understand-the-implementation:
+  en: ab5ec459de7b65c3
+  zh: c8cc89cc9d52d014
+/deepseek-ai-dsh-crew-kanban/further-exploration:
+  en: 1c8e3d510c723ec5
+  zh: 49137e2d0ea77bc8
+/deepseek-ai-dsh-crew-kanban/model-experience:
+  en: 6e6836e5528ccfed
+  zh: 5859c2ac1f4379aa
+/deepseek-ai-dsh-crew-kanban/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-crew-kanban/known-limitations-and-deferred-work:
+  en: f7cb839af826abd9
+  zh: d3a559390c4ba251
+/deepseek-ai-dsh-crew-kanban/known-limitations-and-deferred-work/dev-note:
+  en: 598f0d0280b7390e
+  zh: 9001ed60912d89f9
