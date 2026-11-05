@@ -75,10 +75,12 @@ it('edits a member: name, abilities and connections, saved on Save', async () =>
   fireEvent.change(screen.getByLabelText('Files'), { target: { value: 'read' } })
   fireEvent.click(screen.getByLabelText('Run commands'))
   fireEvent.click(screen.getByLabelText('GitHub'))
+  fireEvent.change(screen.getByRole('spinbutton', { name: 'Tool calls per message' }), { target: { value: '25' } })
   expect(screen.getByLabelText('Slack (off until you approve the account)')).toHaveProperty('disabled', true)
   await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Save' })) })
   expect(panel.saveMember).toHaveBeenCalledWith(expect.objectContaining({
     id: 'crew-chat', name: 'Messages', abilities: { files: 'read', shell: true, web: true, schedule: false }, connections: ['slack', 'github'],
+    maxToolCalls: 25,
   }))
   expect(screen.getByRole('region', { name: 'Crew members' })).toBeTruthy()
 })
@@ -127,4 +129,14 @@ it('says which member added a member an agent created', () => {
 it('opens the editor another surface asked for', () => {
   renderPanel(members({}), vi.fn(async () => true), undefined, 'crew-research')
   expect(screen.getByRole('form', { name: 'Edit Research' })).toBeTruthy()
+})
+
+it('clears the budget when it is set back to 0', async () => {
+  const panel = renderPanel(members({}))
+  fireEvent.click(screen.getByRole('button', { name: 'Edit Code' }))
+  const budget = screen.getByRole('spinbutton', { name: 'Tool calls per message' })
+  fireEvent.change(budget, { target: { value: '10' } })
+  fireEvent.change(budget, { target: { value: '0' } })
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Save' })) })
+  expect(panel.saveMember.mock.calls[0]?.[0]).not.toHaveProperty('maxToolCalls')
 })

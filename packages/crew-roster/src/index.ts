@@ -14,12 +14,13 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {} from '@deepseek-ai/dsh-agent-preset-registry'
 import type {} from '@deepseek-ai/dsh-subagent'
-import { capAbilities, idFor, MAX_MEMBERS, memberProblems, presetFor } from './compose.ts'
+import type { PreToolDecision, ToolExecution } from '@deepseek-ai/dsh-tools'
+import { BUDGET_EXEMPT, budgetRefusal, capAbilities, idFor, MAX_MEMBERS, memberProblems, presetFor } from './compose.ts'
 import { CONNECTIONS, DEFAULT_MEMBERS, FACE_COLORS, SUPERSEDED_PERSONAS } from './defaults.ts'
 import type { CrewMember, RosterResult, RosterState } from './types.ts'
 
 export type * from './types.ts'
-export { ASK_TOOL, capAbilities, idFor, MAX_DEPTH, MAX_MEMBERS, MEMBER_ID, memberProblems, presetFor } from './compose.ts'
+export { ASK_TOOL, BUDGET_EXEMPT, budgetRefusal, capAbilities, MAX_TOOL_CALLS, idFor, MAX_DEPTH, MAX_MEMBERS, MEMBER_ID, memberProblems, presetFor } from './compose.ts'
 export { CONNECTIONS, DEFAULT_MEMBERS, FACE_COLORS, SUPERSEDED_PERSONAS, type PluginRow } from './defaults.ts'
 
 /** Model-facing tool that adds a crew member. */
@@ -95,6 +96,8 @@ export class CrewRosterService extends TypertRemoteService {
   private members: readonly CrewMember[] = []
   private writes: Promise<unknown> = Promise.resolve()
   private readonly registered = new Map<string, () => Promise<void>>()
+  /** Tool calls made so far in the current turn, by Session id; only Sessions of budgeted members are counted. */
+  private readonly calls = new Map<string, number>()
 
   /**
    * @param ctx - owning plugin context.
@@ -117,6 +120,9 @@ export class CrewRosterService extends TypertRemoteService {
     }, 'crew-roster.presets')
     await this.register()
     this.ctx.effect(() => this.ctx.tools.register(this.createTool()), 'crew-roster.create-tool')
+    this.ctx.on('session/event', (session, event) => { if (event.type === 'turn/start') this.calls.delete(session.id) })
+    this.ctx.on('session/disposed', (session) => { this.calls.delete(session.id) })
+    this.ctx.on('tools/pre-execute', async (exec, next) => this.overBudget(exec) ?? await next())
   }
 
   private get path(): string {
@@ -240,6 +246,19 @@ export class CrewRosterService extends TypertRemoteService {
     return { ok: true, value: true }
   }
 
+  /**
+   * Count a call against its member's budget for the current message; refuse it once the budget is used up. Calls
+   * nested in `run_code` count too, so the budget measures work rather than model steps.
+   */
+  private overBudget(exec: ToolExecution): PreToolDecision | undefined {
+    const member = this.memberOf(exec.agent)
+    const limit = member?.maxToolCalls ?? 0
+    if (member === undefined || exec.agent === undefined || limit === 0 || BUDGET_EXEMPT.has(exec.name)) return undefined
+    const used = (this.calls.get(exec.agent.session.id) ?? 0) + 1
+    this.calls.set(exec.agent.session.id, used)
+    return used > limit ? { kind: 'deny', reason: budgetRefusal(member, limit) } : undefined
+  }
+
   /** The member a Session runs as, when it runs a crew preset. */
   private memberOf(agent: Agent | undefined): CrewMember | undefined {
     const preset = agent === undefined ? null : this.ctx.agentPresets.presetForSession(agent.session)
@@ -262,6 +281,7 @@ export class CrewRosterService extends TypertRemoteService {
         schedule: { type: 'boolean', description: 'Create scheduled tasks.' },
         connections: { type: 'array', items: { type: 'string' }, description: `Services: ${CONNECTIONS.map(entry => entry.id).join(', ')}.` },
         first_task: { type: 'string', description: 'A self-contained task to start the new member on now.' },
+        max_tool_calls: { type: 'number', description: 'Most tool calls it may make per message; omit or 0 for no limit.' },
       },
       output: {
         schema: { type: 'object', additionalProperties: false, properties: { summary: { type: 'string', required: true } } },
@@ -281,6 +301,7 @@ export class CrewRosterService extends TypertRemoteService {
           id: '', name: args.name, description: args.description, persona: args.instructions, order: 0,
           face: { body: bodies[this.members.length % bodies.length] ?? 'orb', color },
           abilities: granted.abilities, connections: granted.connections,
+          ...args.max_tool_calls === undefined || args.max_tool_calls === 0 ? {} : { maxToolCalls: args.max_tool_calls },
         }, caller?.id ?? 'agent')
         if (!result.ok) return { summary: `No member was added: ${result.message}` }
         const member = result.value

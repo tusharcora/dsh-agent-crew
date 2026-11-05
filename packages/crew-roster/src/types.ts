@@ -37,6 +37,8 @@ export interface CrewMember {
   readonly abilities: MemberAbilities
   /** Ids from the connection catalog. */
   readonly connections: readonly string[]
+  /** Most tool calls the member may make while answering one message, nested `run_code` calls included; absent or 0 is no limit. */
+  readonly maxToolCalls?: number
   /** The lead hands work to every other member and cannot be removed. */
   readonly lead?: boolean
   /** Shipped with the crew; its name is shown translated until the user renames it. */

@@ -162,15 +162,36 @@ describe('CrewRosterService', () => {
     const caller = { session: { preset: 'crew-chief' } }
     const value = await create.execute({
       name: 'Designer', description: 'Sketches screens.', instructions: 'You are Designer.', files: 'write', shell: true, connections: ['slack', 'github'],
-      first_task: 'Sketch the login screen.',
+      first_task: 'Sketch the login screen.', max_tool_calls: 30,
     }, { agent: caller, signal: new AbortController().signal }) as { summary: string }
     expect(value.summary).toContain('Added Designer as crew-designer. Not granted, because no member has it: slack.')
     expect(value.summary).toContain('Three sketches.')
     expect(started).toEqual([expect.objectContaining({ agentPreset: 'crew-designer', parent: caller, delivery: 'caller', provider: 'spawn' })])
     const added = (await roster.state()).members.find(member => member.id === 'crew-designer')
-    expect(added).toMatchObject({ createdBy: 'crew-chief', abilities: { files: 'write', shell: true, web: true, schedule: false }, connections: ['github'] })
+    expect(added).toMatchObject({ createdBy: 'crew-chief', maxToolCalls: 30, abilities: { files: 'write', shell: true, web: true, schedule: false }, connections: ['github'] })
     expect(JSON.stringify(live.get('crew-mail'))).toContain('crew-designer')
     expect(await roster.saveMember({ ...added!, createdBy: 'someone' })).toMatchObject({ ok: true, value: { createdBy: 'crew-chief' } })
+  })
+
+  it('refuses a budgeted member\'s calls past its budget until the next message, ask-user excepted', async () => {
+    const { roster, ctx } = await boot()
+    const research = (await roster.state()).members.find(member => member.id === 'crew-research')!
+    expect(await roster.saveMember({ ...research, maxToolCalls: 2 })).toMatchObject({ ok: true, value: { maxToolCalls: 2 } })
+    expect(await roster.saveMember({ ...research, maxToolCalls: 2.5 })).toMatchObject({ ok: false })
+    const session = { id: 's-1', preset: 'crew-research' }
+    const call = (name = 'web_fetch') => ctx.waterfall('tools/pre-execute', { name, agent: { session } } as never,
+      () => Promise.resolve({ kind: 'allow' as const }))
+    expect(await call()).toEqual({ kind: 'allow' })
+    expect(await call()).toEqual({ kind: 'allow' })
+    expect(await call()).toMatchObject({ kind: 'deny', reason: expect.stringContaining('budget of 2 tool calls') as string })
+    expect(await call('ask_user_question')).toEqual({ kind: 'allow' })
+    ctx.emit('session/event' as never, session as never, { type: 'turn/start' } as never)
+    expect(await call()).toEqual({ kind: 'allow' })
+    const other = { id: 's-2', preset: 'crew-mail' }
+    for (let index = 0; index < 5; index += 1) {
+      expect(await ctx.waterfall('tools/pre-execute', { name: 'read', agent: { session: other } } as never,
+        () => Promise.resolve({ kind: 'allow' as const }))).toEqual({ kind: 'allow' })
+    }
   })
 
   it('refuses to remove the lead or a missing member', async () => {

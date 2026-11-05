@@ -15,11 +15,11 @@
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45
 /deepseek-ai-dsh-crew-roster/use-this-package:
-  en: 27e2cbb1f98edb79
-  zh: 0ba2ca966482f6c0
+  en: 625ed231a6e3a527
+  zh: 3d130d1b98533c4b
 /deepseek-ai-dsh-crew-roster/understand-the-implementation:
-  en: f616e68b8bb420aa
-  zh: 6a7a7920b78479db
+  en: a4ca1d883c77ff2e
+  zh: cd1612b1c46ff651
 /deepseek-ai-dsh-crew-roster/further-exploration:
   en: 83003183c0a15bb6
   zh: cb9c64a3934abdc9
@@ -41,6 +41,21 @@
 /deepseek-ai-dsh-crew-roster/model-experience/member-presets/kv-cache-effect:
   en: 86ea9bfad02b9f30
   zh: e18833295bb206fc
+/deepseek-ai-dsh-crew-roster/model-experience/tool-call-budget:
+  en: e4c7ddfb5bda196b
+  zh: 79a37fdf0841c7c4
+/deepseek-ai-dsh-crew-roster/model-experience/tool-call-budget/what-the-model-sees:
+  en: a8d4b71f412f3a57
+  zh: 65d427057e96c58b
+/deepseek-ai-dsh-crew-roster/model-experience/tool-call-budget/what-the-model-sees/refusal:
+  en: a6335078ec9f9b74
+  zh: 7f0fe6efb141cc82
+/deepseek-ai-dsh-crew-roster/model-experience/tool-call-budget/token-effect:
+  en: a0ebaf39fdcd85e9
+  zh: 29ae0a9805317538
+/deepseek-ai-dsh-crew-roster/model-experience/tool-call-budget/kv-cache-effect:
+  en: b78db241c78b337d
+  zh: b94043e131a568f4
 /deepseek-ai-dsh-crew-roster/model-experience/create-tool:
   en: 576d6ac77c41c250
   zh: b56d35fc675fc430

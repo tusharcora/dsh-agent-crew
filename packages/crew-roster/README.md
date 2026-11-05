@@ -41,6 +41,8 @@ Every member gets the time context, `run_code`, the crew write guard, its approv
 
 Every member also gets `ask_crew`, one [`subagent` declaration](../../subagent/tool-subagent/README.md) whose `agent_preset` lists its teammates, with the subagent control tools; delegation goes at most two levels deep from the chat you started. `crew_member_create` adds a member for an agent: abilities and connections no member has are left out and named in the result, the Crew tab shows who added it, and `first_task` starts it at once as a child of the calling chat. A shipped member added in a later version joins an existing crew once; one you removed is not added back.
 
+A member can have a tool-call budget, `maxToolCalls`, set in the editor or by `crew_member_create`'s `max_tool_calls`. It counts every tool call the member makes while answering one message, calls inside `run_code` included, and resets when the next message starts. Once it is used up, further calls are refused before they run with a note telling the member to answer with what it has; `ask_user_question` stays allowed. No shipped member has a budget.
+
 -----
 
 <a id="understand-the-implementation"></a>
@@ -49,7 +51,7 @@ Every member also gets `ask_crew`, one [`subagent` declaration](../../subagent/t
 <details>
 <summary>Implementation internals — click to expand</summary>
 
-`CrewRosterService` is a `TypertRemoteService` under `crewRoster`. `presetFor(member, crew)` builds the preset rows: it appends one line per teammate to the instructions and mounts `dsh-tool-subagent` as `ask_crew` with `provider: spawn`, `allowedAgentPresets` set to the teammates and `maxDepth: 2`. `capAbilities` limits a created member to the crew's abilities and approved connections. A change writes `members.json` atomically with mode 0600, then disposes and registers every member's preset, since each lists its teammates. The file records the shipped ids it was offered, so `migrate` adds a newly shipped member once and replaces shipped instructions the user never edited. The agent preset registry keeps existing Agents on the composition they started with. An unreadable file is left as it is and the shipped crew runs until it is fixed.
+`CrewRosterService` is a `TypertRemoteService` under `crewRoster`. `presetFor(member, crew)` builds the preset rows: it appends one line per teammate to the instructions and mounts `dsh-tool-subagent` as `ask_crew` with `provider: spawn`, `allowedAgentPresets` set to the teammates and `maxDepth: 2`. `capAbilities` limits a created member to the crew's abilities and approved connections. The budget is a `tools/pre-execute` gate that counts calls per Session and clears the count on `turn/start` and `session/disposed`. A change writes `members.json` atomically with mode 0600, then disposes and registers every member's preset, since each lists its teammates. The file records the shipped ids it was offered, so `migrate` adds a newly shipped member once and replaces shipped instructions the user never edited. The agent preset registry keeps existing Agents on the composition they started with. An unreadable file is left as it is and the shipped crew runs until it is fixed.
 
 | Source | Contents |
 |---|---|
@@ -93,6 +95,26 @@ The instructions cost what the user writes, usually 60 to 160 words, plus about 
 #### KV Cache effect
 
 Prefix-stable until the crew changes: any change alters every member's teammate lines and `ask_crew` list for new chats. Running chats keep the preset they started with.
+
+### Tool-call budget
+
+#### What the model sees
+
+A budgeted member sees nothing until its budget for the message is used up. Each call after that returns this refusal as the tool result:
+
+##### Refusal
+
+```markdown
+Research has used its budget of 40 tool calls for this message. Stop calling tools and answer now with what you have, saying what is left undone.
+```
+
+#### Token effect
+
+About 35 tokens per refused call; nothing while the budget lasts.
+
+#### KV Cache effect
+
+None; a refusal is an ordinary tool result appended to history.
 
 ### Create tool
 

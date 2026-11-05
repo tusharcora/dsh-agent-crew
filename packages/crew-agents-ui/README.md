@@ -68,7 +68,7 @@ Below the roster, the Crew tab lists the crew's MCP connections, who uses each a
 
 Open **Crew** from the right panel's guide in any Session. Each row shows the member's face, name, status in words (Working, Needs you or Idle), its Session count and a **New session** button that starts a Session with that member's preset.
 
-**Edit** on a row and **Add crew member** below the list open the editor: name, what the member does (the Chief of staff reads it when choosing whom to ask), instructions, face shape and colour, file access, commands, web pages, scheduled tasks and connections. Connections whose account you have not approved are shown switched off. The Chief of staff can be renamed and re-instructed but not removed, and its tools are fixed. **Remove** asks once more; past chats stay. Saving takes effect for new chats; running chats keep the setup they started with.
+**Edit** on a row and **Add crew member** below the list open the editor: name, what the member does (the Chief of staff reads it when choosing whom to ask), instructions, tool calls per message (0 for no limit), face shape and colour, file access, commands, web pages, scheduled tasks and connections. Connections whose account you have not approved are shown switched off. The Chief of staff can be renamed and re-instructed but not removed, and its tools are fixed. **Remove** asks once more; past chats stay. Saving takes effect for new chats; running chats keep the setup they started with.
 
 ### Learning
 

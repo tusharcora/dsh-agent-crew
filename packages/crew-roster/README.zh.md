@@ -41,6 +41,8 @@ kind: "package-reference"
 
 每位成员还获得 `ask_crew`：一个 [`subagent` 声明](../../subagent/tool-subagent/README.zh.md)，其 `agent_preset` 列出该成员的队友，另有子智能体控制工具；从你发起的对话算起，委派最多两层。`crew_member_create` 为智能体添加成员：没有任何成员具备的能力和连接会被省略并在结果中列出，Crew 标签页会显示是谁添加的，`first_task` 会立即以调用对话的子智能体身份启动它。新版本随附的成员只会加入已有 crew 一次；你移除的成员不会被加回。
 
+成员可以有工具调用额度 `maxToolCalls`，在编辑器中设置，或由 `crew_member_create` 的 `max_tool_calls` 设置。它统计成员回答一条消息时的所有工具调用（包括 `run_code` 内部的调用），并在下一条消息开始时重置。用完后，后续调用会在执行前被拒绝，并提示成员用现有结果作答；`ask_user_question` 仍然允许。随附的成员都没有设置额度。
+
 -----
 
 <a id="understand-the-implementation"></a>
@@ -49,7 +51,7 @@ kind: "package-reference"
 <details>
 <summary>实现细节——点击展开</summary>
 
-`CrewRosterService` 是位于 `crewRoster` 下的 `TypertRemoteService`。`presetFor(member, crew)` 生成预设行：它在说明末尾为每位队友追加一行，并以 `ask_crew` 挂载 `dsh-tool-subagent`，使用 `provider: spawn`、设为队友的 `allowedAgentPresets` 和 `maxDepth: 2`。`capAbilities` 把新建成员限制在 crew 已有的能力和已批准的连接之内。每次变更以 0600 权限原子写入 `members.json`，然后注销并重新注册每位成员的预设，因为每个预设都列出了队友。文件记录已提供过的随附成员 id，因此 `migrate` 只会添加一次新随附的成员，并替换用户从未编辑过的随附说明。智能体预设注册表让已有 Agent 保持其启动时的组合。无法读取的文件保持原样，在修复前运行随附的 crew。
+`CrewRosterService` 是位于 `crewRoster` 下的 `TypertRemoteService`。`presetFor(member, crew)` 生成预设行：它在说明末尾为每位队友追加一行，并以 `ask_crew` 挂载 `dsh-tool-subagent`，使用 `provider: spawn`、设为队友的 `allowedAgentPresets` 和 `maxDepth: 2`。`capAbilities` 把新建成员限制在 crew 已有的能力和已批准的连接之内。额度是一个 `tools/pre-execute` 关卡，按 Session 计数，并在 `turn/start` 和 `session/disposed` 时清零。每次变更以 0600 权限原子写入 `members.json`，然后注销并重新注册每位成员的预设，因为每个预设都列出了队友。文件记录已提供过的随附成员 id，因此 `migrate` 只会添加一次新随附的成员，并替换用户从未编辑过的随附说明。智能体预设注册表让已有 Agent 保持其启动时的组合。无法读取的文件保持原样，在修复前运行随附的 crew。
 
 | 源码 | 内容 |
 |---|---|
@@ -93,6 +95,26 @@ Your teammates. Hand one a self-contained task with ask_crew, passing its id as 
 #### KV Cache 影响
 
 在 crew 变化之前前缀保持稳定：任何变更都会改变每位成员新对话的队友行和 `ask_crew` 列表。正在运行的对话保持其启动时的预设。
+
+### 工具调用额度
+
+#### 模型看到的内容
+
+设置了额度的成员在用完该消息的额度之前看不到任何内容。之后的每次调用都会以下面的拒绝作为工具结果返回：
+
+##### 拒绝
+
+```markdown
+Research has used its budget of 40 tool calls for this message. Stop calling tools and answer now with what you have, saying what is left undone.
+```
+
+#### Token 影响
+
+每次被拒绝的调用约 35 个 token；额度未用完时没有影响。
+
+#### KV Cache 影响
+
+无；拒绝是追加到历史中的普通工具结果。
 
 ### 创建工具
 

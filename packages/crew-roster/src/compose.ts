@@ -6,6 +6,23 @@ import type { CrewMember, FileAccess, MemberAbilities, MemberBody } from './type
 /** Member ids: `crew-` and lowercase letters, the form crew-improve, crew-connections and crew-workflows accept. */
 export const MEMBER_ID = /^crew-[a-z]+$/
 
+/** Highest tool-call budget a member may have; a larger need is better served by no limit. */
+export const MAX_TOOL_CALLS = 1000
+
+/** Tools a member may still call after its budget is used up: asking the user is how it reports being stuck. */
+export const BUDGET_EXEMPT: ReadonlySet<string> = new Set(['ask_user_question'])
+
+/**
+ * The refusal a member reads once its budget for the message is used up.
+ * @param member - the member.
+ * @param limit - its budget.
+ * @returns the refusal.
+ */
+export function budgetRefusal(member: Pick<CrewMember, 'name'>, limit: number): string {
+  return `${member.name} has used its budget of ${String(limit)} tool calls for this message. Stop calling tools and answer now `
+    + 'with what you have, saying what is left undone.'
+}
+
 /** Most members one crew may have. */
 export const MAX_MEMBERS = 16
 
@@ -39,6 +56,10 @@ export function memberProblems(member: CrewMember): readonly string[] {
   if (!BODIES.includes(member.face.body)) problems.push('Choose a face shape.')
   if (!COLOR.test(member.face.color)) problems.push('Choose a face colour.')
   if (!['none', 'read', 'write'].includes(member.abilities.files)) problems.push('Choose how the member may use files.')
+  const budget = member.maxToolCalls
+  if (budget !== undefined && (!Number.isInteger(budget) || budget < 0 || budget > MAX_TOOL_CALLS)) {
+    problems.push(`Set a tool-call budget from 0 (no limit) to ${String(MAX_TOOL_CALLS)}.`)
+  }
   const unknown = member.connections.filter(id => !CONNECTIONS.some(entry => entry.id === id))
   if (unknown.length > 0) problems.push(`Unknown connections: ${unknown.join(', ')}.`)
   return problems

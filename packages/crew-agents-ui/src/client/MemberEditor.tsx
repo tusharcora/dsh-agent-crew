@@ -92,6 +92,18 @@ export function MemberEditor({ initial, title, connections, Face, save, remove, 
         </label>
         <span id={`${base}-persona`} className={css.hint}>{t('edit.personaHint', { token: '{{model}}' })}</span>
       </div>
+      <div className={css.field}>
+        <label className={css.field}>{t('edit.budget')}
+          <input className={css.input} type="number" min={0} max={1000} step={1} inputMode="numeric" value={draft.maxToolCalls ?? 0}
+            aria-describedby={`${base}-budget`}
+            onChange={(event) => {
+              const { maxToolCalls: _previous, ...rest } = draft
+              const value = Math.max(0, Math.trunc(Number(event.target.value) || 0))
+              setDraft(value === 0 ? rest : { ...rest, maxToolCalls: value })
+            }} />
+        </label>
+        <span id={`${base}-budget`} className={css.hint}>{t('edit.budgetHint')}</span>
+      </div>
       <fieldset className={css.group}>
         <legend className={css.legend}>{t('edit.face')}</legend>
         <div className={css.bodies}>
