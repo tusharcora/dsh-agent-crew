@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew connections",
+    "description": "Connects crew members to Google (Gmail and Calendar) through a sign-in, keeps the access token fresh, and stops crew members from sending, posting, deleting, merging or booking on their own."
+  }
+}

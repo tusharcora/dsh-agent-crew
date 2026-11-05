@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew faces",
+    "description": "Draws a small face for each crew agent, chosen from its id, for other crew plugins to show."
+  }
+}

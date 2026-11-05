@@ -1,0 +1,15 @@
+/* Each face sets --crew-blink-delay so faces side by side do not blink together. */
+.eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: blink 5s var(--crew-blink-delay, 0ms) infinite;
+}
+
+@keyframes blink {
+  0%, 94%, 100% { transform: scaleY(1); }
+  97% { transform: scaleY(0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eye { animation: none; }
+}

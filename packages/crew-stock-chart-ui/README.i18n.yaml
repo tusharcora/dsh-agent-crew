@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-stock-chart-ui/README.md
+/:
+  en: c73082cf1ae5e9a6
+  zh: 2448b11f116b383a
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui:
+  en: 645559e218968bcb
+  zh: d3b4e141c54ae1eb
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/summary:
+  en: d6e6c8b7627b19d2
+  zh: 9ff4cb1a359ccbb8
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/use-this-package:
+  en: 422972c2ad225a7a
+  zh: ea2f9e31e7c9933a
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/understand-the-implementation:
+  en: a01bb6f9ab28382c
+  zh: 48b8a845cdca11dd
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/further-exploration:
+  en: 72a28cad8ebcdda9
+  zh: e8a96dc04f1cd156
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/model-experience:
+  en: 5817ca0042f8ba06
+  zh: 7b3c4e9be6d4b959
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/known-limitations-and-deferred-work:
+  en: 26e2ad2ddfcdae95
+  zh: dd3f0d215184201b
+/deepseek-ai-dsh-experimental-crew-stock-chart-ui/known-limitations-and-deferred-work/dev-note:
+  en: ccfbe52b292a04ac
+  zh: 420bd97c6e4aba75

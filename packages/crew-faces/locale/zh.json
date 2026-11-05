@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew 头像",
+    "description": "根据每位 crew 智能体的 ID 绘制一个小头像，供其他 crew 插件显示。"
+  }
+}

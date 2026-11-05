@@ -1,0 +1,92 @@
+/** Crew members and their live status, derived from the Session list and Session UI status. */
+import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
+import type { SessionStatusSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
+// Type-only: brings the `mainView` reference source into `retainedBy`.
+import type {} from '@deepseek-ai/dsh-client-ui-session/client'
+import type { SessionId } from '@deepseek-ai/dsh-session/types'
+// Type-only: pulls the `agentPreset` Session projection value into this program.
+import type {} from '@deepseek-ai/dsh-agent-preset-registry/types'
+
+/** Preset ids of the crew, in roster order; they match the presets `dsh-experimental-crew-agents` declares. */
+export const CREW_MEMBERS = ['crew-chief', 'crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life'] as const
+
+/** One crew member, identified by its preset id. */
+export type CrewMemberId = (typeof CREW_MEMBERS)[number]
+
+/** `needs-you` while any of the member's Sessions awaits the user, else `working` while one runs, else `idle`. */
+export type CrewStatus = 'working' | 'needs-you' | 'idle'
+
+/** One member's live state. */
+export interface CrewMemberState {
+  readonly id: CrewMemberId
+  readonly status: CrewStatus
+  /** Listed Sessions running this member's preset, in list order. */
+  readonly sessions: readonly SessionId[]
+  /** Whether one of the member's Sessions is open in the main view. */
+  readonly open: boolean
+  /** The member's own chat: its most recently updated Session outside any workspace. */
+  readonly home: SessionId | undefined
+  /** Session to open for this member: the one awaiting the user, else one running, else its own chat, else the latest. */
+  readonly focus: SessionId | undefined
+}
+
+/**
+ * Fold the Session list and UI status into one state per crew member.
+ * @param list - Session list, whose rows carry their recorded preset.
+ * @param status - running and pending-interaction facts by Session.
+ * @param inWorkspace - Sessions that belong to a workspace; the rest are members' own chats.
+ * @returns every member in roster order.
+ */
+export function crewRoster(
+  list: SessionListState, status: SessionStatusSnapshot, inWorkspace: ReadonlySet<SessionId> = new Set(),
+): readonly CrewMemberState[] {
+  interface Fold {
+    sessions: SessionId[]
+    working: SessionId | undefined
+    needsYou: SessionId | undefined
+    open: boolean
+    home: { readonly id: SessionId; readonly updatedAt: number } | undefined
+    latest: { readonly id: SessionId; readonly updatedAt: number } | undefined
+  }
+  const members = new Map<string, Fold>(
+    CREW_MEMBERS.map(id => [id, {
+      sessions: [], working: undefined, needsYou: undefined, open: false, home: undefined, latest: undefined,
+    }]),
+  )
+  for (const summary of Object.values(list.byId)) {
+    const preset = summary.projectionValues?.agentPreset
+    const member = typeof preset === 'string' ? members.get(preset) : undefined
+    if (member === undefined) continue
+    const live = status.get(summary.id)
+    member.sessions.push(summary.id)
+    if (live?.pendingInteraction !== undefined) member.needsYou ??= summary.id
+    if (live?.running ?? summary.running) member.working ??= summary.id
+    if ((summary.retainedBy.mainView ?? 0) > 0) member.open = true
+    const stamp = { id: summary.id, updatedAt: summary.updatedAt }
+    if (member.latest === undefined || summary.updatedAt > member.latest.updatedAt) member.latest = stamp
+    if (!inWorkspace.has(summary.id) && (member.home === undefined || summary.updatedAt > member.home.updatedAt)) member.home = stamp
+  }
+  return CREW_MEMBERS.map((id) => {
+    const member = members.get(id)
+    const state: CrewStatus = member?.needsYou !== undefined ? 'needs-you' : member?.working !== undefined ? 'working' : 'idle'
+    return {
+      id, status: state, sessions: member?.sessions ?? [], open: member?.open ?? false, home: member?.home?.id,
+      focus: member?.needsYou ?? member?.working ?? member?.home?.id ?? member?.latest?.id,
+    }
+  })
+}
+
+/**
+ * Compare two rosters by value, so an unchanged roster keeps its snapshot identity.
+ * @param left - previous roster.
+ * @param right - next roster.
+ * @returns whether both hold the same members, statuses and Sessions.
+ */
+export function sameRoster(left: readonly CrewMemberState[], right: readonly CrewMemberState[]): boolean {
+  return left.length === right.length && left.every((member, index) => {
+    const other = right[index]
+    return other !== undefined && member.id === other.id && member.status === other.status
+      && member.open === other.open && member.focus === other.focus && member.home === other.home
+      && member.sessions.length === other.sessions.length && member.sessions.every((id, at) => id === other.sessions[at])
+  })
+}

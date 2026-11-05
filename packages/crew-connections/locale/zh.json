@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew 连接",
+    "description": "通过登录把 crew 成员连接到 Google（Gmail 和日历），保持访问令牌有效，并阻止 crew 成员自行发送、发布、删除、合并或预订。"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew stock chart",
+    "description": "Lets agents show an interactive stock chart from Yahoo Finance with range buttons, line or candles, and live refresh, always labelled with its source and fetch time."
+  }
+}

@@ -1,0 +1,85 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-agents/README.md
+/:
+  en: 2c1c43d916f0218a
+  zh: 2a4067d9d6a39116
+/deepseek-ai-dsh-experimental-crew-agents:
+  en: cefc3b7b1d910732
+  zh: c190ba65b1c98370
+/deepseek-ai-dsh-experimental-crew-agents/summary:
+  en: 9494a8e439414bf1
+  zh: c9d6bc019f9abe73
+/deepseek-ai-dsh-experimental-crew-agents/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-experimental-crew-agents/use-this-package:
+  en: 0ba71b205211de60
+  zh: 598966e3230aad99
+/deepseek-ai-dsh-experimental-crew-agents/use-this-package/model-per-specialist:
+  en: 58a6c08b5ddeb4bc
+  zh: cfaa24194cf382cb
+/deepseek-ai-dsh-experimental-crew-agents/use-this-package/agent-teams:
+  en: 710368a93214e580
+  zh: 59e88554ee3967a8
+/deepseek-ai-dsh-experimental-crew-agents/use-this-package/code-mode-and-mcp-servers:
+  en: 9f919cfc804ee5ab
+  zh: 70db812d2ce8d7bd
+/deepseek-ai-dsh-experimental-crew-agents/use-this-package/approvals:
+  en: 8ac58676cf91ddbf
+  zh: 4779255f3e7b3348
+/deepseek-ai-dsh-experimental-crew-agents/understand-the-implementation:
+  en: 42310ad40d913fdd
+  zh: a955a7aa6d03d9a2
+/deepseek-ai-dsh-experimental-crew-agents/further-exploration:
+  en: 26565a0e88c00146
+  zh: e39d2aae7bc6542a
+/deepseek-ai-dsh-experimental-crew-agents/model-experience:
+  en: 215e7ba838619b7b
+  zh: a311da3843709f90
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/crew-personas:
+  en: 10ec0a52f1f81d91
+  zh: 233adfd9e0b48077
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/crew-personas/what-the-model-sees:
+  en: 9b968426b8131d6e
+  zh: 4be40b1e2ed1144c
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/crew-personas/what-the-model-sees/chief-of-staff-persona:
+  en: a9d7326b0dce90d5
+  zh: 6a6679e3baa172b3
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/crew-personas/token-effect:
+  en: f754cbce1d0d346e
+  zh: 6979f2804c8587d7
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/crew-personas/kv-cache-effect:
+  en: 96e99aa05fbe9784
+  zh: c16b811a33a21240
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/code-mode-and-mcp-tools:
+  en: a4691a51d001c8fe
+  zh: 69c6d55d2b434f94
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/code-mode-and-mcp-tools/what-the-model-sees:
+  en: 88879928686b2d72
+  zh: 942f8110539b6f06
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/code-mode-and-mcp-tools/token-effect:
+  en: ae4ce938cfccaf24
+  zh: aeabb84dae85de03
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/code-mode-and-mcp-tools/kv-cache-effect:
+  en: 705d20492e61c092
+  zh: 9cb3f18d78715143
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/delegation-tools:
+  en: e4ebfdeb15abadea
+  zh: aae9f25f3cd4d00b
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/delegation-tools/what-the-model-sees:
+  en: 77f946aad0fce455
+  zh: 0396675e847caa16
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/delegation-tools/token-effect:
+  en: 66ef224eadc6815a
+  zh: 28b5211d25f8c33d
+/deepseek-ai-dsh-experimental-crew-agents/model-experience/delegation-tools/kv-cache-effect:
+  en: 9d9584c9b231049d
+  zh: a78a62c221ed91df
+/deepseek-ai-dsh-experimental-crew-agents/known-limitations-and-deferred-work:
+  en: 5445c21768972cf9
+  zh: 92c83db7ca1b4508
+/deepseek-ai-dsh-experimental-crew-agents/known-limitations-and-deferred-work/dev-note:
+  en: cc8b9bfd9c865739
+  zh: 1251ffd359bb8d79
