@@ -178,7 +178,7 @@ export function Editor({ initial, members, save, run, remove, t }: EditorProps) 
           <Button size="sm" variant="ghost" type="button" onClick={() => { setConfirming(false) }}>{t('cancelDelete')}</Button>
         </div>
       )}
-      <p className={status?.bad === true ? css.bad : css.muted} role="status" aria-live="polite">{status?.text}</p>
+      <p className={status?.bad === true ? css.bad : css.muted} role="status">{status?.text}</p>
     </form>
   )
 }

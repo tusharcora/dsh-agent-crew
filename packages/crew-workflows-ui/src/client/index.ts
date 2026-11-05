@@ -53,7 +53,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         const result = await outcome<WorkflowDefinition>(() => api.save(definition))
         return result.ok ? { saved: result.value } : { message: result.message }
       },
-      remove: async id => (await outcome(() => api.remove(id))).ok,
+      remove: async id => (await outcome(() => api.deleteWorkflow(id))).ok,
       run: async (id) => {
         const result = await outcome<string>(() => api.run(id))
         return result.ok ? undefined : result.message

@@ -37,7 +37,7 @@ kind: "package-reference"
 |---|---|
 | `state()` | `{ ok: true, value: { workflows, runs } }` |
 | `save(definition)` | 带 id 的已保存定义，或阻止保存的问题 |
-| `remove(id)` | 成功；过往运行仍会列出 |
+| `deleteWorkflow(id)` | 成功；过往运行仍会列出 |
 | `run(id)` | 新运行的 id；拒绝草稿和无效定义 |
 | `cancel(runId)` | 成功，或该运行未在运行 |
 

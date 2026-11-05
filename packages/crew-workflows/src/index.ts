@@ -208,8 +208,8 @@ export class CrewWorkflows extends TypertRemoteService {
    * @param id - workflow id.
    * @returns success.
    */
-  @Remote('remove')
-  async remove(id: string): Promise<WorkflowsResult> {
+  @Remote('deleteWorkflow')
+  async deleteWorkflow(id: string): Promise<WorkflowsResult> {
     await this.change(file => ({ ...file, workflows: file.workflows.filter(entry => entry.id !== id) }))
     return { ok: true, value: true }
   }

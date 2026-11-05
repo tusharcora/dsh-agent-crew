@@ -162,7 +162,7 @@ export function KanbanBoard({ team, move, t }: KanbanBoardProps) {
         <Detail task={opened.task} column={opened.column} busy={busy} t={t}
           onMove={(to) => { void run(opened.task, opened.column, to) }} onClose={() => { setOpenId(undefined) }} />
       )}
-      <p className={status?.failed === true ? css.error : css.status} role="status" aria-live="polite">{status?.text}</p>
+      <p className={status?.failed === true ? css.error : css.status} role="status">{status?.text}</p>
     </div>
   )
 }

@@ -37,7 +37,7 @@ The [crew-agents](../crew-agents/README.md) bundle mounts this package with its 
 |---|---|
 | `state()` | `{ ok: true, value: { workflows, runs } }` |
 | `save(definition)` | the saved definition with its id, or the problems that stop it |
-| `remove(id)` | success; past runs stay listed |
+| `deleteWorkflow(id)` | success; past runs stay listed |
 | `run(id)` | the new run id; refuses drafts and invalid definitions |
 | `cancel(runId)` | success, or that the run is not running |
 

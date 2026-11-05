@@ -92,8 +92,8 @@ describe('RunView', () => {
     const cancel = vi.fn()
     const handoffs = { View: () => <p>handoffs view</p>, helpers: { open, Face: () => null, nameOf: () => '', designOf: () => undefined }, t: vi.fn() } as never as HandoffsWithCopy
     render(<RunView run={run} members={members} handoffs={handoffs} cancel={cancel} t={t} />)
-    expect(screen.getByRole('region', { name: 'Done, 1 steps' }).textContent).toContain('Find news · Ren')
-    expect(screen.getByRole('region', { name: 'Waiting, 1 steps' }).textContent).toContain('Draft · Mae')
+    expect(screen.getByRole('region', { name: 'Done, steps: 1' }).textContent).toContain('Find news · Ren')
+    expect(screen.getByRole('region', { name: 'Waiting, steps: 1' }).textContent).toContain('Draft · Mae')
     expect(screen.getByText('handoffs view').textContent).toBe('handoffs view')
     fireEvent.click(screen.getByRole('button', { name: 'Open the lead Session' }))
     expect(open).toHaveBeenCalledWith('s-lead')
