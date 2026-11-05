@@ -1,0 +1,72 @@
+.page {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+
+.title { margin: 0; font-size: 24px; font-weight: 600; }
+
+.section { display: flex; flex-direction: column; gap: 8px; }
+
+.heading {
+  margin: 0;
+  color: var(--dsw-alias-label-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.chips, .list { display: flex; margin: 0; padding: 0; list-style: none; }
+.chips { flex-wrap: wrap; gap: 6px; }
+.list { flex-direction: column; gap: 6px; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 6px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: var(--dsw-radius-xl);
+  background: var(--dsw-alias-bg-layer-1);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.chip:hover { background: var(--dsw-alias-interactive-bg-hover); }
+.chip[data-status='needs-you'] { border-color: var(--dsw-alias-state-warn-primary); }
+.chip[data-status='working'] { border-color: var(--dsw-alias-state-business-primary); }
+
+.status, .muted, .source, .when, .day { color: var(--dsw-alias-label-tertiary); font-size: 12px; }
+.muted { margin: 0; font-size: 13px; }
+.source { margin: 0; }
+.source a, .row a { color: inherit; }
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: var(--dsw-radius-lg);
+  background: var(--dsw-alias-bg-layer-1);
+}
+
+.grow { flex: 1; min-width: 0; }
+
+.row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 10px; }
+.day { flex-basis: 100%; margin-top: 4px; font-weight: 600; color: var(--dsw-alias-label-secondary); }
+.when { min-width: 64px; }
+
+.notice { display: flex; align-items: center; gap: 8px; margin: 0; color: var(--dsw-alias-state-error-primary); }

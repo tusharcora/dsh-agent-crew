@@ -9,6 +9,9 @@ import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type {} from '@deepseek-ai/dsh-client-ui-tool/client'
 import type {} from '@deepseek-ai/dsh-crew-stock-chart/remote'
 import remote from '@deepseek-ai/dsh-crew-stock-chart/remote'
+import type { ComponentType } from 'react'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
+import { StockCard, type QuoteFn, type StockCardProps } from './StockCard.tsx'
 import { StockRow } from './StockRow.tsx'
 import { StockTurnCard } from './StockTurnCard.tsx'
 import { STOCK_CHART_TOOL, stockTurnDefinition } from './stock-turn.ts'
@@ -17,6 +20,23 @@ import { en, zh, type StockChartKey } from './locales.ts'
 declare module '@deepseek-ai/dsh-client-ui-slots' {
   interface LocaleNamespaceMap { stockChart: StockChartKey }
 }
+
+/** The stock card shared with other plugins, which may not import it directly. */
+export interface StockChartCards {
+  readonly Card: ComponentType<StockCardProps>
+  /** Fetch a series without the model; undefined when the reply was lost. */
+  readonly quote: QuoteFn
+  readonly t: TranslateNS<'stockChart'>
+}
+
+declare module '@deepseek-ai/cordis' {
+  interface Context {
+    /** Stock card and quote for other crew pages. */
+    stockChartCards: StockChartCards
+  }
+}
+
+export type { QuoteFn, StockCardProps } from './StockCard.tsx'
 
 /** Registries available before this plugin mounts its Remote. */
 export const inject = ['slots', 'locale', 'remote', 'uiConversation']
@@ -39,6 +59,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
       }
     }
     inner.effect(() => inner.locale.register('stockChart', { en, zh }), 'crew-stock-chart-ui: locale')
+    inner.reflect.provide('stockChartCards', { Card: StockCard, quote, t: inner.locale.bind('stockChart') } satisfies StockChartCards)
     inner.effect(() => inner.uiConversation.events.register(stockTurnDefinition), 'crew-stock-chart-ui: turn data')
     inner.slots.inject('conversation.chat.turnTail', () => inner.slots.register({
       name: 'conversation.chat.turnTail', id: 'stock-charts', order: 30, locale: 'stockChart',

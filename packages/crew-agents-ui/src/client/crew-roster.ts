@@ -4,6 +4,7 @@ import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-worksp
 import type { HostObservable, TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { SessionStatusSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
+import { CREW_FACE_DESIGNS } from '../faces.ts'
 import { crewRoster, sameRoster, type CrewMemberId, type CrewMemberState } from '../roster.ts'
 import type {} from './locales.ts'
 
@@ -67,6 +68,15 @@ export class CrewRoster {
         return () => { for (const dispose of off) dispose() }
       },
     }
+  }
+
+  /**
+   * The member's designed body and colour, for pages that draw it with `ctx.crewFaces.Face`.
+   * @param id - member id.
+   * @returns the face design.
+   */
+  design(id: CrewMemberId): (typeof CREW_FACE_DESIGNS)[CrewMemberId] {
+    return CREW_FACE_DESIGNS[id]
   }
 
   /**

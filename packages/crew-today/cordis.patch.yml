@@ -1,0 +1,6 @@
+# Crew today: the Today page and the calendar and pull-request reads behind it.
+- insert:
+    - id: crew-today
+      name: '@deepseek-ai/dsh-crew-today'
+    - id: crew-today-ui
+      name: '@deepseek-ai/dsh-crew-today-ui'
