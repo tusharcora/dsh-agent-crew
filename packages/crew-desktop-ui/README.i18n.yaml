@@ -1,0 +1,37 @@
+# Bilingual-pair consistency record for README.md (docs/i18n/README.md): per heading
+# section, a hash of its English and Chinese blocks outside code blocks and generated regions.
+# After editing either side, bring the other along and re-record with:
+#   pnpm run verify-translation-pairing --write packages/experimental/crew-desktop-ui/README.md
+/:
+  en: fd84da234a63d5ac
+  zh: 5bc3ca2b5adc0c9e
+/deepseek-ai-dsh-crew-desktop-ui:
+  en: d9282c8f0ed1e841
+  zh: 9fa2fad28e1494ba
+/deepseek-ai-dsh-crew-desktop-ui/summary:
+  en: bb704a49986ef54f
+  zh: 6fee0ba186f3a14a
+/deepseek-ai-dsh-crew-desktop-ui/table-of-contents:
+  en: d152484eb41ac6b4
+  zh: b00dddf4c88f0a45
+/deepseek-ai-dsh-crew-desktop-ui/use-this-package:
+  en: 22a5fe3d507185ba
+  zh: 1c697ad3fbd72143
+/deepseek-ai-dsh-crew-desktop-ui/understand-the-implementation:
+  en: b558c66fc9af80cc
+  zh: 3c6d1ca637bd0716
+/deepseek-ai-dsh-crew-desktop-ui/further-exploration:
+  en: 9ba2bb6048edd305
+  zh: 865d444094927932
+/deepseek-ai-dsh-crew-desktop-ui/model-experience:
+  en: 03c852ffd232fc8f
+  zh: 624575ba9df489ce
+/deepseek-ai-dsh-crew-desktop-ui/model-experience/kv-cache-effect:
+  en: ca75c51c89c2c9b0
+  zh: 477b768cc9dcda1a
+/deepseek-ai-dsh-crew-desktop-ui/known-limitations-and-deferred-work:
+  en: ff61a9db8e974b46
+  zh: d2359dfa404afa96
+/deepseek-ai-dsh-crew-desktop-ui/known-limitations-and-deferred-work/dev-note:
+  en: 1b1046904f84d318
+  zh: d2b3b084ce7576fa

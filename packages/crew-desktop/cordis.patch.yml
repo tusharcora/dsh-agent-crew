@@ -1,0 +1,6 @@
+# Crew desktop: where computer use runs, and the browser's Desktop tab.
+- insert:
+    - id: crew-desktop
+      name: '@deepseek-ai/dsh-crew-desktop'
+    - id: crew-desktop-ui
+      name: '@deepseek-ai/dsh-crew-desktop-ui'
