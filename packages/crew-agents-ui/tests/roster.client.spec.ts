@@ -2,12 +2,11 @@ import { describe, expect, it, vi } from 'vitest'
 import type { SessionListState, SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { SessionStatus, SessionStatusSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
 import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import { t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
 import { CrewRoster, type CrewActions } from '../src/client/crew-roster.ts'
 import { CREW_MEMBERS, crewRoster } from '../src/roster.ts'
-import { en } from '../src/client/locales.ts'
 
 function row(id: string, agentPreset: string | undefined, running = false, open = false, updatedAt = 0): SessionSummary {
   return {
@@ -73,7 +72,7 @@ describe('crewRoster', () => {
 function places(...members: SessionId[][]): WorkspaceSnapshot {
   return {
     items: members.map((sessionIds, index) => ({
-      workspaceId: `ws-${String(index)}` as WorkspaceId, path: `/w${String(index)}`, title: `W${String(index)}`, sessionIds, createdAt: '',
+      workspaceId: `ws-${String(index)}` as WorkspaceId, path: `/w${String(index)}`, title: `W${String(index)}`, sessionIds, createdAt: '', updatedAt: '',
     })),
     archivedSessionIds: [], pinnedSessionIds: [], state: 'idle', phase: 'ready', error: null,
   }
@@ -102,7 +101,7 @@ describe('CrewRoster', () => {
   it('keeps the snapshot identity until a member changes, then notifies subscribers', () => {
     const sessions = source(list(row('mail-1', 'crew-mail')))
     const status = source<SessionStatusSnapshot>(new Map())
-    const roster = new CrewRoster(sessions, status, source(places()), makeTranslate(en), actions())
+    const roster = new CrewRoster(sessions, status, source(places()), t, actions())
     const first = roster.members.getSnapshot()
     const listener = vi.fn()
     roster.members.subscribe(listener)
@@ -118,7 +117,7 @@ describe('CrewRoster', () => {
   it('opens a member\'s existing chat without creating one', async () => {
     const act = actions()
     const roster = new CrewRoster(source(list(row('life-1', 'crew-life'))), source<SessionStatusSnapshot>(new Map()), source(places()),
-      makeTranslate(en), act)
+      t, act)
     expect(await roster.openChat('crew-life')).toBe(true)
     expect(act.openSession).toHaveBeenCalledWith(SessionId('life-1'))
     expect(act.createChat).not.toHaveBeenCalled()
@@ -126,19 +125,19 @@ describe('CrewRoster', () => {
 
   it('creates a member\'s own chat outside any workspace when it has none, and reports failure', async () => {
     const act = actions()
-    const roster = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), makeTranslate(en), act)
+    const roster = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), t, act)
     expect(await roster.openChat('crew-research')).toBe(true)
     expect(act.createChat).toHaveBeenCalledWith('crew-research')
     expect(act.openSession).toHaveBeenCalledWith(SessionId('new-chat'))
     const failing = { ...actions(), openSession: vi.fn(), createChat: vi.fn(async () => undefined) } satisfies CrewActions
-    const other = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), makeTranslate(en), failing)
+    const other = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), t, failing)
     expect(await other.openChat('crew-mail')).toBe(false)
     expect(failing.openSession).not.toHaveBeenCalled()
   })
 
   it('starts a chat in a chosen workspace with the member preset, and names members and statuses', () => {
     const act = actions()
-    const roster = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), makeTranslate(en), act)
+    const roster = new CrewRoster(source(list()), source<SessionStatusSnapshot>(new Map()), source(places()), t, act)
     roster.startInWorkspace('crew-code', 'ws-1' as WorkspaceId)
     expect(act.startInWorkspace).toHaveBeenCalledWith('crew-code', 'ws-1')
     expect(roster.name('crew-chief')).toBe('Chief of staff')

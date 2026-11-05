@@ -2,15 +2,13 @@
 import { useSyncExternalStore } from 'react'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import { t } from './translate.client.ts'
 import type { GoogleStatus } from '@deepseek-ai/dsh-experimental-crew-connections/types'
 import { CrewConnections } from '../src/client/CrewConnections.tsx'
 import { ConnectionsStore, type ConnectionsHost, type CrewSecretRef } from '../src/client/connections.ts'
-import { en } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
-const t = makeTranslate(en)
 const status = (over: Partial<GoogleStatus> = {}): GoogleStatus => ({
   clientConfigured: false, signedIn: false, redirectUri: 'http://127.0.0.1:8765/oauth2callback', signingIn: false, ...over,
 })

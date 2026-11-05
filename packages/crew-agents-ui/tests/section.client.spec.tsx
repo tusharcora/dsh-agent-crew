@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import { t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import { CrewFace } from '@deepseek-ai/dsh-experimental-crew-faces/client'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
@@ -9,11 +9,9 @@ import { CrewHeader } from '../src/client/CrewHeader.tsx'
 import { CrewSection } from '../src/client/CrewSection.tsx'
 import { CREW_FACE_DESIGNS } from '../src/faces.ts'
 import { CREW_MEMBERS, type CrewMemberState } from '../src/roster.ts'
-import { en } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
-const t = makeTranslate(en)
 
 function members(overrides: Partial<Record<string, Partial<CrewMemberState>>>): readonly CrewMemberState[] {
   return CREW_MEMBERS.map(id => ({ id, status: 'idle' as const, sessions: [], open: false, home: undefined, focus: undefined, ...overrides[id] }))
@@ -27,8 +25,8 @@ const active = members({
 
 const workspaces: WorkspaceSnapshot = {
   items: [
-    { workspaceId: 'ws-site' as WorkspaceId, path: '/site', title: 'Website', sessionIds: [], createdAt: '' },
-    { workspaceId: 'ws-default' as WorkspaceId, path: '/d', title: 'default-workspace', sessionIds: [], createdAt: '' },
+    { workspaceId: 'ws-site' as WorkspaceId, path: '/site', title: 'Website', sessionIds: [], createdAt: '', updatedAt: '' },
+    { workspaceId: 'ws-default' as WorkspaceId, path: '/d', title: 'default-workspace', sessionIds: [], createdAt: '', updatedAt: '' },
   ],
   archivedSessionIds: [], pinnedSessionIds: [], state: 'idle', phase: 'ready', error: null,
 }

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { STOCK_RANGES } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
 import { asSeries, changeOf, formatPrice, RANGES } from '../src/client/series.ts'
 import { indexAt, scaleFor } from '../src/client/chart-scale.ts'
-import { series } from './fixture.ts'
+import { series } from './fixture.client.ts'
 
 describe('asSeries', () => {
   it('accepts recorded metadata and keeps optional fields only when present', () => {

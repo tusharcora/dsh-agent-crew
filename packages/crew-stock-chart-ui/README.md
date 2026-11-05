@@ -85,6 +85,6 @@ None; this package neither assembles nor sends a provider request.
 <details>
 <summary>Working context for maintainers — click to expand</summary>
 
-The test series in `tests/fixture.ts` is made up and never shown in the product.
+The test series in `tests/fixture.client.ts` is made up and never shown in the product.
 
 </details>

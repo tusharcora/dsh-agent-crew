@@ -85,6 +85,6 @@ kind: "package-reference"
 <details>
 <summary>维护者工作背景——点击展开</summary>
 
-`tests/fixture.ts` 中的测试序列是虚构的，从不在产品中显示。
+`tests/fixture.client.ts` 中的测试序列是虚构的，从不在产品中显示。
 
 </details>

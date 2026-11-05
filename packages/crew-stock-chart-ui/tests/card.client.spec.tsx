@@ -2,14 +2,18 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { StockQuoteResult, StockRange } from '@deepseek-ai/dsh-experimental-crew-stock-chart/types'
 import { StockCard } from '../src/client/StockCard.tsx'
+// The namespace declaration `TranslateNS<'stockChart'>` resolves against.
+import type {} from '../src/client/index.ts'
 import { en } from '../src/client/locales.ts'
-import { series, seriesFor } from './fixture.ts'
+import { series, seriesFor } from './fixture.client.ts'
 
 afterEach(() => { cleanup(); vi.useRealTimers() })
 
-const t = makeTranslate(en)
+const translate = makeTranslate(en)
+const t: TranslateNS<'stockChart'> = (key, params) => translate(key, params)
 
 async function succeed(_symbol: string, range: StockRange): Promise<StockQuoteResult | undefined> {
   return { ok: true, series: seriesFor(range, 120) }

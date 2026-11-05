@@ -1,12 +1,11 @@
 // @vitest-environment jsdom
 import { cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
-import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
+import { t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import { CrewFace } from '@deepseek-ai/dsh-experimental-crew-faces/client'
 import { CrewPanel } from '../src/client/CrewPanel.tsx'
 import { CREW_MEMBERS, type CrewMemberState } from '../src/roster.ts'
-import { en } from '../src/client/locales.ts'
 
 afterEach(cleanup)
 
@@ -15,7 +14,7 @@ function members(overrides: Partial<Record<string, Partial<CrewMemberState>>>): 
 }
 
 function renderPanel(roster: readonly CrewMemberState[], start = vi.fn(async () => true)) {
-  render(<CrewPanel useMembers={selector => selector(roster)} Face={CrewFace} openChat={start} t={makeTranslate(en)} />)
+  render(<CrewPanel useMembers={selector => selector(roster)} Face={CrewFace} openChat={start} t={t} />)
   return start
 }
 
