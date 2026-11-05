@@ -20,7 +20,13 @@ const patch = yaml.load(readFileSync(new URL(`../${manifest.dsh.bundle.patch}`, 
   schema: entryListSchema,
 }) as { insert: Row[] }[]
 const rows = patch[0]?.insert ?? []
-const presets = rows.filter(row => row.name === '@deepseek-ai/dsh-agent-preset').map(row => row.config as unknown as PresetConfig)
+/** Narrow a preset row's config, failing the suite on a malformed one. */
+function presetConfig(config: Record<string, unknown> | undefined): PresetConfig {
+  const id = config?.['id'], name = config?.['name'], plugins = config?.['plugins']
+  if (typeof id !== 'string' || typeof name !== 'string' || !Array.isArray(plugins)) throw new Error('malformed preset row')
+  return { id, name, plugins: plugins as Row[] }
+}
+const presets = rows.filter(row => row.name === '@deepseek-ai/dsh-agent-preset').map(row => presetConfig(row.config))
 const preset = (id: string): PresetConfig => {
   const found = presets.find(entry => entry.id === id)
   if (found === undefined) throw new Error(`missing preset ${id}`)
@@ -28,11 +34,12 @@ const preset = (id: string): PresetConfig => {
 }
 const SPECIALISTS = ['crew-mail', 'crew-chat', 'crew-code', 'crew-research', 'crew-life']
 
-it('inserts the connections, faces, browser roster and exactly the six crew presets in one layer', () => {
+it('inserts the connections, learning, faces, browser roster and exactly the six crew presets in one layer', () => {
   expect(patch).toHaveLength(1)
   expect(rows[0]?.config?.['homeDirectory']).toBeDefined()
-  expect(rows.slice(0, 3).map(({ id, name }) => ({ id, name }))).toEqual([
+  expect(rows.slice(0, 4).map(({ id, name }) => ({ id, name }))).toEqual([
     { id: 'crew-connections', name: '@deepseek-ai/dsh-experimental-crew-connections' },
+    { id: 'crew-improve', name: '@deepseek-ai/dsh-experimental-crew-improve' },
     { id: 'crew-faces', name: '@deepseek-ai/dsh-experimental-crew-faces' },
     { id: 'crew-agents-ui', name: '@deepseek-ai/dsh-experimental-crew-agents-ui' },
   ])
@@ -96,6 +103,13 @@ describe('connections', () => {
       const names = entry.plugins.map(row => row.name)
       expect(names, entry.id).toContain('@deepseek-ai/dsh-tool-executor-ptc')
       expect(names, entry.id).toContain('@deepseek-ai/dsh-experimental-crew-connections/guard')
+    }
+  })
+
+  it('gives every preset its own approved lessons', () => {
+    for (const entry of presets) {
+      const lessons = entry.plugins.filter(row => row.name === '@deepseek-ai/dsh-experimental-crew-improve/lessons')
+      expect(lessons.map(row => row.config?.['member']), entry.id).toEqual([entry.id])
     }
   })
 

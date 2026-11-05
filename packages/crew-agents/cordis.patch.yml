@@ -1,10 +1,15 @@
 # Crew: five specialist presets, a Chief of staff preset that delegates to them, and the browser roster.
 # Each specialist's model is the `agentOptions` of its `ask_*` row in the Chief preset; unset rows use the
-# Session's model. Every preset runs its tools through run_code (PTC) and mounts the crew write guard. MCP rows read
+# Session's model. Every preset runs its tools through run_code (PTC), mounts the crew write guard and reads its own
+# approved lessons from crew-improve. MCP rows read
 # secrets from the credential store; `disabled` rows wait for an account the user has not approved yet.
 - insert:
     - id: crew-connections
       name: '@deepseek-ai/dsh-experimental-crew-connections'
+      config:
+        homeDirectory: !!js dshHomePath('crew')
+    - id: crew-improve
+      name: '@deepseek-ai/dsh-experimental-crew-improve'
       config:
         homeDirectory: !!js dshHomePath('crew')
     - id: crew-faces
@@ -33,6 +38,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-chief
           - id: tool-ask-user
             name: '@deepseek-ai/dsh-tool-ask-user'
           - id: tool-todo
@@ -92,6 +101,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-mail
           - id: mcp-gmail
             name: '@deepseek-ai/dsh-mcp-client'
             config:
@@ -137,6 +150,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-chat
           - id: mcp-slack
             name: '@deepseek-ai/dsh-mcp-client'
             disabled: true
@@ -177,6 +194,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-code
           - id: mcp-github
             name: '@deepseek-ai/dsh-mcp-client'
             config:
@@ -237,6 +258,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-research
           - id: mcp-firecrawl
             name: '@deepseek-ai/dsh-mcp-client'
             config:
@@ -294,6 +319,10 @@
             name: '@deepseek-ai/dsh-tool-executor-ptc'
           - id: crew-write-guard
             name: '@deepseek-ai/dsh-experimental-crew-connections/guard'
+          - id: crew-lessons
+            name: '@deepseek-ai/dsh-experimental-crew-improve/lessons'
+            config:
+              member: crew-life
           - id: mcp-gcal
             name: '@deepseek-ai/dsh-mcp-client'
             config:

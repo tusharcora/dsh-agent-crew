@@ -64,6 +64,10 @@ kind: "package-reference"
 
 在任意 Session 中从右侧面板的引导页打开 **Crew**。每行显示成员的头像、名称、文字状态（工作中、需要你或空闲）、Session 数量和一个 **新建会话** 按钮，用该成员的预设新建 Session。该标签页只读取状态，不会自行做任何更改。
 
+### 学习
+
+在名册和连接之间，**学习** 列表显示 crew 成员通过 [crew-improve](../crew-improve/README.zh.md) 提出的经验。每条提议显示其成员、经验内容、引用的依据、来自评分还是对话及时间，以及将被替换的经验；用 **批准** 和 **拒绝** 处理。已批准的经验列出批准时间和 **移除** 按钮。列表打开时每 30 秒重新读取一次；不点击就不会有任何更改。
+
 -----
 
 <a id="understand-the-implementation"></a>
@@ -81,6 +85,7 @@ kind: "package-reference"
 | [`src/client/crew-roster.ts`](src/client/crew-roster.ts) | `ctx.crew` 服务与打开对话 |
 | [`src/client/CrewPanel.tsx`](src/client/CrewPanel.tsx) | Crew 标签页 |
 | [`src/client/CrewSection.tsx`](src/client/CrewSection.tsx) | 侧边栏区块 |
+| [`src/client/CrewLearning.tsx`](src/client/CrewLearning.tsx)、[`src/client/learning.ts`](src/client/learning.ts) | 学习列表及其存储 |
 | [`src/client/CrewHeader.tsx`](src/client/CrewHeader.tsx) | 聊天标题徽标 |
 | [`src/faces.ts`](src/faces.ts) | 设计头像 |
 | [`src/client/locales.ts`](src/client/locales.ts) | 名称、状态标签与标签页文案 |

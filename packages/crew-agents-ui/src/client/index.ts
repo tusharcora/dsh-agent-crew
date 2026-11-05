@@ -1,4 +1,4 @@
-/** Browser half of the crew: roster, each member's own chat, the sidebar section, the chat-header badge and the Crew tab. */
+/** Browser half of the crew: roster, own chats, the sidebar section, the chat-header badge and the Crew tab with its learning list. */
 import type { Context } from '@deepseek-ai/cordis'
 import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-workspace/client'
@@ -10,13 +10,16 @@ import type {} from '@deepseek-ai/dsh-api-remotes/client'
 import type {} from '@deepseek-ai/dsh-api-workspace-controller/client'
 import type {} from '@deepseek-ai/dsh-experimental-crew-faces/client'
 import type {} from '@deepseek-ai/dsh-experimental-crew-connections/remote'
+import type {} from '@deepseek-ai/dsh-experimental-crew-improve/remote'
 import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import connectionsRemote from '@deepseek-ai/dsh-experimental-crew-connections/remote'
+import improveRemote from '@deepseek-ai/dsh-experimental-crew-improve/remote'
 import { CrewRoster } from './crew-roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
 import { CrewHeader, type CrewHeaderInjected } from './CrewHeader.tsx'
 import { ConnectionsStore, type CrewSecretRef } from './connections.ts'
+import { LearningStore } from './learning.ts'
 import { en, zh, type CrewKey } from './locales.ts'
 
 export { CREW_MEMBERS, crewRoster, type CrewMemberId, type CrewMemberState, type CrewStatus } from '../roster.ts'
@@ -34,7 +37,7 @@ declare module '@deepseek-ai/cordis' {
   }
 }
 
-/** Services the roster, its surfaces and the connections Remote read. */
+/** Services the roster, its surfaces and the connections and learning Remotes read. */
 export const inject = ['locale', 'sessions', 'workspaces', 'uiSession', 'uiWorkspace', 'slots', 'sidebarRightTabs', 'crewFaces', 'remote']
 
 /** Crew tab implementation identity and keyed Slot dispatch key. */
@@ -56,9 +59,9 @@ async function settle<T>(call: () => Promise<{ readonly ok: true; readonly value
 }
 
 /**
- * Provide `ctx.crew` and register the Crew tab type, then mount the connections Remote and the surfaces that use it.
+ * Provide `ctx.crew` and register the Crew tab type, then mount the connections and learning Remotes and the surfaces that use them.
  * @param ctx - Client plugin context.
- * @returns disposer removing the surfaces before the connections Remote.
+ * @returns disposer removing the surfaces before the Remotes.
  */
 export async function apply(ctx: Context): Promise<() => Promise<void>> {
   ctx.effect(() => ctx.locale.register('crew', { en, zh }), 'crew-agents-ui: locale')
@@ -67,8 +70,10 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
     id: CREW_TAB_ID, kind: 'crew', title: () => t('panel.title'),
     guide: [{ id: 'crew', order: 60, title: () => t('panel.title'), description: () => t('panel.description') }],
   }), 'crew-agents-ui: tab type')
-  const unmount = await ctx.remote.$mount(connectionsRemote)
-  const ui = ctx.inject(['remote.crewConnections', 'remote.credentials'], (inner) => {
+  const unmountConnections = await ctx.remote.$mount(connectionsRemote)
+  const unmountImprove = await ctx.remote.$mount(improveRemote)
+  const unmount = async (): Promise<void> => { await unmountImprove(); await unmountConnections() }
+  const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.credentials'], (inner) => {
     const remote = inner.remote
     const roster = new CrewRoster(inner.sessions.list, inner.uiSession.sessionStatus, inner.workspaces.list, t, {
       openSession: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
@@ -102,11 +107,18 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         return result.ok ? { ok: true, value: true } : result
       }) === true,
     })
+    const learning = new LearningStore({
+      learning: () => settle(() => remote.crewImprove.learning()),
+      approve: id => settle(() => remote.crewImprove.approve(id)),
+      reject: id => settle(() => remote.crewImprove.reject(id)),
+      forget: id => settle(() => remote.crewImprove.forget(id)),
+    })
     const Face = inner.crewFaces.Face
     inner.slots.inject('sidebar.right.pane.tab', () => inner.slots.register({
       name: 'sidebar.right.pane.tab', key: CREW_TAB_ID, locale: 'crew',
       inject: (): CrewTabInjected => ({
-        hooks: { members: roster.members, connections: store.source }, Face, openChat: id => roster.openChat(id),
+        hooks: { members: roster.members, connections: store.source, learning: learning.source }, Face, openChat: id => roster.openChat(id),
+        refreshLearning: () => learning.refresh(), decide: (decision, id) => learning.decide(decision, id),
         refresh: () => store.refresh(), save: (ref, value) => store.save(ref, value), remove: ref => store.remove(ref),
         connectGoogle: () => store.connectGoogle(), disconnectGoogle: () => store.disconnectGoogle(),
         openUrl: (url) => { window.open(url, '_blank', 'noopener') },

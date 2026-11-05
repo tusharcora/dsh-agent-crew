@@ -41,6 +41,7 @@
     "@deepseek-ai/dsh-experimental-crew-agents-ui": "workspace:*",
     "@deepseek-ai/dsh-experimental-crew-connections": "workspace:*",
     "@deepseek-ai/dsh-experimental-crew-faces": "workspace:*",
+    "@deepseek-ai/dsh-experimental-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-mcp-client": "workspace:*",
     "@deepseek-ai/dsh-persona": "workspace:*",
     "@deepseek-ai/dsh-time-context": "workspace:*",

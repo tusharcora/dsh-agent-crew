@@ -66,6 +66,7 @@
     "@deepseek-ai/dsh-client-ui-workspace": "workspace:*",
     "@deepseek-ai/dsh-experimental-crew-connections": "workspace:*",
     "@deepseek-ai/dsh-experimental-crew-faces": "workspace:*",
+    "@deepseek-ai/dsh-experimental-crew-improve": "workspace:*",
     "@deepseek-ai/dsh-session": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

@@ -62,6 +62,10 @@ Connect accounts from the **Connections** list in the Crew tab; [crew-connection
 
 Every preset mounts the crew write guard, which refuses MCP tools that would send, post, buy, delete, merge or book, in direct calls and inside `run_code`. Gmail drafts are allowed and wait for the user. Approval cards that perform such actions after a click arrive with crew-today.
 
+### Learning
+
+Every preset also reads its own approved lessons. After you rate a crew member's message or correct it in a chat, [crew-improve](../crew-improve/README.md) proposes lessons for that member; approve or reject them in the Crew tab's **Learning** list. Lessons change only what the member is told, never its tools, accounts or the write guard.
+
 -----
 
 <a id="understand-the-implementation"></a>

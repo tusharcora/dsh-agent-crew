@@ -64,6 +64,10 @@ Below the roster, the Crew tab lists the crew's MCP connections, who uses each a
 
 Open **Crew** from the right panel's guide in any Session. Each row shows the member's face, name, status in words (Working, Needs you or Idle), its Session count and a **New session** button that starts a Session with that member's preset. The tab only reads status; it changes nothing on its own.
 
+### Learning
+
+Between the roster and the connections, the **Learning** list shows lessons crew members propose through [crew-improve](../crew-improve/README.md). Each proposal names its member, the lesson, the quoted evidence, whether it came from a rating or a chat and when, and the lesson it would replace; **Approve** and **Reject** decide it. Approved lessons are listed with their approval time and a **Remove** button. The list re-reads every 30 seconds while open; nothing changes without a click.
+
 -----
 
 <a id="understand-the-implementation"></a>
@@ -81,6 +85,7 @@ A Session belongs to a member when its listed `agentPreset` projection value equ
 | [`src/client/crew-roster.ts`](src/client/crew-roster.ts) | `ctx.crew` service and chat opening |
 | [`src/client/CrewPanel.tsx`](src/client/CrewPanel.tsx) | Crew tab |
 | [`src/client/CrewSection.tsx`](src/client/CrewSection.tsx) | Sidebar section |
+| [`src/client/CrewLearning.tsx`](src/client/CrewLearning.tsx), [`src/client/learning.ts`](src/client/learning.ts) | Learning list and its store |
 | [`src/client/CrewHeader.tsx`](src/client/CrewHeader.tsx) | Chat header badge |
 | [`src/faces.ts`](src/faces.ts) | Designed faces |
 | [`src/client/locales.ts`](src/client/locales.ts) | Names, status labels and tab copy |
