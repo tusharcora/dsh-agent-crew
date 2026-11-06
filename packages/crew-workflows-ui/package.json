@@ -53,6 +53,7 @@
     "@deepseek-ai/dsh-client-ui-sidebar": "workspace:*",
     "@deepseek-ai/dsh-client-ui-slots": "workspace:*",
     "@deepseek-ai/dsh-crew-agents-ui": "workspace:*",
+    "@deepseek-ai/dsh-crew-faces": "workspace:*",
     "@deepseek-ai/dsh-crew-handoff-ui": "workspace:*",
     "@deepseek-ai/dsh-crew-workflows": "workspace:*",
     "@deepseek-ai/dsh-session": "workspace:*",

@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, expect, it, vi } from 'vitest'
+import { afterEach, expect, it, onTestFinished, vi } from 'vitest'
 import { makeTranslate } from '@deepseek-ai/dsh-client-test-runtime'
 import type { TranslateNS } from '@deepseek-ai/dsh-client-ui-slots'
 import type { CrewMemberState } from '@deepseek-ai/dsh-crew-agents-ui/client'
@@ -88,4 +88,31 @@ it('reports a failed load and retries on click', async () => {
 it('shows the market card once a quote arrives', async () => {
   await mount({ quote: async () => ({ ok: true, series: { symbol: '^GSPC' } as never }) })
   expect(screen.getByText('card ^GSPC')).toBeTruthy()
+})
+
+it('sums up who is waiting, and refreshes a section on click', async () => {
+  const calendar = vi.fn(async () => ({ ok: false as const, reason: 'not-connected' as const, message: '' }))
+  await mount({ calendar })
+  const tiles = screen.getByRole('region', { name: 'At a glance' })
+  expect(within(tiles).getByText('Needs you').parentElement?.textContent).toContain('1waiting for your OK')
+  expect(within(tiles).getByText('Meetings left today').parentElement?.textContent).toContain('not connected')
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Refresh This week' })) })
+  expect(calendar).toHaveBeenCalledTimes(2)
+})
+
+it('marks the event happening now and counts down to the next one', async () => {
+  // Noon keeps both events on today's hour grid whenever the suite runs.
+  vi.useFakeTimers({ toFake: ['Date'] })
+  vi.setSystemTime(new Date(2026, 10, 5, 12, 0))
+  onTestFinished(() => { vi.useRealTimers() })
+  const now = Date.now()
+  const iso = (offset: number) => new Date(now + offset * 60_000).toISOString()
+  await mount({ calendar: async () => ({ ok: true, source, items: [
+    { id: 'a', title: 'Standup', start: iso(-10), end: iso(20), allDay: false },
+    { id: 'b', title: 'Review', start: iso(45), end: iso(75), allDay: false },
+  ] }) })
+  expect(screen.getByText('Now')).toBeTruthy()
+  expect(screen.getByText('in 45 minutes')).toBeTruthy()
+  expect(screen.getByText(/Next up: Review, in 45 minutes/)).toBeTruthy()
+  expect(within(screen.getByRole('region', { name: 'At a glance' })).getByText('Meetings left today').parentElement?.textContent).toContain('2next in 45 minutes')
 })

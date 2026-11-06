@@ -59,7 +59,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         return result.ok ? undefined : result.message
       },
       cancel: (runId) => { void settle(() => api.cancel(runId)) },
-      members: inner.crew.members.getSnapshot().map(member => ({ id: member.id, name: inner.crew.name(member.id) })),
+      members: inner.crew.members.getSnapshot().map(member => ({ id: member.id, name: inner.crew.name(member.id), design: member.face })),
       handoffs: { ...inner.crewHandoffs, t: inner.locale.bind('crewHandoff') },
     })
     inner.slots.inject('main', () => inner.slots.register({ name: 'main', key: WORKFLOWS_PANEL_ID, locale: 'crewWorkflows', inject: injected }, WorkflowsPage))

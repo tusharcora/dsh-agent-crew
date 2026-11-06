@@ -39,6 +39,9 @@
       "path": "../crew-handoff-ui"
     },
     {
+      "path": "../crew-faces"
+    },
+    {
       "path": "../crew-workflows"
     },
     {
