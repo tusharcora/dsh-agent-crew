@@ -58,7 +58,7 @@ kind: "package-reference"
 
 区块使用 `sidebar.sections` 插槽，列出所有成员（包括空闲成员），成员工作中或需要你时显示状态标签。每位成员都有自己的对话：一个不属于任何 Workspace 的 Session，运行在 [crew-connections](../crew-connections/README.zh.md) 提供的成员文件夹中，首次打开时创建。点击一行会打开等待你的 Session，其次是正在运行的，否则是该成员自己的对话。**⋯** 菜单可打开其自己的对话、在任意 Workspace 中与该成员新建对话，或打开 **编辑成员**；标题旁的 **+** 用于添加成员。两者都会在 Crew 标签页中打开编辑器。折叠的轨道只显示头像，但仍为辅助技术和提示提供名称。
 
-徽标使用 `conversation.session.header.actions`，只出现在运行 crew 预设的 Session 中。
+徽标使用 `conversation.session.header.actions`。它显示 Session 运行的成员，以及从其子智能体目录读取的、该 Session 交付了工作的 crew 成员头像：先显示需要你处理的，再显示工作中的（眼睛会移动），最后显示已完成的（变暗）。超过四位时折叠为计数。当 Session 运行某位 crew 成员或已把工作交给某位成员时显示。
 
 ### 连接
 

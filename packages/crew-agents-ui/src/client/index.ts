@@ -13,7 +13,6 @@ import type {} from '@deepseek-ai/dsh-crew-connections/remote'
 import type {} from '@deepseek-ai/dsh-crew-improve/remote'
 import type {} from '@deepseek-ai/dsh-crew-roster/remote'
 import type {} from '@deepseek-ai/dsh-crew-slack/remote'
-import type { SessionId } from '@deepseek-ai/dsh-session/types'
 import connectionsRemote from '@deepseek-ai/dsh-crew-connections/remote'
 import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
 import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
@@ -165,7 +164,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
     }, CrewSection))
     inner.slots.inject('conversation.session.header.actions', () => inner.slots.register({
       name: 'conversation.session.header.actions', id: 'crew-member', order: -20, locale: 'crew',
-      inject: (sessionId: SessionId): CrewHeaderInjected => ({ hooks: { members: roster.members }, Face, sessionId }),
+      inject: (): CrewHeaderInjected => ({ hooks: { members: roster.members }, Face }),
     }, CrewHeader))
   })
   try { await ui } catch (error: unknown) { await ui.dispose(); await unmount(); throw error }

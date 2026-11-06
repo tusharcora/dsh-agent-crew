@@ -67,6 +67,9 @@
     },
     {
       "path": "../crew-slack"
+    },
+    {
+      "path": "../../subagent/subagent"
     }
   ]
 }

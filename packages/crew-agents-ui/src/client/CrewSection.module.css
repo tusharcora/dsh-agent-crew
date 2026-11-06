@@ -164,3 +164,51 @@
   color: var(--dsw-alias-state-error-primary);
   font-size: 12px;
 }
+
+/* Chat header: the Session's own member, then a row of the members it handed work to. */
+.header {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.attached {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding-left: 2px;
+}
+
+.attachedFace {
+  display: inline-flex;
+  padding: 1px;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
+  transition: opacity 160ms ease;
+}
+
+.attachedFace[data-status='working'] {
+  border-color: var(--dsw-alias-state-business-primary);
+}
+
+.attachedFace[data-status='needs-you'] {
+  border-color: var(--dsw-alias-state-warn-primary);
+}
+
+/* A member that finished stays visible but steps back. */
+.attachedFace[data-status='idle'] {
+  opacity: 0.55;
+}
+
+.attachedMore {
+  padding: 0 4px;
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .attachedFace {
+    transition: none;
+  }
+}

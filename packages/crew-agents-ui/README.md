@@ -58,7 +58,7 @@ Each member's face is part of its record and can be changed in the editor; the t
 
 The section uses the `sidebar.sections` slot and lists every member, idle ones included, with a status chip while it works or needs you. Each member has its own chat: a Session outside any workspace, running in the member's folder that [crew-connections](../crew-connections/README.md) provides, and created the first time it is opened. A row opens the Session waiting on you, else one running, else the member's own chat. The **⋯** menu opens the own chat, starts a new chat with the member in any workspace, or opens **Edit member**; the **+** beside the heading adds a member. Both open the editor in the Crew tab. The collapsed rail shows the faces alone, each still named for assistive technology and in its tooltip.
 
-The badge uses `conversation.session.header.actions` and appears only in Sessions that run a crew preset.
+The badge uses `conversation.session.header.actions`. It shows the member a Session runs, then the faces of the crew members the Session handed work to, read from its subagent catalog: those that need you first, then those working, whose eyes move, then those done, dimmed. More than four collapse into a count. It appears when a Session runs a crew member or has handed work to one.
 
 ### Connections
 
