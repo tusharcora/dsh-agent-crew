@@ -126,6 +126,14 @@ function stage(source, out) {
   return staged
 }
 
+function published(name) {
+  try {
+    return execFileSync('npm', ['view', `${name}@${VERSION}`, 'version'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim() === VERSION
+  } catch {
+    return false
+  }
+}
+
 function main(argv) {
   const [source, ...flags] = argv
   if (source === undefined) throw new Error('usage: node scripts/pack.mjs <dsh-checkout>/packages/experimental [--publish]')
@@ -140,6 +148,8 @@ function main(argv) {
   if (flags.includes('--publish')) {
     // The bundle goes last so every package it depends on is already on the registry.
     for (const pkg of [...staged.filter(p => p.name !== BUNDLE), ...staged.filter(p => p.name === BUNDLE)]) {
+      // A retry after a partial run: npm refuses to publish a version twice, so skip the ones already there.
+      if (published(pkg.name)) { console.log(`skipped ${pkg.name}@${VERSION}: already on npm`); continue }
       execFileSync('npm', ['publish', '--access', 'public'], { cwd: pkg.path, stdio: 'inherit' })
     }
   }
