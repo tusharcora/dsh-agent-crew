@@ -17,7 +17,7 @@ import connectionsRemote from '@deepseek-ai/dsh-crew-connections/remote'
 import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
 import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
 import slackRemote from '@deepseek-ai/dsh-crew-slack/remote'
-import { CrewRoster } from './crew-roster.ts'
+import { CrewRoster, latestWorkspace } from './crew-roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
 import { CrewHeader, type CrewHeaderInjected } from './CrewHeader.tsx'
@@ -81,10 +81,23 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
   }
   const ui = ctx.inject(['remote.crewConnections', 'remote.crewImprove', 'remote.crewRoster', 'remote.crewSlack', 'remote.credentials'], (inner) => {
     const remote = inner.remote
+    // Set while core declares `sidebar.sections`. Only the dsh that has it also lets a chat outside any workspace
+    // take input; elsewhere a member's chat opens in the latest workspace instead.
+    // shortcut: the slot stands in for the composer fix; check the dsh version once both ship upstream.
+    let ownChats = false
     const roster = new CrewRoster(inner.sessions.list, inner.uiSession.sessionStatus, inner.workspaces.list, t, {
       openSession: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
       startInWorkspace: (agentPreset, workspaceId) => { inner.uiWorkspace.startSession(workspaceId, { agentPreset }) },
       createChat: async (agentPreset) => {
+        const workspaceId = ownChats ? undefined : latestWorkspace(inner.workspaces.list.getSnapshot())
+        if (workspaceId !== undefined) {
+          try {
+            return await inner.uiWorkspace.connectWorkspace(workspaceId, { agentPreset })
+          } catch (_error: unknown) {
+            // The workspace notice already reports a refused creation.
+            return undefined
+          }
+        }
         const directory = await settle(() => remote.crewConnections.memberDirectory(agentPreset))
         if (directory === undefined || !directory.ok) return undefined
         try {
@@ -150,18 +163,22 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         openUrl: (url) => { window.open(url, '_blank', 'noopener') },
       }),
     }, CrewTab))
-    inner.slots.inject('sidebar.sections', () => inner.slots.register({
-      name: 'sidebar.sections', id: 'crew', order: 10, locale: 'crew',
-      inject: (): CrewSectionInjected => ({
-        hooks: { members: roster.members, workspaces: inner.workspaces.list }, Face,
-        openChat: id => roster.openChat(id), startInWorkspace: (id, workspaceId) => { roster.startInWorkspace(id, workspaceId) },
-        edit: (id) => {
-          roster.requestEdit(id)
-          // Optional: without the right panel the request waits until the Crew tab opens.
-          inner.get('sidebarRight')?.openTab('crew')
-        },
-      }),
-    }, CrewSection))
+    inner.slots.inject('sidebar.sections', () => {
+      ownChats = true
+      const off = inner.slots.register({
+        name: 'sidebar.sections', id: 'crew', order: 10, locale: 'crew',
+        inject: (): CrewSectionInjected => ({
+          hooks: { members: roster.members, workspaces: inner.workspaces.list }, Face,
+          openChat: id => roster.openChat(id), startInWorkspace: (id, workspaceId) => { roster.startInWorkspace(id, workspaceId) },
+          edit: (id) => {
+            roster.requestEdit(id)
+            // Optional: without the right panel the request waits until the Crew tab opens.
+            inner.get('sidebarRight')?.openTab('crew')
+          },
+        }),
+      }, CrewSection)
+      return () => { ownChats = false; off() }
+    })
     inner.slots.inject('conversation.session.header.actions', () => inner.slots.register({
       name: 'conversation.session.header.actions', id: 'crew-member', order: -20, locale: 'crew',
       inject: (): CrewHeaderInjected => ({ hooks: { members: roster.members }, Face }),

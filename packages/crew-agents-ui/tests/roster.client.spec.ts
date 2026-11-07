@@ -5,7 +5,7 @@ import type { HostObservable } from '@deepseek-ai/dsh-client-ui-slots'
 import { ENTRIES, t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
-import { CrewRoster, type CrewActions } from '../src/client/crew-roster.ts'
+import { CrewRoster, latestWorkspace, type CrewActions } from '../src/client/crew-roster.ts'
 import type { CrewMember } from '@deepseek-ai/dsh-crew-roster/types'
 import { crewRoster } from '../src/roster.ts'
 
@@ -206,5 +206,24 @@ describe('editing the crew', () => {
     const roster = await loaded(new CrewRoster(...empty(), t, actions(), fake))
     expect(roster.roster.getSnapshot()).toMatchObject({ loaded: true, failed: true })
     expect(await roster.save(RECORDS[0]!)).toEqual({ message: 'Couldn’t reach dsh to read or change the crew. Try again.' })
+  })
+})
+
+describe('latestWorkspace', () => {
+  const item = (id: string, updatedAt: string) => ({
+    workspaceId: id as WorkspaceId, path: `/p/${id}`, title: id, sessionIds: [], createdAt: updatedAt, updatedAt,
+  })
+  const snapshot = (items: ReturnType<typeof item>[]): WorkspaceSnapshot => ({
+    items, archivedSessionIds: [], pinnedSessionIds: [], state: 'idle', phase: 'ready', error: null,
+  })
+
+  it('picks the most recently updated workspace', () => {
+    expect(latestWorkspace(snapshot([
+      item('old', '2026-01-01T00:00:00.000Z'), item('new', '2026-03-01T00:00:00.000Z'), item('mid', '2026-02-01T00:00:00.000Z'),
+    ]))).toBe('new')
+  })
+
+  it('is undefined without workspaces', () => {
+    expect(latestWorkspace(snapshot([]))).toBeUndefined()
   })
 })

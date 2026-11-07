@@ -7,7 +7,8 @@ import { Service, type Context } from '@deepseek-ai/cordis'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {} from '@deepseek-ai/dsh-subagent'
-import { TeamTaskId } from '@deepseek-ai/dsh-agent-team'
+// Type-only: stock dsh ships no dsh-agent-team, and this plugin then waits for `agentTeams` instead of failing to load.
+import type { TeamTaskId } from '@deepseek-ai/dsh-agent-team'
 import { moveAction } from './moves.ts'
 import type { KanbanColumn, KanbanMoveResult } from './types.ts'
 
@@ -47,7 +48,7 @@ export class CrewKanban extends TypertRemoteService {
     if (action === undefined) return { ok: false, message: `A card can't move from ${from} to ${to}` }
     if (this.ctx.subagents.rootOf(agent) !== agent) return { ok: false, message: 'Only the Team Lead Session can move cards' }
     try {
-      const task = await this.ctx.agentTeams.updateTask(agent, { taskId: TeamTaskId(taskId), expectedRevision, action })
+      const task = await this.ctx.agentTeams.updateTask(agent, { taskId: taskId as TeamTaskId, expectedRevision, action })
       return { ok: true, revision: task.revision }
     } catch (error: unknown) {
       return { ok: false, message: error instanceof Error ? error.message : String(error) }

@@ -40,9 +40,27 @@ Most agent setups give you one agent holding every tool. Crew gives you a team.
 
 Requires [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) with a `web` profile.
 
-**From npm (coming soon).** Crew isn't on npm yet. Once it is, installing will be a single `dsh plugin --profile web add` command. For now, [build it from source](#develop-from-source).
+**From npm (coming soon).** Crew isn't on npm yet. Once it is:
 
-After installing, restart dsh, open **Plugins** and enable **Crew**. The Crew section appears in the sidebar.
+```sh
+dsh plugin --profile web add dsh-agent-crew
+```
+
+Until then, [build it from source](#develop-from-source).
+
+After installing, restart dsh, open **Plugins** and enable **Crew**.
+
+### Compatibility
+
+Crew is built against dsh `>=0.2.2-rc.1 <0.3.0`. A few parts need core features that stock dsh doesn't have yet. Crew still installs and runs without them:
+
+| Feature | On a dsh with the feature | On stock dsh 0.2.2-rc.1 |
+| --- | --- | --- |
+| Crew sidebar section | Members listed in the left sidebar | Open members from the **Crew** tab in the right panel |
+| A member's own chat | Opens in the member's own folder, ready to type | Opens in your most recent workspace |
+| **Board** tab | Moves Team tasks between columns | Waits for dsh's agent-team service, which stock dsh doesn't ship |
+
+Everything else (Handoffs, Tools, Chain of thought, Workflows, Today, Desktop, Slack, the roster and learning) works on stock dsh.
 
 The Design member uses the `web-artifact-designer` skill from `dsh-web-artifact-designer`. Install it in the same profile if you want Design:
 
@@ -62,13 +80,13 @@ Credentials are kept in dsh's credential store, never in plugin files.
 
 ## Quick start
 
-1. Click **Chief of staff** in the Crew sidebar section.
+1. Click **Chief of staff** in the Crew sidebar section (or the **Crew** tab on stock dsh).
 2. Ask for something that needs more than one skill:
    > Research the three best-rated open-source vector databases, compare them in a table, and draft an email to my team with a recommendation.
 3. Open the **Board** and **Handoffs** tabs to watch the Chief of staff split the work between Research and Mail.
 4. The finished draft appears as an approval card. Nothing is sent until you click **Send**.
 
-A member's own chat runs in that member's own directory, so you can start typing right away. To work inside a project, open the member's menu, choose **New chat in…** and pick a workspace.
+A member's own chat runs in that member's own directory, so you can start typing right away (see [Compatibility](#compatibility) for stock dsh). To work inside a project, open the member's menu, choose **New chat in…** and pick a workspace.
 
 ## How it works
 
@@ -130,6 +148,24 @@ Run one package's tests:
 ```sh
 pnpm vitest run packages/experimental/crew-roster
 ```
+
+## Releasing
+
+Crew is published as 20 unscoped packages: `dsh-agent-crew` (the bundle users install) and one `dsh-agent-crew-<name>` per package. They all share one version, set in the root [`package.json`](package.json).
+
+After building the dsh checkout, stage and pack them:
+
+```sh
+node scripts/pack.mjs ../deepseek-harness/packages/experimental
+```
+
+This copies each built package to `dist/packages/`, renames `@deepseek-ai/dsh-crew-*` to `dsh-agent-crew-*`, and replaces `workspace:` specs with real ranges:
+
+- dsh core: `>=0.2.2-rc.1 <0.3.0`, as optional peers, because dsh supplies its own packages at runtime
+- `cordis` `~4.1.0`, `schemastery` `~3.19.0` and `cordis-plugin-include` `~1.1.0`, the versions dsh 0.2.2-rc.1 uses
+- crew packages: the exact shared version
+
+Tarballs land in `dist/tarballs/`. Add `--publish` to publish them all, with the bundle last. Run `npm test` to check the staging rules.
 
 ## Safety model
 

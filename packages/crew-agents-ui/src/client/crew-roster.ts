@@ -9,6 +9,20 @@ import type { CrewMember, RosterResult, RosterState } from '@deepseek-ai/dsh-cre
 import { crewRoster, sameRoster, type CrewMemberId, type CrewMemberState, type RosterEntry } from '../roster.ts'
 import { en } from './locales.ts'
 
+/**
+ * The most recently updated workspace: where a member's chat opens on a dsh whose composer cannot run a chat
+ * outside any workspace.
+ * @param snapshot - workspace list.
+ * @returns the workspace id, or undefined when there is none.
+ */
+export function latestWorkspace(snapshot: WorkspaceSnapshot): WorkspaceId | undefined {
+  let latest: WorkspaceSnapshot['items'][number] | undefined
+  for (const item of snapshot.items) {
+    if (latest === undefined || Date.parse(item.updatedAt) > Date.parse(latest.updatedAt)) latest = item
+  }
+  return latest?.workspaceId
+}
+
 /** What the roster asks the rest of the client to do. */
 export interface CrewActions {
   /**

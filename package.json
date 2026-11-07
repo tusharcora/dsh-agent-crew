@@ -1,0 +1,12 @@
+{
+  "name": "dsh-agent-crew-repo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Source and release scripts for the dsh-agent-crew npm packages",
+  "scripts": {
+    "pack": "node scripts/pack.mjs",
+    "test": "node --test scripts/pack.test.mjs"
+  },
+  "license": "MIT"
+}
