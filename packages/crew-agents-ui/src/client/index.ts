@@ -18,6 +18,7 @@ import improveRemote from '@deepseek-ai/dsh-crew-improve/remote'
 import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
 import slackRemote from '@deepseek-ai/dsh-crew-slack/remote'
 import { CrewRoster, latestWorkspace } from './crew-roster.ts'
+import { memberChats } from '../roster.ts'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
 import { CrewHeader, type CrewHeaderInjected } from './CrewHeader.tsx'
@@ -149,7 +150,7 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
           connections: store.source, learning: learning.source,
         },
         Face, clearEditRequest: () => { roster.requestEdit(undefined) },
-        openChat: id => roster.openChat(id), saveMember: member => roster.save(member), removeMember: id => roster.remove(id),
+        openChat: id => roster.openHome(id), saveMember: member => roster.save(member), removeMember: id => roster.remove(id),
         nameOf: id => roster.name(id),
         slackStatus: () => settle(() => remote.crewSlack.status()),
         slackReconnect: async () => { await settle(() => remote.crewSlack.reconnect()) },
@@ -179,6 +180,22 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
       }, CrewSection)
       return () => { ownChats = false; off() }
     })
+    // Member chats live in the Crew tab, not the sidebar's Ungrouped bucket. Stock dsh has no hideUngrouped.
+    if (typeof inner.uiWorkspace.hideUngrouped === 'function') {
+      inner.effect(() => {
+        let release = (): void => {}
+        const publish = (): void => {
+          const inWorkspace = new Set(inner.workspaces.list.getSnapshot().items.flatMap(item => item.sessionIds))
+          const members = new Set(roster.members.getSnapshot().map(member => member.id))
+          const next = inner.uiWorkspace.hideUngrouped('crew', memberChats(inner.sessions.list.getSnapshot(), inWorkspace, members))
+          release()
+          release = next
+        }
+        const off = [inner.sessions.list, inner.workspaces.list, roster.members].map(source => source.subscribe(publish))
+        publish()
+        return () => { for (const stop of off) stop(); release() }
+      }, 'crew-agents-ui: hide member chats')
+    }
     inner.slots.inject('conversation.session.header.actions', () => inner.slots.register({
       name: 'conversation.session.header.actions', id: 'crew-member', order: -20, locale: 'crew',
       inject: (): CrewHeaderInjected => ({ hooks: { members: roster.members }, Face }),

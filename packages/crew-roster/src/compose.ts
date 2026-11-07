@@ -100,6 +100,21 @@ export function capAbilities(
   return { abilities, connections, dropped }
 }
 
+/** Added to every member that can use the web: current facts first, X included, each with a source and date. */
+export const LIVE_GUIDANCE = '\nBefore answering anything that may have changed recently (news, prices, releases, people, events), '
+  + 'search the web first, including recent posts on x.com, and give each source with its date. Say plainly when you could '
+  + 'not confirm something.'
+
+/** Added to members that touch files: their chat starts in their own folder, and every workspace is reachable from it. */
+export const WORKSPACE_GUIDANCE = '\nYour chat starts in your own folder. To work on one of the user\'s projects, list them with '
+  + 'crew_workspaces, then read files there by path or enter one with working_directory. Changes outside your own folder '
+  + 'ask the user first.'
+
+/** Added to the lead: ask several teammates the same hard question at once and combine their answers. */
+export const HEAVY_GUIDANCE = `\nHeavy mode: for a hard, open-ended or high-stakes question, or whenever the user says "heavy", call ${ASK_TOOL} `
+  + 'several times in the same step, giving the same question to the two to four teammates best suited to it; those calls '
+  + 'run in parallel. Then compare the answers, say where they agree and where they differ, and give one combined answer.'
+
 const row = (id: string, name: string, config?: Record<string, unknown>, disabled?: boolean): PluginRow =>
   ({ id, name, ...config === undefined ? {} : { config }, ...disabled === undefined ? {} : { disabled } })
 
@@ -118,8 +133,12 @@ export function presetFor(member: CrewMember, crew: readonly CrewMember[], platf
       + others.map(entry => `- ${entry.id} (${entry.name}): ${entry.description}`).join('\n')
     : ''
   const { files, shell, web, schedule } = member.abilities
+  const local = files !== 'none' || shell
+  const guidance = [
+    web ? LIVE_GUIDANCE : '', local ? WORKSPACE_GUIDANCE : '', member.lead === true && others.length > 1 ? HEAVY_GUIDANCE : '',
+  ].join('')
   const plugins: PluginRow[] = [
-    row('persona', '@deepseek-ai/dsh-persona', { prefix: `${member.persona.trim()}${roster}\n` }),
+    row('persona', '@deepseek-ai/dsh-persona', { prefix: `${member.persona.trim()}${guidance}${roster}\n` }),
     ...shell ? [row('agent-instructions', '@deepseek-ai/dsh-agent-instructions', { maxBytes: 65536 })] : [],
     row('time-context', '@deepseek-ai/dsh-time-context'),
     row('tool-executor-ptc', '@deepseek-ai/dsh-tool-executor-ptc'),
@@ -139,6 +158,7 @@ export function presetFor(member: CrewMember, crew: readonly CrewMember[], platf
       row('tool-fs', '@deepseek-ai/dsh-tool-fs', files === 'read' ? { write: false, edit: false } : undefined),
       row('tool-fs-search', '@deepseek-ai/dsh-tool-fs-search', { sampleOverCapGlobResults: false }),
     ],
+    ...local ? [row('tool-working-directory', '@deepseek-ai/dsh-tool-working-directory')] : [],
     ...web ? [row('tool-web', '@deepseek-ai/dsh-tool-web', { fetch: true })] : [],
     ...schedule ? [row('tool-schedule', '@deepseek-ai/dsh-tool-schedule')] : [],
     // Presets own the skill tool in the web app; without it a member sees no skills, the host's included.

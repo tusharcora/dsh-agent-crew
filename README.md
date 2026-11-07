@@ -35,6 +35,11 @@ Most agent setups give you one agent holding every tool. Crew gives you a team.
 | **Desktop** | The latest screen a computer-use agent saw, with **Pause** and **Take over**. |
 | **Slack** | Mention the crew in Slack. Each member answers in its own dsh session, and every reply waits for approval. |
 | **Roster** | Add, edit and remove members. Each is stored on disk and registered as a dsh agent preset. |
+| **Preset gallery** | Add ready-made members in one click: Analyst, Writer, Editor, Fact-checker, Devil's advocate, Tutor, Markets and Product manager. Adjust any of them before saving; the Chief of staff can call them once added. |
+| **Own chats** | Each member keeps one chat of its own, in its own folder, so you can talk to it without picking a workspace. The Crew tab always takes you back to it. |
+| **Live web and X** | Members with web access search before answering anything time-sensitive, including recent posts on x.com, and cite each source with its date. |
+| **Heavy mode** | For a hard question, or whenever you say "heavy", the Chief of staff asks two to four teammates the same question in parallel and combines their answers, noting where they disagree. |
+| **Your workspaces** | Members with file access list your workspaces with `crew_workspaces`, read files in any of them and enter one with `working_directory`. Changes outside a member's own folder ask you first. |
 
 ## Install
 
@@ -58,6 +63,7 @@ Crew is built against dsh `>=0.2.2-rc.1 <0.3.0`. A few parts need core features 
 | --- | --- | --- |
 | Crew sidebar section | Members listed in the left sidebar | Open members from the **Crew** tab in the right panel |
 | A member's own chat | Opens in the member's own folder, ready to type | Opens in your most recent workspace |
+| Member chats in the sidebar | Shown only in the Crew section and tab | Also listed under **Ungrouped** |
 | **Board** tab | Moves Team tasks between columns | Waits for dsh's agent-team service, which stock dsh doesn't ship |
 
 Everything else (Handoffs, Tools, Chain of thought, Workflows, Today, Desktop, Slack, the roster and learning) works on stock dsh.

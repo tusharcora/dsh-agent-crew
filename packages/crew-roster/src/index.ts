@@ -5,7 +5,7 @@
  */
 import { randomInt } from 'node:crypto'
 import { readFile } from 'node:fs/promises'
-import { join } from 'node:path'
+import { basename, join } from 'node:path'
 import { Service, type Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
 import { Remote, TypertRemoteService } from '@deepseek-ai/dsh-typert-protocol'
@@ -14,6 +14,7 @@ import { defineTool } from '@deepseek-ai/dsh-tools'
 import type { Agent } from '@deepseek-ai/dsh-agent'
 import type {} from '@deepseek-ai/dsh-agent-preset-registry'
 import type {} from '@deepseek-ai/dsh-subagent'
+import type { Workspace } from '@deepseek-ai/dsh-workspace'
 import type { PreToolDecision, ToolExecution } from '@deepseek-ai/dsh-tools'
 import { BUDGET_EXEMPT, budgetRefusal, capAbilities, idFor, MAX_MEMBERS, memberProblems, presetFor } from './compose.ts'
 import { CONNECTIONS, DEFAULT_MEMBERS, FACE_COLORS, SUPERSEDED_PERSONAS } from './defaults.ts'
@@ -25,6 +26,8 @@ export { CONNECTIONS, DEFAULT_MEMBERS, FACE_COLORS, SUPERSEDED_PERSONAS, type Pl
 
 /** Model-facing tool that adds a crew member. */
 export const CREATE_TOOL = 'crew_member_create'
+/** Name of the tool that lists the user's workspaces. */
+export const WORKSPACES_TOOL = 'crew_workspaces'
 
 declare module '@deepseek-ai/cordis' {
   interface Context {
@@ -89,6 +92,17 @@ function randomLetters(count: number): string {
   return Array.from({ length: count }, () => String.fromCharCode(97 + randomInt(26))).join('')
 }
 
+/**
+ * The workspace list as the model reads it.
+ * @param workspaces - registry records, or undefined without a registry.
+ * @returns one line per workspace, or why there is none.
+ */
+export function workspaceSummary(workspaces: readonly Pick<Workspace, 'title' | 'path'>[] | undefined): string {
+  if (workspaces === undefined) return 'This dsh keeps no workspace list.'
+  if (workspaces.length === 0) return 'The user has no workspaces yet.'
+  return workspaces.map(workspace => `- ${workspace.title.trim() === '' ? basename(workspace.path) : workspace.title}: ${workspace.path}`).join('\n')
+}
+
 /** Stores the crew and keeps one registered preset per member. */
 export class CrewRosterService extends TypertRemoteService {
   static inject = ['agentPresets', 'tools']
@@ -120,6 +134,7 @@ export class CrewRosterService extends TypertRemoteService {
     }, 'crew-roster.presets')
     await this.register()
     this.ctx.effect(() => this.ctx.tools.register(this.createTool()), 'crew-roster.create-tool')
+    this.ctx.effect(() => this.ctx.tools.register(this.workspacesTool()), 'crew-roster.workspaces-tool')
     this.ctx.on('session/event', (session, event) => { if (event.type === 'turn/start') this.calls.delete(session.id) })
     this.ctx.on('session/disposed', (session) => { this.calls.delete(session.id) })
     this.ctx.on('tools/pre-execute', async (exec, next) => this.overBudget(exec) ?? await next())
@@ -263,6 +278,22 @@ export class CrewRosterService extends TypertRemoteService {
   private memberOf(agent: Agent | undefined): CrewMember | undefined {
     const preset = agent === undefined ? null : this.ctx.agentPresets.presetForSession(agent.session)
     return this.members.find(member => member.id === preset)
+  }
+
+  private workspacesTool() {
+    return defineTool({
+      name: WORKSPACES_TOOL,
+      description: 'List the user\'s workspaces (project folders) with their paths. Read files in one by its path, or enter it '
+        + 'with working_directory. Changes outside the folder your chat started in ask the user first.',
+      parameters: {},
+      isConcurrencySafe: () => true,
+      output: {
+        schema: { type: 'object', additionalProperties: false, properties: { summary: { type: 'string', required: true } } },
+        render: (_args, value) => [{ type: 'text', text: value.summary }],
+      },
+      // Optional: a dsh without the workspace registry has no workspaces to list.
+      execute: async () => ({ summary: workspaceSummary(this.ctx.get('workspaceRegistry')?.list()) }),
+    })
   }
 
   private createTool() {

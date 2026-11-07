@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, expect, it, vi } from 'vitest'
 import { ENTRIES, t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
@@ -41,8 +41,8 @@ function renderPanel(roster: readonly CrewMemberState[], start = vi.fn(async () 
 
 it('lists every member with a named face, a status label and a labelled start button', () => {
   renderPanel(members({}))
-  expect(screen.getByRole('region', { name: 'Crew members' })).toBeTruthy()
-  expect(screen.getAllByRole('listitem')).toHaveLength(ENTRIES.length)
+  const list = screen.getByRole('region', { name: 'Crew members' })
+  expect(within(list).getAllByRole('listitem')).toHaveLength(ENTRIES.length)
   expect(screen.getByRole('img', { name: 'Chief of staff' })).toBeTruthy()
   expect(screen.getAllByText('Idle')).toHaveLength(ENTRIES.length)
   expect(screen.getByRole('button', { name: 'Open Research’s chat' })).toBeTruthy()
@@ -139,4 +139,18 @@ it('clears the budget when it is set back to 0', async () => {
   fireEvent.change(budget, { target: { value: '0' } })
   await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Save' })) })
   expect(panel.saveMember.mock.calls[0]?.[0]).not.toHaveProperty('maxToolCalls')
+})
+
+it('offers gallery members not yet on the roster and opens the editor filled from one', async () => {
+  const edits = renderPanel(members({}))
+  const gallery = screen.getByRole('region', { name: 'Add from the gallery' })
+  expect(within(gallery).getAllByRole('listitem').length).toBeGreaterThan(0)
+  fireEvent.click(within(gallery).getByRole('button', { name: 'Add Fact-checker from the gallery' }))
+  expect((screen.getByDisplayValue('Fact-checker') as HTMLInputElement).value).toBe('Fact-checker')
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Add member' })) })
+  expect(edits.saveMember).toHaveBeenCalled()
+  const saved = edits.saveMember.mock.calls[0]?.[0]
+  expect(saved?.id).toBe('')
+  expect(saved?.persona).toMatch(/x\.com/)
+  expect(saved?.abilities.web).toBe(true)
 })

@@ -1,5 +1,5 @@
 /** Crew members and their live status, derived from the Session list and Session UI status. */
-import type { SessionListState } from '@deepseek-ai/dsh-api-session-controller/client'
+import type { SessionListState, SessionSummary } from '@deepseek-ai/dsh-api-session-controller/client'
 import type { SessionStatusSnapshot } from '@deepseek-ai/dsh-client-ui-session/client'
 // Type-only: brings the `mainView` reference source into `retainedBy`.
 import type {} from '@deepseek-ai/dsh-client-ui-session/client'
@@ -63,8 +63,8 @@ export function crewRoster(
     }]),
   )
   for (const summary of Object.values(list.byId)) {
-    const preset = summary.projectionValues?.agentPreset
-    const member = typeof preset === 'string' ? members.get(preset) : undefined
+    const preset = presetOf(summary)
+    const member = preset === undefined ? undefined : members.get(preset)
     if (member === undefined) continue
     const live = status.get(summary.id)
     member.sessions.push(summary.id)
@@ -82,6 +82,34 @@ export function crewRoster(
       id, name, face, status: state, sessions: member?.sessions ?? [], open: member?.open ?? false, home: member?.home?.id,
       focus: member?.needsYou ?? member?.working ?? member?.home?.id ?? member?.latest?.id,
     }
+  })
+}
+
+/**
+ * The preset a listed Session runs. A row listed before its projections are cached carries none; a member's own chat
+ * still runs in `crew/<member id>`, so its folder names the member.
+ * @param summary - Session list row.
+ * @returns the preset id, or undefined when the row says nothing about one.
+ */
+export function presetOf(summary: Pick<SessionSummary, 'projectionValues' | 'cwd'>): string | undefined {
+  const preset = summary.projectionValues?.agentPreset
+  if (typeof preset === 'string') return preset
+  return /[\\/]crew[\\/](crew-[a-z]+)[\\/]?$/.exec(summary.cwd ?? '')?.[1]
+}
+
+/**
+ * Members' own chats: Sessions running a crew preset outside every workspace, which the Crew tab lists instead of the
+ * sidebar's Ungrouped bucket.
+ * @param list - Session list, whose rows carry their recorded preset.
+ * @param inWorkspace - Sessions that belong to a workspace.
+ * @param members - crew member ids.
+ * @returns the own-chat Session ids, in list order.
+ */
+export function memberChats(list: SessionListState, inWorkspace: ReadonlySet<SessionId>, members: ReadonlySet<CrewMemberId>): SessionId[] {
+  return list.ids.filter((id) => {
+    const summary = list.byId[id]
+    const preset = summary === undefined ? undefined : presetOf(summary)
+    return preset !== undefined && members.has(preset) && !inWorkspace.has(id)
   })
 }
 

@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { Context } from '@deepseek-ai/cordis'
 import type { PresetDefinition } from '@deepseek-ai/dsh-agent-preset-registry'
 import { afterEach, describe, expect, it } from 'vitest'
-import CrewRoster, { capAbilities, DEFAULT_MEMBERS, idFor, memberProblems, migrate, presetFor, SUPERSEDED_PERSONAS, type CrewMember } from '../src/index.ts'
+import CrewRoster, { capAbilities, DEFAULT_MEMBERS, idFor, memberProblems, migrate, presetFor, SUPERSEDED_PERSONAS, workspaceSummary, type CrewMember } from '../src/index.ts'
 
 const helper: CrewMember = {
   id: 'crew-helper', name: 'Helper', description: 'Answers quick questions.', persona: 'You are Helper.', order: 30,
@@ -56,6 +56,34 @@ describe('presetFor', () => {
     expect(prefix).toContain('- crew-helper (Helper): Answers quick questions.')
     expect(prefix).toContain('- crew-chief (Chief of staff):')
     expect(prefix).not.toContain('- crew-mail (')
+  })
+
+  it('tells web members to check live sources, X included, and the lead to run Heavy mode', () => {
+    const prefixOf = (member: CrewMember, crew: readonly CrewMember[]) =>
+      String((presetFor(member, crew).plugins[0]?.config as Record<string, unknown>)['prefix'])
+    const chief = DEFAULT_MEMBERS.find(member => member.lead === true)!
+    const web = { ...helper, abilities: { ...helper.abilities, web: true } }
+    const offline = { ...helper, abilities: { ...helper.abilities, web: false } }
+    expect(prefixOf(web, [web, chief])).toContain('x.com')
+    expect(prefixOf(offline, [offline, chief])).not.toContain('x.com')
+    expect(prefixOf(chief, DEFAULT_MEMBERS)).toContain('Heavy mode')
+    expect(prefixOf(web, DEFAULT_MEMBERS)).not.toContain('Heavy mode')
+    expect(prefixOf(chief, [chief, web])).not.toContain('Heavy mode')
+  })
+
+  it('lets file and shell members find and enter the user\'s workspaces', () => {
+    const names = (member: CrewMember) => presetFor(member, [member]).plugins.map(row => row.name)
+    const reader = { ...helper, abilities: { ...helper.abilities, files: 'read' as const } }
+    const none = { ...helper, abilities: { files: 'none' as const, shell: false, web: true, schedule: false } }
+    expect(names(reader)).toContain('@deepseek-ai/dsh-tool-working-directory')
+    expect(names(none)).not.toContain('@deepseek-ai/dsh-tool-working-directory')
+    expect(String((presetFor(reader, [reader]).plugins[0]?.config as Record<string, unknown>)['prefix'])).toContain('crew_workspaces')
+  })
+
+  it('lists workspaces by title and path, and says when there are none', () => {
+    expect(workspaceSummary([{ title: 'Site', path: '/p/site' }, { title: ' ', path: '/p/api' }])).toBe('- Site: /p/site\n- api: /p/api')
+    expect(workspaceSummary([])).toBe('The user has no workspaces yet.')
+    expect(workspaceSummary(undefined)).toBe('This dsh keeps no workspace list.')
   })
 
   it('gives a lone member no delegation tool', () => {

@@ -7,7 +7,7 @@ import { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
 import { CrewRoster, latestWorkspace, type CrewActions } from '../src/client/crew-roster.ts'
 import type { CrewMember } from '@deepseek-ai/dsh-crew-roster/types'
-import { crewRoster } from '../src/roster.ts'
+import { crewRoster, memberChats } from '../src/roster.ts'
 
 function row(id: string, agentPreset: string | undefined, running = false, open = false, updatedAt = 0): SessionSummary {
   return {
@@ -154,6 +154,25 @@ describe('CrewRoster', () => {
     expect(act.createChat).not.toHaveBeenCalled()
   })
 
+  it('opens the member\'s own chat from the Crew tab even while a workspace chat is running', async () => {
+    const act = actions()
+    const roster = await loaded(new CrewRoster(
+      source(list(row('home-1', 'crew-code', false, false, 1), row('ws-1', 'crew-code', true, false, 2))),
+      source<SessionStatusSnapshot>(new Map()), source(places([SessionId('ws-1')])), t, act, host()))
+    expect(await roster.openHome('crew-code')).toBe(true)
+    expect(act.openSession).toHaveBeenCalledWith(SessionId('home-1'))
+    expect(act.createChat).not.toHaveBeenCalled()
+  })
+
+  it('creates the own chat from the Crew tab when the member only has workspace chats', async () => {
+    const act = actions()
+    const roster = await loaded(new CrewRoster(source(list(row('ws-1', 'crew-code'))), source<SessionStatusSnapshot>(new Map()),
+      source(places([SessionId('ws-1')])), t, act, host()))
+    expect(await roster.openHome('crew-code')).toBe(true)
+    expect(act.createChat).toHaveBeenCalledWith('crew-code')
+    expect(act.openSession).toHaveBeenCalledWith(SessionId('new-chat'))
+  })
+
   it('creates a member\'s own chat outside any workspace when it has none, and reports failure', async () => {
     const act = actions()
     const roster = await loaded(new CrewRoster(...empty(), t, act, host()))
@@ -225,5 +244,18 @@ describe('latestWorkspace', () => {
 
   it('is undefined without workspaces', () => {
     expect(latestWorkspace(snapshot([]))).toBeUndefined()
+  })
+})
+
+describe('memberChats', () => {
+  it('picks crew-preset Sessions outside every workspace, in list order', () => {
+    const state = list(row('own-1', 'crew-code'), row('ws-1', 'crew-code'), row('plain', undefined), row('other', 'standard'), row('own-2', 'crew-mail'))
+    expect(memberChats(state, new Set([SessionId('ws-1')]), new Set(['crew-code', 'crew-mail'])))
+      .toEqual([SessionId('own-1'), SessionId('own-2')])
+  })
+
+  it('falls back to the member folder when a row has no preset yet', () => {
+    const state = list({ ...row('uncached', undefined), cwd: '/home/u/.dsh/crew/crew-code' }, { ...row('elsewhere', undefined), cwd: '/home/u/crew-code' })
+    expect(memberChats(state, new Set(), new Set(['crew-code']))).toEqual([SessionId('uncached')])
   })
 })
