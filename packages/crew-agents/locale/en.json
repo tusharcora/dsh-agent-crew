@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Crew agents",
-    "description": "Adds a Chief of staff preset that hands work to five specialists — Mail, Chat, Code, Research and Life — each with its own persona, tools and model setting."
+    "title": "Crew",
+    "description": "Your crew of agents in one plugin: a Chief of staff who hands work to Mail, Chat, Code, Research, Life and Design, plus the Board, Handoffs and Desktop tabs, the Workflows and Today pages, and live stock charts."
   }
 }

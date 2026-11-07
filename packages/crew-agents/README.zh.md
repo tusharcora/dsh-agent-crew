@@ -1,5 +1,5 @@
 ---
-description: "Crew bundle：一位幕僚长和六位可编辑、可移除、也可增添成员的专家，每位都以带有自己人设和工具的智能体预设运行，另含 crew 页面。"
+description: "Crew：整个 crew 的唯一插件。一位幕僚长和六位可编辑、可移除、也可增添成员的专家，每位都以带有自己人设和工具的智能体预设运行，另含所有 crew 页面、桌面标签页、今日页面和股票图表。"
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ kind: "package-bundle"
 
 ## 概述
 
-Crew 初始有七位成员，每位都是带有自己人设和工具的智能体预设：幕僚长，以及邮件、聊天、代码、研究、生活和设计六位专家。设计成员使用 `dsh-web-artifact-designer` 中的 `web-artifact-designer` 技能制作 HTML/SVG 设计稿，该包须已安装在 profile 中。[crew-roster](../crew-roster/README.zh.md) 存储成员并注册其预设，因此你可以在 **Crew** 标签页中添加、编辑和移除成员。幕僚长负责规划工作，并通过各成员的 `ask_*` 委派工具把每项工作交给一位成员。本 bundle 还挂载头像、浏览器端名册和 crew 页面。
+整个 crew 作为一个名为 **Crew** 的插件安装。初始有七位成员，每位都是带有自己人设和工具的智能体预设：幕僚长，以及邮件、聊天、代码、研究、生活和设计六位专家。设计成员需要 `dsh-web-artifact-designer` 中的 `web-artifact-designer` 技能。[crew-roster](../crew-roster/README.zh.md) 存储成员，因此你可以在 **Crew** 标签页中添加、编辑和移除成员。幕僚长负责规划工作并交给成员。本 bundle 还挂载头像、crew 页面、[crew-stock-chart](../crew-stock-chart/README.zh.md)、[crew-desktop](../crew-desktop/README.zh.md) 和 [crew-today](../crew-today/README.zh.md)。
 
 ## 目录
 

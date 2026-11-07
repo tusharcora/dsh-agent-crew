@@ -3,14 +3,14 @@
 # After editing either side, bring the other along and re-record with:
 #   pnpm run verify-translation-pairing --write packages/experimental/crew-agents/README.md
 /:
-  en: 9df75021b6deb984
-  zh: 694ff3fc16114eec
+  en: 341088e25a014530
+  zh: 5f53ba2569573054
 /deepseek-ai-dsh-crew-agents:
   en: f70944890fcbbe17
   zh: fac48db2b88ed221
 /deepseek-ai-dsh-crew-agents/summary:
-  en: 0cc4be9de95e2018
-  zh: 000bdefd6b6f8225
+  en: cea3b79c537669bd
+  zh: 56c600611095bc89
 /deepseek-ai-dsh-crew-agents/table-of-contents:
   en: d152484eb41ac6b4
   zh: b00dddf4c88f0a45

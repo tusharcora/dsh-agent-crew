@@ -1,5 +1,5 @@
 ---
-description: "Crew bundle: a Chief of staff and six specialists you can edit, remove or add to, each running as an agent preset with its own persona and tools, plus the crew pages."
+description: "Crew, the one plugin for the crew: a Chief of staff and six specialists you can edit, remove or add to, each running as an agent preset with its own persona and tools, plus every crew page, the Desktop tab, the Today page and the stock chart."
 kind: "package-bundle"
 ---
 
@@ -9,7 +9,7 @@ English | [中文](README.zh.md)
 
 ## Summary
 
-The crew starts as seven members, each an agent preset with its own persona and tools: Chief of staff and the Mail, Chat, Code, Research, Life and Design specialists. Design builds HTML/SVG artifacts with the `web-artifact-designer` skill from `dsh-web-artifact-designer`, which must be installed in the profile. [crew-roster](../crew-roster/README.md) stores the members and registers their presets, so you can add, edit and remove members in the **Crew** tab. Chief of staff plans the work and hands each piece to a member through that member's `ask_*` delegation tool. The bundle also mounts the faces, the browser roster and the crew pages.
+The whole crew installs as one plugin named **Crew**. It starts with seven members, each an agent preset with its own persona and tools: Chief of staff and the Mail, Chat, Code, Research, Life and Design specialists. Design needs the `web-artifact-designer` skill from `dsh-web-artifact-designer`. [crew-roster](../crew-roster/README.md) stores the members, so you can add, edit and remove them in the **Crew** tab. Chief of staff plans the work and hands it to members. The bundle also mounts the faces, the crew pages, [crew-stock-chart](../crew-stock-chart/README.md), [crew-desktop](../crew-desktop/README.md) and [crew-today](../crew-today/README.md).
 
 ## Table of Contents
 

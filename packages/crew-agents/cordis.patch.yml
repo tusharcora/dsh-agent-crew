@@ -1,5 +1,6 @@
-# Crew: the roster (crew-roster registers one agent preset per member from ~/.dsh/crew/members.json, seeded with a
-# Chief of staff and five specialists), the browser roster and the crew pages. Every member runs its tools through
+# Crew, the one plugin for everything crew: the roster (crew-roster registers one agent preset per member from
+# ~/.dsh/crew/members.json, seeded with a Chief of staff and the specialists), the browser roster, the crew pages,
+# the stock chart, the Desktop tab and the Today page. Every member runs its tools through
 # run_code (PTC), mounts the crew write guard and reads its own approved lessons from crew-improve. MCP rows read
 # secrets from the credential store; connections whose account the user has not approved stay off.
 - insert:
@@ -39,3 +40,15 @@
         homeDirectory: !!js dshHomePath('crew')
     - id: crew-workflows-ui
       name: '@deepseek-ai/dsh-crew-workflows-ui'
+    - id: crew-stock-chart
+      name: '@deepseek-ai/dsh-crew-stock-chart'
+    - id: crew-stock-chart-ui
+      name: '@deepseek-ai/dsh-crew-stock-chart-ui'
+    - id: crew-desktop
+      name: '@deepseek-ai/dsh-crew-desktop'
+    - id: crew-desktop-ui
+      name: '@deepseek-ai/dsh-crew-desktop-ui'
+    - id: crew-today
+      name: '@deepseek-ai/dsh-crew-today'
+    - id: crew-today-ui
+      name: '@deepseek-ai/dsh-crew-today-ui'
