@@ -1,5 +1,6 @@
 # Crew — multi-agent orchestration for DeepSeek Harness
 
+[![npm](https://img.shields.io/npm/v/dsh-agent-crew.svg)](https://www.npmjs.com/package/dsh-agent-crew)
 [![license: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![DeepSeek Harness plugin](https://img.shields.io/badge/dsh-plugin-4D6BFE.svg)](https://github.com/deepseek-ai/deepseek-harness)
 
@@ -7,7 +8,9 @@
 
 Nothing irreversible happens without you. Every send, post, purchase, delete, merge or booking waits for your click on an approval card.
 
-> **Status:** an npm release is coming soon. Until then, install Crew [from source](#develop-from-source).
+```sh
+dsh plugin --profile web add dsh-agent-crew
+```
 
 ---
 
@@ -45,13 +48,13 @@ Most agent setups give you one agent holding every tool. Crew gives you a team.
 
 Requires [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) with a `web` profile.
 
-**From npm (coming soon).** Crew isn't on npm yet. Once it is:
+Install [`dsh-agent-crew`](https://www.npmjs.com/package/dsh-agent-crew) from npm:
 
 ```sh
 dsh plugin --profile web add dsh-agent-crew
 ```
 
-Until then, [build it from source](#develop-from-source).
+Each release on [GitHub](https://github.com/tusharcora/dsh-agent-crew/releases) also carries the package tarballs. To change Crew itself, [build it from source](#develop-from-source).
 
 After installing, restart dsh, open **Plugins** and enable **Crew**.
 
