@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Caras de la crew",
+    "description": "Dibuja una pequeña cara para cada agente de la crew, elegida a partir de su id, para que la muestren otros plugins de Crew."
+  }
+}

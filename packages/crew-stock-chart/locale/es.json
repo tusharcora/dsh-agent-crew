@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Gráfico bursátil de la crew",
+    "description": "Permite a los agentes mostrar un gráfico bursátil interactivo de Yahoo Finance con botones de rango, línea o velas y actualización en vivo, siempre con su fuente y hora de consulta."
+  }
+}

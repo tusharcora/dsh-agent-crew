@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew-Verbindungen",
+    "description": "Verbindet Crew-Mitglieder per Anmeldung mit Google (Gmail und Kalender), hält das Zugriffstoken aktuell und verhindert, dass Crew-Mitglieder eigenmächtig senden, posten, löschen, mergen oder buchen."
+  }
+}

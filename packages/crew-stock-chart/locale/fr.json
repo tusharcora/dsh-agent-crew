@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Graphique boursier de la crew",
+    "description": "Permet aux agents d’afficher un graphique boursier interactif de Yahoo Finance avec boutons de période, ligne ou chandeliers et actualisation en direct, toujours étiqueté avec sa source et l’heure de récupération."
+  }
+}

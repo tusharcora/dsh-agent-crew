@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew-Gedankengang",
+    "description": "Zeigt die Schritte jeder Antwort, während sie entstehen: was der Agent überlegt hat, welche Tools er womit aufgerufen hat, wie lange jeder Schritt dauerte und welche Quellen er gelesen hat."
+  }
+}

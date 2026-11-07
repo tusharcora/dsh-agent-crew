@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Carte des outils de la crew",
+    "description": "Un onglet Outils qui montre quels outils chaque agent peut utiliser, combien de fois il les a appelés, et l’entrée et la sortie de chaque appel."
+  }
+}

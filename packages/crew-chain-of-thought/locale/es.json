@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Razonamiento de la crew",
+    "description": "Muestra los pasos de cada respuesta a medida que ocurren: qué pensó el agente, qué herramientas llamó y con qué, cuánto tardó cada paso y qué fuentes leyó."
+  }
+}

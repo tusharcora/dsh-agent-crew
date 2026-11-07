@@ -33,7 +33,7 @@ export interface RunViewProps {
 }
 
 /**
- * Length of a span as "1h 2m", "3m 4s" or "5s".
+ * Length of a span in its two largest units, in the viewer's language ("1h 2m", "3m 4s" or "5s" in English).
  * @param ms - milliseconds.
  * @returns the short form.
  */
@@ -42,7 +42,10 @@ export function duration(ms: number): string {
   const h = Math.floor(seconds / 3600)
   const m = Math.floor((seconds % 3600) / 60)
   const s = seconds % 60
-  return h > 0 ? `${String(h)}h ${String(m)}m` : m > 0 ? `${String(m)}m ${String(s)}s` : `${String(s)}s`
+  const unit = (value: number, name: 'hour' | 'minute' | 'second') =>
+    new Intl.NumberFormat(undefined, { style: 'unit', unit: name, unitDisplay: 'narrow' }).format(value)
+  const parts = h > 0 ? [unit(h, 'hour'), unit(m, 'minute')] : m > 0 ? [unit(m, 'minute'), unit(s, 'second')] : [unit(s, 'second')]
+  return parts.join(' ')
 }
 
 /**

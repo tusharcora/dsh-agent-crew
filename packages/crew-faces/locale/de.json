@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew-Gesichter",
+    "description": "Zeichnet für jeden Crew-Agenten ein kleines Gesicht, abgeleitet von seiner ID, das andere Crew-Plugins anzeigen."
+  }
+}

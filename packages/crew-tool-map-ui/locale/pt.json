@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Mapa de ferramentas da crew",
+    "description": "Uma aba Ferramentas que mostra quais ferramentas cada agente pode usar, quantas vezes as chamou e a entrada e a saída de cada chamada."
+  }
+}

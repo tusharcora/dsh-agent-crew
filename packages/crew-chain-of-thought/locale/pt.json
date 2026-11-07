@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Raciocínio da crew",
+    "description": "Mostra as etapas de cada resposta enquanto acontecem: o que o agente pensou, quais ferramentas chamou e com o quê, quanto tempo cada etapa levou e quais fontes leu."
+  }
+}

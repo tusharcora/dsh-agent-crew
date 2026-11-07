@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Rostos da crew",
+    "description": "Desenha um pequeno rosto para cada agente da crew, escolhido a partir do seu id, para os outros plugins Crew exibirem."
+  }
+}

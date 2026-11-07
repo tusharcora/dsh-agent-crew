@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Visages de la crew",
+    "description": "Dessine un petit visage pour chaque agent de la crew, choisi à partir de son identifiant, que les autres plugins Crew affichent."
+  }
+}

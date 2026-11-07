@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Raisonnement de la crew",
+    "description": "Affiche les étapes de chaque réponse au fur et à mesure : ce que l’agent a pensé, quels outils il a appelés et avec quoi, la durée de chaque étape et les sources lues."
+  }
+}

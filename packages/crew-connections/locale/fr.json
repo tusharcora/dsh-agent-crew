@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Connexions de la crew",
+    "description": "Connecte les membres de la crew à Google (Gmail et Agenda) via une connexion, garde le jeton d’accès à jour et les empêche d’envoyer, publier, supprimer, fusionner ou réserver de leur propre chef."
+  }
+}

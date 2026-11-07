@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Crew-Tool-Übersicht",
+    "description": "Ein Tools-Tab, der zeigt, welche Tools jeder Agent nutzen darf, wie oft er sie aufgerufen hat und die Ein- und Ausgabe jedes Aufrufs."
+  }
+}

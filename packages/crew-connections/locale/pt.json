@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Conexões da crew",
+    "description": "Conecta os membros da crew ao Google (Gmail e Agenda) por meio de login, mantém o token de acesso atualizado e impede que enviem, publiquem, excluam, mesclem ou reservem por conta própria."
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Gráfico de ações da crew",
+    "description": "Permite que os agentes mostrem um gráfico de ações interativo do Yahoo Finance com botões de período, linha ou velas e atualização ao vivo, sempre indicando a fonte e o horário da consulta."
+  }
+}
