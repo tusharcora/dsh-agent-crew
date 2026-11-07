@@ -130,7 +130,9 @@ export function KanbanBoard({ team, move, t }: KanbanBoardProps) {
     const timer = setTimeout(() => { setStatus(undefined) }, TOAST_MS)
     return () => { clearTimeout(timer) }
   }, [status])
-  if (team === undefined || !team.enabled) return <p className={css.notice}>{t('off')}</p>
+  // agent-team initializes its projection for every Session, so none at all means this dsh has no agent teams.
+  if (team === undefined) return <p className={css.notice}>{t('unavailable')}</p>
+  if (!team.enabled) return <p className={css.notice}>{t('off')}</p>
   const tasks = team.tasks.flatMap((task) => {
     const column = columnOf(task)
     return column === undefined ? [] : [{ task, column }]

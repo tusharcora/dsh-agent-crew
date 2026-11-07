@@ -35,9 +35,15 @@ it('keeps the browser column rules in step with the Host', () => {
 })
 
 describe('board', () => {
-  it('says how to turn Teams on when the Session has no board', () => {
-    render(<KanbanBoard team={undefined} move={vi.fn()} t={t} />)
+  it('says how to turn Teams on when they are off', () => {
+    render(<KanbanBoard team={{ ...team, enabled: false }} move={vi.fn()} t={t} />)
     expect(screen.getByText(/Turn on Use Agent Teams/)).toBeTruthy()
+  })
+
+  it('says agent teams are missing when this dsh has none', () => {
+    render(<KanbanBoard team={undefined} move={vi.fn()} t={t} />)
+    expect(screen.getByText(/doesn’t include/)).toBeTruthy()
+    expect(screen.queryByText(/Turn on Use Agent Teams/)).toBeNull()
   })
 
   it('places each task in its column and leaves deleted ones out', () => {
