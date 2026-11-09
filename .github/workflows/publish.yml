@@ -1,0 +1,100 @@
+# Build the crew packages inside a DeepSeek Harness checkout and publish them to npm with provenance, so each
+# version's npm page links back to the commit and run that built it.
+#
+# - Publishing a GitHub release publishes the version in package.json; the tag must be `v<that version>`.
+# - Run it by hand (Actions → Publish to npm → Run workflow) to build and pack without publishing.
+#
+# Needs the NPM_TOKEN secret: an npm granular token with read and write on all packages and "bypass 2FA".
+name: Publish to npm
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      dsh_ref:
+        description: Branch of tusharcora/deepseek-harness to build against
+        default: crew/slack
+      dry_run:
+        description: Build and pack only; publish nothing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  id-token: write # npm provenance
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DSH_REF: ${{ inputs.dsh_ref || 'crew/slack' }}
+      PUBLISH: ${{ github.event_name == 'release' || inputs.dry_run == false }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: crew
+          persist-credentials: false
+
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: tusharcora/deepseek-harness
+          ref: ${{ env.DSH_REF }}
+          path: dsh
+          persist-credentials: false
+
+      - name: Check the release tag matches the version
+        if: github.event_name == 'release'
+        run: |
+          version=$(node -p "require('./crew/package.json').version")
+          if [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "::error::release tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+
+      - uses: pnpm/action-setup@v5.0.0
+        with:
+          package_json_file: dsh/package.json
+
+      - uses: actions/setup-node@v7.0.0
+        with:
+          node-version: '24'
+          registry-url: https://registry.npmjs.org
+
+      # The published code is this repository's, built against the dsh core it was developed on.
+      - name: Put this release's crew sources into the dsh checkout
+        run: |
+          for package in crew/packages/crew-*; do
+            rm -rf "dsh/packages/experimental/$(basename "$package")"
+            cp -R "$package" dsh/packages/experimental/
+          done
+
+      - name: Install
+        working-directory: dsh
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        working-directory: dsh
+        run: pnpm run build:artifacts
+
+      - name: Pack and publish
+        working-directory: crew
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          NPM_CONFIG_PROVENANCE: 'true'
+        run: |
+          if [ "$PUBLISH" = "true" ]; then
+            node scripts/pack.mjs ../dsh/packages/experimental --publish
+          else
+            node scripts/pack.mjs ../dsh/packages/experimental
+          fi
+
+      - uses: actions/upload-artifact@v7.0.1
+        with:
+          name: tarballs
+          path: crew/dist/tarballs/*.tgz

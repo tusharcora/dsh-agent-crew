@@ -176,6 +176,15 @@ This copies each built package to `dist/packages/`, renames `@deepseek-ai/dsh-cr
 
 Tarballs land in `dist/tarballs/`. Add `--publish` to publish them all, with the bundle last. Run `npm test` to check the staging rules.
 
+### From GitHub
+
+[`publish.yml`](.github/workflows/publish.yml) does the same on GitHub Actions, with [npm provenance](https://docs.npmjs.com/generating-provenance-statements): each version's npm page then links to the commit and run that built it.
+
+1. Bump `version` in the root `package.json` and push.
+2. Publish a GitHub release tagged `v<version>`. The workflow builds against the `crew/slack` branch of the dsh fork and publishes.
+
+Run the workflow by hand to build and pack without publishing. It needs an `NPM_TOKEN` repository secret: an npm granular token with read and write on all packages and "bypass 2FA".
+
 ## Safety model
 
 - Nothing sends, posts, buys, deletes, merges or books without your click.
