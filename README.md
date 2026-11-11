@@ -9,7 +9,7 @@
 Nothing irreversible happens without you. Every send, post, purchase, delete, merge or booking waits for your click on an approval card.
 
 ```sh
-dsh plugin --profile web add dsh-agent-crew
+dsh plugin --profile web add dsh-agent-crew@0.1.1
 ```
 
 ---
@@ -51,7 +51,7 @@ Requires [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) wit
 Install [`dsh-agent-crew`](https://www.npmjs.com/package/dsh-agent-crew) from npm:
 
 ```sh
-dsh plugin --profile web add dsh-agent-crew
+dsh plugin --profile web add dsh-agent-crew@0.1.1
 ```
 
 Each release on [GitHub](https://github.com/tusharcora/dsh-agent-crew/releases) also carries the package tarballs. To change Crew itself, [build it from source](#develop-from-source).
