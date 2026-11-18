@@ -7,7 +7,7 @@ import { SessionId } from '@deepseek-ai/dsh-session/types'
 import type { WorkspaceId, WorkspaceSnapshot } from '@deepseek-ai/dsh-api-workspace-controller/client'
 import { CrewRoster, latestWorkspace, type CrewActions } from '../src/client/crew-roster.ts'
 import type { CrewMember } from '@deepseek-ai/dsh-crew-roster/types'
-import { crewRoster, memberChats } from '../src/roster.ts'
+import { crewRoster, isErrandChat, memberChats } from '../src/roster.ts'
 
 function row(id: string, agentPreset: string | undefined, running = false, open = false, updatedAt = 0): SessionSummary {
   return {
@@ -257,5 +257,29 @@ describe('memberChats', () => {
   it('falls back to the member folder when a row has no preset yet', () => {
     const state = list({ ...row('uncached', undefined), cwd: '/home/u/.dsh/crew/crew-code' }, { ...row('elsewhere', undefined), cwd: '/home/u/crew-code' })
     expect(memberChats(state, new Set(), new Set(['crew-code']))).toEqual([SessionId('uncached')])
+  })
+})
+
+describe('homeFor', () => {
+  it('returns the own chat without opening it, creating it only when missing', async () => {
+    const act = actions()
+    const roster = await loaded(new CrewRoster(source(list(row('own', 'crew-code'))), source<SessionStatusSnapshot>(new Map()), source(places()), t, act, host()))
+    expect(await roster.homeFor('crew-code')).toBe(SessionId('own'))
+    expect(await roster.homeFor('crew-mail')).toBe(SessionId('new-chat'))
+    expect(act.createChat).toHaveBeenCalledTimes(1)
+    expect(act.openSession).not.toHaveBeenCalled()
+  })
+})
+
+describe('errand chats', () => {
+  it('never become the lead\'s own chat', async () => {
+    const act = actions()
+    const errand = { ...row('errand', 'crew-chief', false, false, 9), cwd: '/home/u/.dsh/crew/errands' }
+    const own = { ...row('own', 'crew-chief', false, false, 1), cwd: '/home/u/.dsh/crew/crew-chief' }
+    const roster = await loaded(new CrewRoster(
+      source(list(errand, own)), source<SessionStatusSnapshot>(new Map()), source(places()), t, act, host()))
+    expect(roster.members.getSnapshot().find(member => member.id === 'crew-chief')?.home).toBe(SessionId('own'))
+    expect(isErrandChat(errand)).toBe(true)
+    expect(isErrandChat(own)).toBe(false)
   })
 })

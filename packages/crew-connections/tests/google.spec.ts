@@ -87,6 +87,9 @@ describe('Google sign-in through the authorization seam', () => {
     expect(result).toEqual({ ok: true, path: join(ctx.home, 'crew', 'crew-mail') })
     expect((await stat(join(ctx.home, 'crew', 'crew-mail'))).isDirectory()).toBe(true)
     expect(await ctx.crewConnections.memberDirectory('../etc')).toMatchObject({ ok: false })
+    const errands = await ctx.crewConnections.errandDirectory()
+    expect(errands).toMatchObject({ ok: true })
+    expect(errands.ok && errands.path.endsWith('/errands')).toBe(true)
   })
 
   it('refuses to start without the OAuth client', async () => {

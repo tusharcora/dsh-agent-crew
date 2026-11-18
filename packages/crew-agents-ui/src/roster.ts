@@ -73,7 +73,8 @@ export function crewRoster(
     if ((summary.retainedBy.mainView ?? 0) > 0) member.open = true
     const stamp = { id: summary.id, updatedAt: summary.updatedAt }
     if (member.latest === undefined || summary.updatedAt > member.latest.updatedAt) member.latest = stamp
-    if (!inWorkspace.has(summary.id) && (member.home === undefined || summary.updatedAt > member.home.updatedAt)) member.home = stamp
+    const own = !inWorkspace.has(summary.id) && !isErrandChat(summary)
+    if (own && (member.home === undefined || summary.updatedAt > member.home.updatedAt)) member.home = stamp
   }
   return entries.map(({ id, name, face }) => {
     const member = members.get(id)
@@ -83,6 +84,15 @@ export function crewRoster(
       focus: member?.needsYou ?? member?.working ?? member?.home?.id ?? member?.latest?.id,
     }
   })
+}
+
+/**
+ * Whether a Session is an errand: a lead chat with a goal, run in the crew home's `errands` folder.
+ * @param summary - Session list row.
+ * @returns true for an errand.
+ */
+export function isErrandChat(summary: Pick<SessionSummary, 'cwd'>): boolean {
+  return /[\\/]crew[\\/]errands[\\/]?$/.test(summary.cwd ?? '')
 }
 
 /**

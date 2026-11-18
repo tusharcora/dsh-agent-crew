@@ -7,6 +7,7 @@ import type {} from '@deepseek-ai/dsh-client-ui-renderer/client'
 import type {} from '@deepseek-ai/dsh-client-ui-sidebar/client'
 import type {} from '@deepseek-ai/dsh-client-ui-conversation/client'
 import type {} from '@deepseek-ai/dsh-api-remotes/client'
+import type { ScheduleId } from '@deepseek-ai/dsh-schedule/client'
 import type {} from '@deepseek-ai/dsh-api-workspace-controller/client'
 import type {} from '@deepseek-ai/dsh-crew-faces/client'
 import type {} from '@deepseek-ai/dsh-crew-connections/remote'
@@ -19,6 +20,11 @@ import rosterRemote from '@deepseek-ai/dsh-crew-roster/remote'
 import slackRemote from '@deepseek-ai/dsh-crew-slack/remote'
 import { CrewRoster, latestWorkspace } from './crew-roster.ts'
 import { memberChats } from '../roster.ts'
+import { RoutinesStore, routineRequest } from './routines.ts'
+import { errandsSource, startErrand } from './errands.ts'
+import { ErrandsPage, type ErrandsPageInjected } from './ErrandsPage.tsx'
+import { ErrandsIcon } from './ErrandsIcon.tsx'
+import type {} from '@deepseek-ai/dsh-goal/client'
 import { CrewTab, type CrewTabInjected } from './CrewTab.tsx'
 import { CrewSection, type CrewSectionInjected } from './CrewSection.tsx'
 import { CrewHeader, type CrewHeaderInjected } from './CrewHeader.tsx'
@@ -45,6 +51,8 @@ export const inject = ['locale', 'sessions', 'workspaces', 'uiSession', 'uiWorks
 
 /** Crew tab implementation identity and keyed Slot dispatch key. */
 export const CREW_TAB_ID = '@deepseek-ai/dsh-crew-agents-ui'
+/** Errands main-page key and sidebar entry id. */
+export const ERRANDS_PANEL_ID = '@deepseek-ai/dsh-crew-agents-ui/errands'
 
 /**
  * Run one Remote call, mapping a lost reply or a refusal to undefined.
@@ -141,16 +149,46 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
       reject: id => settle(() => remote.crewImprove.reject(id)),
       forget: id => settle(() => remote.crewImprove.forget(id)),
     })
+    // Optional: a dsh without the schedule service keeps the catalog undefined and the editor hides Routines.
+    // Not in the inject list, so read through `get`, which answers undefined instead of throwing.
+    const schedule = () => inner.get('remote.schedule') as Context['remote']['schedule'] | undefined
+    const routines = new RoutinesStore({
+      catalog: async () => {
+        const service = schedule()
+        return service === undefined ? undefined : await settle(() => service.catalog())
+      },
+      create: async request => await settle(async () => {
+        const service = schedule()
+        if (service === undefined) return { ok: false } as const
+        const result = await service.create(request)
+        return result.ok ? { ok: true, value: true } : result
+      }) === true,
+      remove: async id => await settle(async () => {
+        const service = schedule()
+        if (service === undefined) return { ok: false } as const
+        const result = await service.edit({ id: id as ScheduleId, action: 'delete' })
+        return result.ok ? { ok: true, value: true } : result
+      }) === true,
+    })
+    void routines.refresh()
+    inner.effect(() => remote.$on('schedule/changed', () => { void routines.refresh() }), 'crew-agents-ui: routines')
     const Face = inner.crewFaces.Face
     inner.slots.inject('sidebar.right.pane.tab', () => inner.slots.register({
       name: 'sidebar.right.pane.tab', key: CREW_TAB_ID, locale: 'crew',
       inject: (): CrewTabInjected => ({
         hooks: {
           members: roster.members, roster: roster.roster, editRequest: roster.editRequest,
-          connections: store.source, learning: learning.source,
+          connections: store.source, learning: learning.source, routines: routines.source,
         },
         Face, clearEditRequest: () => { roster.requestEdit(undefined) },
         openChat: id => roster.openHome(id), saveMember: member => roster.save(member), removeMember: id => roster.remove(id),
+        addRoutine: async (id, draft) => {
+          const home = await roster.homeFor(id)
+          if (home === undefined) return t('routine.noChat')
+          return await routines.add(routineRequest(draft, home, Intl.DateTimeFormat().resolvedOptions().timeZone))
+            ? undefined : t('routine.saveFailed')
+        },
+        removeRoutine: async id => await routines.remove(id) ? undefined : t('routine.deleteFailed'),
         nameOf: id => roster.name(id),
         slackStatus: () => settle(() => remote.crewSlack.status()),
         slackReconnect: async () => { await settle(() => remote.crewSlack.reconnect()) },
@@ -196,6 +234,49 @@ export async function apply(ctx: Context): Promise<() => Promise<void>> {
         return () => { for (const stop of off) stop(); release() }
       }, 'crew-agents-ui: hide member chats')
     }
+    // Errands need the goal service; read it through `get`, which answers undefined on a dsh without one.
+    const goals = () => inner.get('remote.goals') as Context['remote']['goals'] | undefined
+    const goalOk = async (call: () => Promise<{ readonly ok: boolean }>): Promise<boolean> => {
+      try { return (await call()).ok } catch (_error: unknown) { return false }
+    }
+    const errandsInjected = (): ErrandsPageInjected => ({
+      hooks: {
+        errands: errandsSource(inner.sessions.list, inner.uiSession.sessionStatus),
+        available: { getSnapshot: () => goals() !== undefined, subscribe: () => () => {} },
+      },
+      open: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
+      start: async (objective, rounds) => {
+        const lead = roster.roster.getSnapshot().records.find(record => record.lead === true)?.id ?? 'crew-chief'
+        const result = await startErrand({
+          directory: async () => {
+            const folder = await settle(() => remote.crewConnections.errandDirectory())
+            return folder?.ok === true ? folder.path : undefined
+          },
+          create: async (cwd) => {
+            try { return await inner.sessions.create({ cwd, agentPreset: lead }) } catch (_error: unknown) { return undefined }
+          },
+          open: (sessionId) => { inner.uiWorkspace.openSession(sessionId) },
+          setGoal: async (sessionId, text, maxGoalRounds) => {
+            const service = goals()
+            return service !== undefined && await goalOk(() => service.create(sessionId, { objective: text, maxGoalRounds }))
+          },
+          sleep: ms => new Promise(resolve => setTimeout(resolve, ms)),
+        }, objective, rounds)
+        return 'failure' in result ? t(result.failure) : undefined
+      },
+      act: async (errand, action) => {
+        const service = goals()
+        if (service === undefined || errand.goal === undefined) return t('errand.actFailed')
+        const ref = errand.goal
+        const ok = await goalOk(() => action === 'pause' ? service.pause(errand.sessionId, ref)
+          : action === 'resume' ? service.resume(errand.sessionId, ref) : service.clear(errand.sessionId, ref))
+        return ok ? undefined : t('errand.actFailed')
+      },
+    })
+    inner.slots.inject('main', () => inner.slots.register({ name: 'main', key: ERRANDS_PANEL_ID, locale: 'crew', inject: errandsInjected }, ErrandsPage))
+    inner.slots.inject('sidebar.panellist', () => inner.slots.register({
+      name: 'sidebar.panellist', id: ERRANDS_PANEL_ID, order: 6, locale: 'crew', label: () => t('errand.panel'),
+    }, ErrandsIcon))
     inner.slots.inject('conversation.session.header.actions', () => inner.slots.register({
       name: 'conversation.session.header.actions', id: 'crew-member', order: -20, locale: 'crew',
       inject: (): CrewHeaderInjected => ({ hooks: { members: roster.members }, Face }),

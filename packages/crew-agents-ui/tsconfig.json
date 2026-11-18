@@ -70,6 +70,12 @@
     },
     {
       "path": "../../subagent/subagent"
+    },
+    {
+      "path": "../../schedule/schedule"
+    },
+    {
+      "path": "../../goal/goal"
     }
   ]
 }

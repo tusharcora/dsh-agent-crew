@@ -15,6 +15,7 @@ describe('gallery', () => {
     expect(member.id).toBe('')
     expect(member.name).toBe(GALLERY[0]!.name)
     expect(member.face).toEqual({ body: GALLERY[0]!.body, color: '#E8B4A0' })
+    expect(member.tone).toBe(GALLERY[0]!.tone === 'plain' ? undefined : GALLERY[0]!.tone)
   })
 
   it('has a translated name and description for every template', () => {

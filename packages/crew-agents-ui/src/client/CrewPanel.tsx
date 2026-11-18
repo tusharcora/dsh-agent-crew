@@ -9,6 +9,8 @@ import type { RosterView } from './crew-roster.ts'
 import { MemberEditor, newMember } from './MemberEditor.tsx'
 import { MemberFace } from './MemberFace.tsx'
 import { availableTemplates, fromTemplate } from './gallery.ts'
+import { routinesIn, type RoutineDraft } from './routines.ts'
+import type { ScheduleCatalogEntry } from '@deepseek-ai/dsh-schedule/client'
 import type {} from './index.ts'
 import css from './CrewPanel.module.css'
 
@@ -19,6 +21,8 @@ export interface CrewPanelInjected {
     roster: HostObservable<RosterView>
     /** A member another surface asked to edit; `''` asks for a new member. */
     editRequest: HostObservable<CrewMemberId | undefined>
+    /** The Host's schedule catalog; undefined while unreachable, which hides Routines. */
+    routines: HostObservable<readonly ScheduleCatalogEntry[] | undefined>
   }
   /** Mark the edit request handled. */
   clearEditRequest: () => void
@@ -34,6 +38,10 @@ export interface CrewPanelInjected {
   saveMember: (member: CrewMember) => Promise<{ readonly saved: CrewMember } | { readonly message: string }>
   /** Remove a member; resolves undefined once removed, or the message to show. */
   removeMember: (id: CrewMemberId) => Promise<string | undefined>
+  /** Add a routine to a member; resolves undefined once added, or the message to show. */
+  addRoutine: (id: CrewMemberId, draft: RoutineDraft) => Promise<string | undefined>
+  /** Delete a routine; resolves undefined once deleted, or the message to show. */
+  removeRoutine: (id: string) => Promise<string | undefined>
 }
 
 /**
@@ -42,7 +50,11 @@ export interface CrewPanelInjected {
  * @returns the panel body.
  */
 export function CrewPanel(props: InjectFace<CrewPanelInjected> & PropsLocale<'crew'>) {
-  const { useMembers, useRoster, useEditRequest, clearEditRequest, openChat, saveMember, removeMember, Face, t } = props
+  const {
+    useMembers, useRoster, useEditRequest, useRoutines, clearEditRequest, openChat, saveMember, removeMember, addRoutine, removeRoutine,
+    Face, t,
+  } = props
+  const catalog = useRoutines(value => value)
   const members = useMembers(value => value)
   const roster = useRoster(value => value)
   const request = useEditRequest(value => value)
@@ -57,6 +69,10 @@ export function CrewPanel(props: InjectFace<CrewPanelInjected> & PropsLocale<'cr
     return (
       <MemberEditor key={editing.id} initial={editing} title={members.find(member => member.id === editing.id)?.name ?? editing.name}
         connections={roster.connections} Face={Face} save={saveMember} remove={removeMember} t={t}
+        {...editing.id === '' || catalog === undefined ? {} : {
+          routines: routinesIn(catalog, new Set(members.find(member => member.id === editing.id)?.sessions ?? [])),
+          addRoutine: (draft: RoutineDraft) => addRoutine(editing.id, draft), removeRoutine,
+        }}
         close={() => { setEditing(undefined) }} />
     )
   }

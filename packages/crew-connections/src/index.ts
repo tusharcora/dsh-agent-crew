@@ -37,6 +37,8 @@ export const GOOGLE_KEY = credentialKey('crew-connections', 'google')
 
 /** Crew member ids a home directory may be created for. */
 const MEMBER_ID = /^crew-[a-z]+$/
+/** Folder under the crew home that errands run in; not a member id, so no member's chats land there. */
+export const ERRANDS_FOLDER = 'errands'
 
 /** Plugin config. */
 export interface Config {
@@ -201,6 +203,21 @@ export class CrewConnections extends TypertRemoteService {
   async memberDirectory(member: string): Promise<MemberDirectory> {
     if (!MEMBER_ID.test(member)) return { ok: false, message: `"${member}" is not a crew member id` }
     const path = join(this.config.homeDirectory, member)
+    try {
+      await mkdir(path, { recursive: true })
+      return { ok: true, path }
+    } catch (error: unknown) {
+      return { ok: false, message: error instanceof Error ? error.message : String(error) }
+    }
+  }
+
+  /**
+   * The folder every errand runs in, kept apart from the members' own chats; created when missing.
+   * @returns the absolute path, or why it could not be made.
+   */
+  @Remote('errandDirectory')
+  async errandDirectory(): Promise<MemberDirectory> {
+    const path = join(this.config.homeDirectory, ERRANDS_FOLDER)
     try {
       await mkdir(path, { recursive: true })
       return { ok: true, path }

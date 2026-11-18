@@ -223,6 +223,15 @@ export class CrewRoster {
     return await this.openOrCreate(id, this.members.getSnapshot().find(member => member.id === id)?.home)
   }
 
+  /**
+   * The member's own chat, created the first time, without opening it; routines deliver into it.
+   * @param id - member id.
+   * @returns the Session, or undefined when it could not be created.
+   */
+  async homeFor(id: CrewMemberId): Promise<SessionId | undefined> {
+    return this.members.getSnapshot().find(member => member.id === id)?.home ?? await this.actions.createChat(id)
+  }
+
   private async openOrCreate(id: CrewMemberId, existing: SessionId | undefined): Promise<boolean> {
     if (existing !== undefined) {
       this.actions.openSession(existing)

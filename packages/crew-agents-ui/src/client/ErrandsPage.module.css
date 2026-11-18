@@ -1,0 +1,73 @@
+/* Amber waits for you, blue is live, green is done, grey is quiet; the same tones as the Today and Workflows pages.
+   Scoped to this page's classes: other components use data-state too. */
+.card, .chip { --c: var(--dsw-alias-state-idle-primary); }
+.card[data-state='running'], .chip[data-state='running'] { --c: var(--dsw-alias-state-business-primary); }
+.card[data-state='needs-you'], .chip[data-state='needs-you'], .card[data-state='blocked'], .chip[data-state='blocked'] {
+  --c: var(--dsw-alias-state-warn-primary);
+}
+.card[data-state='done'], .chip[data-state='done'] { --c: var(--dsw-alias-state-success-primary); }
+
+.page {
+  height: 100%;
+  overflow-y: auto;
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font-size: 13.5px;
+  line-height: 1.5;
+}
+
+.column { display: flex; flex-direction: column; gap: 20px; max-width: 880px; margin: 0 auto; padding: 40px 28px 56px; }
+.hero { display: flex; flex-direction: column; gap: 6px; }
+.eyebrow { margin: 0; color: var(--dsw-alias-label-tertiary); font-size: 11.5px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+.title { margin: 0; font-size: 36px; font-weight: 700; line-height: 1.08; letter-spacing: -0.03em; }
+.summary { margin: 4px 0 0; color: var(--dsw-alias-label-secondary); font-size: 15px; }
+
+.start, .card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: var(--dsw-radius-lg);
+  background: var(--dsw-alias-bg-base);
+}
+
+.card[data-state='needs-you'], .card[data-state='blocked'] {
+  border-color: color-mix(in srgb, var(--c) 55%, transparent);
+  background: color-mix(in srgb, var(--c) 7%, var(--dsw-alias-bg-base));
+}
+
+.field, .inline { display: flex; flex-direction: column; gap: 4px; color: var(--dsw-alias-label-secondary); font-size: 12.5px; }
+.inline { flex-direction: row; align-items: center; gap: 8px; }
+
+.textarea, .number {
+  padding: 8px 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: var(--dsw-radius-md);
+  background: var(--dsw-alias-bg-base);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+}
+
+.textarea { resize: vertical; }
+.number { width: 72px; }
+.row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.grow { flex: 1; }
+.list { display: flex; flex-direction: column; gap: 12px; }
+.cardHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+.chip {
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 14%, transparent);
+  color: var(--c);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.objective { margin: 0; font-size: 15px; overflow-wrap: anywhere; }
+.reason { margin: 0; color: var(--dsw-alias-label-secondary); overflow-wrap: anywhere; }
+.hint { margin: 0; color: var(--dsw-alias-label-tertiary); font-size: 12px; }
+.notice { margin: 0; color: var(--dsw-alias-label-secondary); }
+/* Quiet states keep readable text; the idle tone alone is too faint on its own tint. */
+.chip[data-state='paused'], .chip[data-state='stopped'] { color: var(--dsw-alias-label-secondary); }

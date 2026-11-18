@@ -3,6 +3,8 @@ import { act, cleanup, fireEvent, render, screen, within } from '@testing-librar
 import { afterEach, expect, it, vi } from 'vitest'
 import { ENTRIES, t } from './translate.client.ts'
 import { SessionId } from '@deepseek-ai/dsh-session/types'
+import type { ScheduleCatalogEntry } from '@deepseek-ai/dsh-schedule/client'
+import type { RoutineDraft } from '../src/client/routines.ts'
 import { CrewFace } from '@deepseek-ai/dsh-crew-faces/client'
 import { CrewPanel } from '../src/client/CrewPanel.tsx'
 import type { CrewMember } from '@deepseek-ai/dsh-crew-roster/types'
@@ -31,12 +33,16 @@ type Saved = { readonly saved: CrewMember } | { readonly message: string }
 function renderPanel(roster: readonly CrewMemberState[], start = vi.fn(async () => true), edits = {
   saveMember: vi.fn(async (member: CrewMember): Promise<Saved> => ({ saved: member })),
   removeMember: vi.fn(async (): Promise<string | undefined> => undefined),
-}, request?: string  ) {
+}, request?: string, catalog?: readonly ScheduleCatalogEntry[]) {
+  const routineActions = {
+    addRoutine: vi.fn(async (_id: string, _draft: RoutineDraft): Promise<string | undefined> => undefined),
+    removeRoutine: vi.fn(async (_id: string): Promise<string | undefined> => undefined),
+  }
   render(<CrewPanel useMembers={selector => selector(roster)} useRoster={selector => selector(VIEW)}
-    useEditRequest={selector => selector(request)}
+    useEditRequest={selector => selector(request)} useRoutines={selector => selector(catalog)}
     clearEditRequest={vi.fn()} Face={CrewFace} openChat={start}
-    saveMember={edits.saveMember} removeMember={edits.removeMember} t={t} />)
-  return Object.assign(start, edits)
+    saveMember={edits.saveMember} removeMember={edits.removeMember} {...routineActions} t={t} />)
+  return Object.assign(start, edits, routineActions)
 }
 
 it('lists every member with a named face, a status label and a labelled start button', () => {
@@ -121,8 +127,9 @@ it('says which member added a member an agent created', () => {
   }
   const roster = [...members({}), helper]
   render(<CrewPanel useMembers={selector => selector(roster)} useRoster={selector => selector(view)}
-    useEditRequest={selector => selector(undefined)}
-    clearEditRequest={vi.fn()} Face={CrewFace} openChat={vi.fn(async () => true)} saveMember={vi.fn()} removeMember={vi.fn()} t={t} />)
+    useEditRequest={selector => selector(undefined)} useRoutines={selector => selector(undefined)}
+    clearEditRequest={vi.fn()} Face={CrewFace} openChat={vi.fn(async () => true)} saveMember={vi.fn()} removeMember={vi.fn()}
+    addRoutine={vi.fn()} removeRoutine={vi.fn()} t={t} />)
   expect(screen.getByText('Added by Chief of staff')).toBeTruthy()
 })
 
@@ -153,4 +160,55 @@ it('offers gallery members not yet on the roster and opens the editor filled fro
   expect(saved?.id).toBe('')
   expect(saved?.persona).toMatch(/x\.com/)
   expect(saved?.abilities.web).toBe(true)
+})
+
+it('sets a tone and backstory, and clears them back to plain', async () => {
+  const edits = renderPanel(members({}))
+  fireEvent.click(screen.getByRole('button', { name: 'Add crew member' }))
+  fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Pip' } })
+  fireEvent.change(screen.getByLabelText('Instructions'), { target: { value: 'You are Pip.' } })
+  fireEvent.click(screen.getByRole('radio', { name: 'Witty' }))
+  expect(screen.getByText(/dry humour/)).toBeTruthy()
+  fireEvent.change(screen.getByLabelText('Backstory'), { target: { value: 'A lighthouse keeper.' } })
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Add member' })) })
+  expect(edits.saveMember).toHaveBeenLastCalledWith(expect.objectContaining({ tone: 'witty', backstory: 'A lighthouse keeper.' }))
+  fireEvent.click(screen.getByRole('button', { name: 'Add crew member' }))
+  fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Pip' } })
+  fireEvent.change(screen.getByLabelText('Instructions'), { target: { value: 'You are Pip.' } })
+  fireEvent.click(screen.getByRole('radio', { name: 'Witty' }))
+  fireEvent.change(screen.getByLabelText('Backstory'), { target: { value: 'A lighthouse keeper.' } })
+  fireEvent.click(screen.getByRole('radio', { name: 'Plain' }))
+  fireEvent.change(screen.getByLabelText('Backstory'), { target: { value: '' } })
+  await act(async () => { fireEvent.click(screen.getByRole('button', { name: 'Add member' })) })
+  const last = edits.saveMember.mock.calls.at(-1)?.[0]
+  expect(last && 'tone' in last).toBe(false)
+  expect(last && 'backstory' in last).toBe(false)
+})
+
+it('shows a saved member\'s routines, adds one and deletes one', async () => {
+  const brief = {
+    id: 'schedule-1', kind: 'daily', title: 'Morning brief', prompt: 'Brief me', time: '08:00:00.000', timeZone: 'UTC',
+    scheduledAt: '2026-11-13T08:00:00.000Z', target: { kind: 'session', sessionId: SessionId('r1') }, involvedSessionIds: [], status: 'active',
+  } as never as ScheduleCatalogEntry
+  const panel = renderPanel(members({ 'crew-research': { sessions: [SessionId('r1')] } }), undefined, undefined, 'crew-research', [brief])
+  const routines = screen.getByRole('group', { name: 'Routines' })
+  expect(within(routines).getByText('Morning brief')).toBeTruthy()
+  expect(within(routines).getByText('Every day at 08:00')).toBeTruthy()
+  fireEvent.click(within(routines).getByRole('button', { name: 'Add routine' }))
+  expect(within(routines).getByRole('status').textContent).toBe('Give the routine a name.')
+  fireEvent.change(within(routines).getByLabelText('Routine name'), { target: { value: 'Friday PRs' } })
+  fireEvent.change(within(routines).getByLabelText('What to do'), { target: { value: 'Summarise my open PRs.' } })
+  for (const day of ['Mon', 'Tue', 'Wed', 'Thu']) fireEvent.click(within(routines).getByRole('checkbox', { name: day }))
+  await act(async () => { fireEvent.click(within(routines).getByRole('button', { name: 'Add routine' })) })
+  expect(panel.addRoutine).toHaveBeenCalledWith('crew-research', { title: 'Friday PRs', prompt: 'Summarise my open PRs.', days: [5], time: '08:00' })
+  await act(async () => { fireEvent.click(within(routines).getByRole('button', { name: 'Delete routine Morning brief' })) })
+  expect(panel.removeRoutine).toHaveBeenCalledWith('schedule-1')
+})
+
+it('hides routines for a new member and without the schedule service', () => {
+  renderPanel(members({}), undefined, undefined, 'crew-research')
+  expect(screen.queryByRole('group', { name: 'Routines' })).toBeNull()
+  cleanup()
+  renderPanel(members({}), undefined, undefined, '', [])
+  expect(screen.queryByRole('group', { name: 'Routines' })).toBeNull()
 })

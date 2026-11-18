@@ -24,6 +24,9 @@ export interface MemberAbilities {
   readonly schedule: boolean
 }
 
+/** How a member talks: `plain` adds nothing to its instructions. */
+export type MemberTone = 'plain' | 'direct' | 'witty'
+
 /** One crew member; its id is also its agent preset id. */
 export interface CrewMember {
   /** `crew-` and lowercase letters; fixed once created. */
@@ -39,6 +42,10 @@ export interface CrewMember {
   readonly connections: readonly string[]
   /** Most tool calls the member may make while answering one message, nested `run_code` calls included; absent or 0 is no limit. */
   readonly maxToolCalls?: number
+  /** How the member talks; absent is `plain`. */
+  readonly tone?: MemberTone
+  /** A few lines of character the member plays, added to its instructions. */
+  readonly backstory?: string
   /** The lead hands work to every other member and cannot be removed. */
   readonly lead?: boolean
   /** Shipped with the crew; its name is shown translated until the user renames it. */

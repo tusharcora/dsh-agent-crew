@@ -9,7 +9,7 @@
 Nothing irreversible happens without you. Every send, post, purchase, delete, merge or booking waits for your click on an approval card.
 
 ```sh
-dsh plugin --profile web add dsh-agent-crew@0.1.1
+dsh plugin --profile web add dsh-agent-crew@0.2.0
 ```
 
 ---
@@ -43,6 +43,10 @@ Most agent setups give you one agent holding every tool. Crew gives you a team.
 | **Live web and X** | Members with web access search before answering anything time-sensitive, including recent posts on x.com, and cite each source with its date. |
 | **Heavy mode** | For a hard question, or whenever you say "heavy", the Chief of staff asks two to four teammates the same question in parallel and combines their answers, noting where they disagree. |
 | **Your workspaces** | Members with file access list your workspaces with `crew_workspaces`, read files in any of them and enter one with `working_directory`. Changes outside a member's own folder ask you first. |
+| **Errands** | Describe what the crew should get done and the Chief of staff keeps working on it by itself, round after round, until it is done or needs you. Each errand shows its state, rounds used, and buttons to pause, resume or stop it. |
+| **Routines** | Recurring jobs per member, such as a weekday morning brief, delivered into the member's own chat. |
+| **Personality** | Give each member a tone (plain, direct or witty) and a short backstory. |
+| **Action checker** | Before a member acts, Crew compares the action with what you actually asked and asks you first when something looks off: mail to an address you never mentioned, uploads to an unknown host, a script piped to a shell, secrets sent out, destructive commands, or injected instructions. |
 
 ## Install
 
@@ -51,7 +55,7 @@ Requires [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) wit
 Install [`dsh-agent-crew`](https://www.npmjs.com/package/dsh-agent-crew) from npm:
 
 ```sh
-dsh plugin --profile web add dsh-agent-crew@0.1.1
+dsh plugin --profile web add dsh-agent-crew@0.2.0
 ```
 
 Each release on [GitHub](https://github.com/tusharcora/dsh-agent-crew/releases) also carries the package tarballs. To change Crew itself, [build it from source](#develop-from-source).
@@ -187,6 +191,7 @@ Run the workflow by hand to build and pack without publishing. It needs an `NPM_
 
 ## Safety model
 
+- The action checker asks before any action that targets something you never mentioned or looks destructive. It only adds to dsh's own approvals and never overrides a refusal.
 - Nothing sends, posts, buys, deletes, merges or books without your click.
 - Credentials go only through dsh credential references and authorization flows.
 - Every price, score or date shows its source and when it was fetched. Sample data is labelled.
